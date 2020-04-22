@@ -8,12 +8,13 @@
     "esm": "cjstoesm \"dist/**/*.*\" out && eslint dist/** --fix",
     "test": "mocha --require intelli-espower-loader",
     "testReport": "nyc --reporter=html --reporter=text mocha --require intelli-espower-loader test",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "npm run testReport && nyc report --reporter=text-lcov | coveralls"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@wessberg/cjs-to-esm-transformer": "0.0.19",
+    "coveralls": "^3.0.13",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
