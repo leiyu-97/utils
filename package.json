@@ -6,7 +6,7 @@
   "scripts": {
     "doc": "jsdoc -c .jsdocrc",
     "esm": "cjstoesm \"dist/**/*.*\" out && eslint dist/** --fix",
-    "test": "mocha --require intelli-espower-loader test",
+    "test": "mocha --require intelli-espower-loader",
     "testReport": "nyc --reporter=html --reporter=text mocha --require intelli-espower-loader test",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
