@@ -12,7 +12,8 @@ module.exports = {
     "guard-for-in": 0,
     "no-plusplus": 0,
     "no-param-reassign": 0,
-    "func-names": 0
+    "func-names": 0,
+    "implicit-arrow-linebreak": 0
   },
   env: {
     node: true,

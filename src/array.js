@@ -10,8 +10,8 @@
  * @param {Number} size 分页数
  * @return {Array}
  */
-const paging = (array, page, size = 15) => array.slice(page * size, page * (size + 1));
-
+const paging = (array, page = 0, size = 15) =>
+  array.slice(page * size, (page + 1) * size);
 
 /**
  * @static
@@ -22,19 +22,31 @@ const paging = (array, page, size = 15) => array.slice(page * size, page * (size
  * @return {Array}
  */
 const sort = (array, order = 'asc', identity) => {
-  const coefficient = (order === 'desc' ? -1 : 1);
+  const coefficient = order === 'desc' ? -1 : 1;
+  array = [...array];
 
   return array.sort((a, b) => {
     if (identity) {
-      a = a.identity;
-      b = b.identity;
+      a = a[identity];
+      b = b[identity];
     }
 
     return (a > b ? 1 : -1) * coefficient;
   });
 };
 
-module.export = {
+/**
+ * @static
+ * @summary 浅对比数组
+ * @param {Array} a 对比数组
+ * @param {Array} b 对比数组
+ * @return {Array}
+ */
+const shallowEqual = (a, b) =>
+  a.length === b.length && a.every((value, index) => value === b[index]);
+
+module.exports = {
   paging,
   sort,
+  shallowEqual,
 };
