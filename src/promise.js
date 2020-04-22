@@ -18,30 +18,32 @@ const wait = (time) => () => new Promise((resolve) => setTimeout(resolve, time))
  * @return {Function}
  */
 const retry = (times = 1, time = 0) => (func) => (...args) => {
-  const arr = [];
-  for (let index = 0; index < times; index++) {
-    arr.push(index + 1);
-  }
+  const interval = wait(time);
 
   // 同步函数
   let result;
   try {
-    result = func.call(this, ...args);
+    result = func(...args);
   } catch (e) {
-    // 重试次数用尽
-    if (times === 0) {
-      throw e;
+    if (times > 0) {
+      return interval().then(() => retry(times - 1, time)(func)(...args));
     }
 
-    return wait(time)().then(() => retry(times - 1, time)(func)(...args));
+    // 重试次数用尽
+    return Promise.reject(e);
   }
 
   // 异步函数
   if (result instanceof Promise) {
-    return result.catch(() => wait(time)().then(() => retry(times - 1, time)(func)(...args)));
+    if (times > 0) {
+      return result.catch(() => interval().then(() => retry(times - 1, time)(func)(...args)));
+    }
+
+    // 重试次数用尽
+    return result;
   }
 
-  return result;
+  return Promise.resolve(result);
 };
 
 /**
