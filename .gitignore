@@ -6,3 +6,4 @@ doc
 .*swp
 .nyc_output
 coverage
+esm

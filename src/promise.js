@@ -35,7 +35,8 @@ const retry = (func, times = 1, time = 0) => (...args) => {
   // 异步函数
   if (result instanceof Promise) {
     if (times > 0) {
-      return result.catch(() => wait(time).then(() => retry(func, times - 1, time)(...args)));
+      return result.catch(() =>
+        wait(time).then(() => retry(func, times - 1, time)(...args)));
     }
 
     // 重试次数用尽
@@ -52,7 +53,8 @@ const retry = (func, times = 1, time = 0) => (...args) => {
  * @param {Error} [error] 超时时抛出的错误
  * @returns {Function}
  */
-const timeout = (func, time, error = new Error('timeout')) => (...args) => Promise.race([func(...args), wait(time).then(() => Promise.reject(error))]);
+const timeout = (func, time, error = new Error('timeout')) => (...args) =>
+  Promise.race([func(...args), wait(time).then(() => Promise.reject(error))]);
 
 module.exports = {
   wait,

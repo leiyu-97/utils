@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "doc": "jsdoc -c .jsdocrc",
-    "esm": "cjstoesm \"dist/**/*.*\" out && eslint dist/** --fix",
+    "esm": "cjstoesm \"src/**/*.*\" dist/esm && eslint dist/esm/src/** --fix --rule 'max-len: 0'",
+    "build": "",
     "test": "mocha --require intelli-espower-loader",
     "testReport": "nyc --reporter=html --reporter=text mocha --require intelli-espower-loader test",
     "coveralls": "npm run testReport && nyc report --reporter=text-lcov | coveralls"
