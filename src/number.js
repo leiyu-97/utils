@@ -10,7 +10,7 @@
  * @param {Number} b 待对比数字
  * @param {Number} uncertainty 误差系数
  */
-const isEqual = (a, b, uncertainty = 10) => Math.abs(a - b) < Number.EPSILON * uncertainty;
+const isEqual = (a, b, uncertainty = 1) => Math.abs(a - b) < Number.EPSILON * uncertainty;
 
 module.exports = {
   isEqual,

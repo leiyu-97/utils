@@ -28,5 +28,7 @@
     "power-assert": "^1.6.1",
     "typescript": "^3.8.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "duplexer3": "^0.1.4"
+  }
 }

@@ -16,7 +16,7 @@ const { NUMBER, LOWERCASE, UPPERCASE } = require('./charCodes');
  * @param  {Range} range 范围数组
  * @return {Number} 随机数
  */
-function random(...ranges) {
+function discontinuousRandom(...ranges) {
   const lengths = ranges.map((range) => range[1] - range[0]);
   // 将 lengths 累加成数组
   const reduceLengths = lengths.reduce((prev, cur) => [...prev, prev[prev.length - 1] + cur], [0]);
@@ -37,7 +37,7 @@ function random(...ranges) {
  */
 function randomChar(...ranges) {
   if (!ranges[0]) ranges = [NUMBER, UPPERCASE, LOWERCASE];
-  return String.fromCharCode(random(...ranges));
+  return String.fromCharCode(discontinuousRandom(...ranges));
 }
 
 /**
@@ -57,7 +57,7 @@ function randomStr(length, ...ranges) {
 }
 
 module.exports = {
-  random,
+  discontinuousRandom,
   randomChar,
   randomStr,
 };
