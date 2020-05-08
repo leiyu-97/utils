@@ -8,7 +8,7 @@
  * @param {Array} array 待排序数组
  * @param {Number} page 页码
  * @param {Number} size 分页数
- * @return {Array}
+ * @return {Array} 结果数组
  */
 const paging = (array, page = 0, size = 15) =>
   array.slice(page * size, (page + 1) * size);
@@ -19,7 +19,7 @@ const paging = (array, page = 0, size = 15) =>
  * @param {Array} array 待排序数组
  * @param {"asc"|"desc"} order 顺序
  * @param {String} identity 排序字段
- * @return {Array}
+ * @return {Array} 结果数组
  */
 const sort = (array, order = 'asc', identity) => {
   const coefficient = order === 'desc' ? -1 : 1;
@@ -40,7 +40,7 @@ const sort = (array, order = 'asc', identity) => {
  * @summary 浅对比数组
  * @param {Array} a 对比数组
  * @param {Array} b 对比数组
- * @return {Array}
+ * @return {Array} 结果数组
  */
 const shallowEqual = (a, b) =>
   a.length === b.length && a.every((value, index) => value === b[index]);

@@ -57,8 +57,9 @@ const urlReg = {
 const urlRegExp = objectToRegExp(urlReg);
 
 /**
- * 解析 url
- * @param {String} url
+ * @static
+ * @summary 解析 url
+ * @param {String} url 待解析的 url
  * @return {Object} urlObj
  * @return {String} urlObj.href url
  * @return {String} urlObj.protocol 协议
@@ -154,7 +155,8 @@ function stringify({
 }
 
 /**
- * 为 url 中的查询字符串添加参数
+ * @static
+ * @summary 为 url 中的查询字符串添加参数
  * @param {String} url 原始 url
  * @param {Object} param 添加的参数
  * @return {String} 添加参数后的查询字符串

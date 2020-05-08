@@ -12,9 +12,10 @@ function objectValuesToString(obj) {
 }
 
 /**
- * 将对象形式的正则表达式转换为正则表达式
+ * @static
+ * @summary 将对象形式的正则表达式转换为正则表达式
  * @param {Object} obj 对象形式的正则表达式
- * @return {RegExp}
+ * @return {RegExp} 正则表达式
  */
 const objectToRegExp = (obj) => new RegExp(objectValuesToString(obj));
 

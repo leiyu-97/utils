@@ -13,7 +13,8 @@ module.exports = {
     "no-plusplus": 0,
     "no-param-reassign": 0,
     "func-names": 0,
-    "implicit-arrow-linebreak": 0
+    "implicit-arrow-linebreak": 0,
+    "valid-jsdoc": 2
   },
   env: {
     node: true,

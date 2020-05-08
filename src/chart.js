@@ -1,10 +1,10 @@
 /**
  * @static
  * @summary 线性插值
- * @param {Array} param0
+ * @param {Array} param0 第一个点
  * @param {Number} param0.0 x0，该点的 x 坐标
  * @param {Number} param0.1 y0，该点的 y 坐标
- * @param {Array} param1
+ * @param {Array} param1 第二个点
  * @param {Number} param1.0 x1，该点的 x 坐标
  * @param {Number} param1.1 y1，该点的 y 坐标
  * @return {Function} 插值函数
@@ -15,11 +15,11 @@ const linearInterpolation = ([x0, y0], [x1, y1]) => (x) =>
 /**
  * @static
  * @summary 三次 Hermite 插值
- * @param {Array} param0
+ * @param {Array} param0 第一个点
  * @param {Number} param0.0 x0，该点的 x 坐标
  * @param {Number} param0.1 y0，该点的 y 坐标
  * @param {Number} param0.2 m0，该点的梯度
- * @param {Array} param1
+ * @param {Array} param1 第二个点
  * @param {Number} param1.0 x1，该点的 x 坐标
  * @param {Number} param1.1 y1，该点的 y 坐标
  * @param {Number} param1.2 m1，该点的梯度

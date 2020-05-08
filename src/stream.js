@@ -1,9 +1,10 @@
 const duplexer = require('duplexer3');
 
 /**
- * 使用 pipe 拼接多个流对象
- * @param  {...Stream} streams
- * @return {stream.Duplex}
+ * @static
+ * @summary 使用 pipe 拼接多个流对象
+ * @param  {Stream[]} streams 待拼接的流
+ * @return {stream.Duplex} 拼接后的双工流
  */
 function combine(...streams) {
   const [start] = streams;

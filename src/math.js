@@ -7,6 +7,7 @@
  * @summary 高斯分布随机
  * @param {Number} mu μ
  * @param {Number} sigma σ
+ * @return {Number} 随机数
  */
 function normalRandom(mu, sigma) {
   // https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform
