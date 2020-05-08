@@ -2,6 +2,7 @@
  * @module http
  */
 const { objectToRegExp } = require('./regexp');
+const qs = require('./querystring');
 
 const { raw } = String;
 
@@ -55,6 +56,24 @@ const urlReg = {
 
 const urlRegExp = objectToRegExp(urlReg);
 
+/**
+ * 解析 url
+ * @param {String} url
+ * @return {Object} urlObj
+ * @return {String} urlObj.href url
+ * @return {String} urlObj.protocol 协议
+ * @return {String} urlObj.auth 鉴权部分
+ * @return {String} urlObj.username 用户名
+ * @return {String} urlObj.password 密码
+ * @return {String} urlObj.host 主机
+ * @return {String} urlObj.hostname 域名
+ * @return {String} urlObj.port 端口
+ * @return {String} urlObj.path 路径（包括查询字符串）
+ * @return {String} urlObj.pathname 路径（不包括查询字符串）
+ * @return {String} urlObj.search 序列化查询部分
+ * @return {String} urlObj.query 查询字符串
+ * @return {String} urlObj.hash hash
+ */
 function parse(url) {
   const [
     href,
@@ -89,6 +108,84 @@ function parse(url) {
   };
 }
 
+function stringify({
+  protocol,
+  username,
+  password,
+  hostname,
+  port,
+  pathname,
+  query,
+  hash,
+}) {
+  let url = '';
+
+  if (protocol) {
+    url += `${protocol}://`;
+  }
+
+  if (username) {
+    url += username;
+    if (password) {
+      url += `:${password}`;
+    }
+    url += '@';
+  }
+
+  url += hostname;
+
+  if (port) {
+    url += `:${port}`;
+  }
+
+  if (pathname) {
+    url += pathname;
+  }
+
+  if (query) {
+    url += `?${query}`;
+  }
+
+  if (hash) {
+    url += `#${hash}`;
+  }
+
+  return url;
+}
+
+/**
+ * 为 url 中的查询字符串添加参数
+ * @param {String} url 原始 url
+ * @param {Object} param 添加的参数
+ * @return {String} 添加参数后的查询字符串
+ */
+function addQuery(url, param) {
+  const {
+    protocol,
+    username,
+    password,
+    hostname,
+    port,
+    pathname,
+    query,
+    hash,
+  } = parse(url);
+  const queryObj = qs.parse(query);
+  Object.assign(queryObj, param);
+  const newQuery = qs.stringify(queryObj);
+  return stringify({
+    protocol,
+    username,
+    password,
+    hostname,
+    port,
+    pathname,
+    hash,
+    query: newQuery,
+  });
+}
+
 module.exports = {
   parse,
+  addQuery,
 };
