@@ -14,6 +14,12 @@ describe('querystring', () => {
       assert(obj.foo === 'b r');
       assert(obj.key === 'value');
     });
+
+    it('带空值', () => {
+      const obj = parse('foo&key');
+      assert(obj.foo === '');
+      assert(obj.key === '');
+    });
   });
 
   describe('stringify', () => {
