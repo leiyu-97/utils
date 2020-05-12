@@ -1,8 +1,9 @@
 const assert = require('assert');
-const { parse } = require('../src/url');
+const { parse, addQuery } = require('../src/url');
+const qs = require('../src/querystring');
 
 describe('path', () => {
-  describe('parseUrl', () => {
+  describe('parse', () => {
     it('协议正确', () => {
       assert(parse('127.0.0.1').protocol === undefined);
       assert(parse('http://127.0.0.1').protocol === 'http');
@@ -78,6 +79,24 @@ describe('path', () => {
       assert(url.query === 'query=string');
       assert(url.hash === 'hash');
       assert(url.origin === 'https://sub.example.com:8080');
+    });
+  });
+
+  describe('addQuery', () => {
+    const originUrl = 'https://user:pass@sub.example.com:8080/p/a/t/h?query=string#hash';
+    const url = addQuery(originUrl, { query: 'string2', foo: 'bar' });
+    const urlObj = parse(url);
+    const queryObj = qs.parse(urlObj.query);
+    it('正常返回', () => {
+      assert(url);
+    });
+
+    it('添加参数', () => {
+      assert(queryObj.foo === 'bar');
+    });
+
+    it('替换参数成功', () => {
+      assert(queryObj.query === 'string2');
     });
   });
 });

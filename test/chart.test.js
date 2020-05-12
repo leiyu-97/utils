@@ -26,4 +26,16 @@ describe('chart', () => {
       }, 100);
     });
   });
+
+  describe('cubicHermiteInterpolation', () => {
+    it('正常返回', () => {
+      assert(cubicHermiteInterpolation([1, 1, 1], [3, 3, 3])(2));
+    });
+  });
+
+  describe('fade', () => {
+    it('正常返回', () => {
+      assert(fade(0.5));
+    });
+  });
 });
