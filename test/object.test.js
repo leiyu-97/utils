@@ -19,7 +19,7 @@ describe('object', () => {
       optionalSet(obj, ['foo'], 'bar');
       assert(obj.foo === 'bar');
 
-      obj = {};
+      obj = { a: {} };
       optionalSet(obj, ['a', 'b', 'c', 'foo'], 'bar');
       assert(obj.a.b.c.foo === 'bar');
     });

@@ -9,9 +9,12 @@
  * @return {Any} 属性值
  */
 const optionalGet = (obj, [...keys]) => {
-  const lastKey = keys.pop();
-
-  return keys.reduce((prev, key) => prev[key] || {}, obj)[lastKey];
+  let result = obj;
+  for (let i = 0; i < keys.length && result !== undefined; i++) {
+    const key = keys[i];
+    result = result[key];
+  }
+  return result;
 };
 
 /**
