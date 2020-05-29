@@ -1,7 +1,7 @@
 /**
  * @module http
  */
-const { objectToRegExp } = require('./regexp');
+const { objectToRegExp, exact } = require('./regexp');
 const qs = require('./querystring');
 
 const { raw } = String;
@@ -9,7 +9,6 @@ const { raw } = String;
 const safeChar = 'a-zA-Z0-9-_.~';
 
 const urlReg = {
-  b: raw`^`,
   oProtocol: {
     b: raw`(?:`,
     scheme: `([${safeChar}]+)`, // $1 协议，例: 'http'
@@ -51,10 +50,9 @@ const urlReg = {
     hash: raw`(.*)`, // $12 片段 id，例: 'fragid1'
     e: raw`)?`,
   },
-  e: raw`$`,
 };
 
-const urlRegExp = objectToRegExp(urlReg);
+const urlRegExp = objectToRegExp(exact(urlReg));
 
 /**
  * @static

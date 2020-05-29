@@ -37,7 +37,18 @@ const optionalSet = (obj, [...keys], value) => {
   return value;
 };
 
+/**
+ * 浅对比两个对象
+ * @param {Object} objA 对象A
+ * @param {Object} objB 对象B
+ * @return {Boolean} 两对象是否浅层相等
+ */
+const shallowEqual = (objA, objB) =>
+  Object.values(objA).length === Object.values(objB).length
+  && Object.entries(objA).every(([key, value]) => objB[key] === value);
+
 module.exports = {
   optionalGet,
   optionalSet,
+  shallowEqual,
 };
