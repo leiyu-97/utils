@@ -56,8 +56,34 @@ const retry = (func, times = 1, time = 0) => (...args) => {
 const timeout = (func, time, error = new Error('timeout')) => (...args) =>
   Promise.race([func(...args), wait(time).then(() => Promise.reject(error))]);
 
+/* eslint-disable no-console */
+/**
+ * @static
+ * @summary 打印 Promise 内容后原样返回
+ * @param {Any} data data
+ * @return {Promise} Promise
+ */
+const log = (data) => {
+  console.log(data);
+  return data;
+};
+
+/**
+ * @static
+ * @summary 打印 Promise 错误后原样抛出
+ * @param {Any} err err
+ * @return {Promise} Promise
+ */
+const error = (err) => {
+  console.error(err);
+  throw err;
+};
+/* eslint-enable no-console */
+
 module.exports = {
   wait,
   retry,
   timeout,
+  log,
+  error,
 };
