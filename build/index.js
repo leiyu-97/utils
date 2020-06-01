@@ -51,7 +51,6 @@ const baseDir = path.resolve(__dirname, '../');
 const sourceDir = path.join(baseDir, '/src');
 const distDir = path.join(baseDir, '/dist');
 
-
 async function main(entry) {
   const files = new Set();
   const modules = new Set();
@@ -80,7 +79,7 @@ async function main(entry) {
           if (value.startsWith('.') || value.startsWith('/')) {
             // 文件模块
             const nextModule = path.resolve(path.dirname(filePath), value);
-            works.push(addFile(nextModule));
+            if (!files.has(nextModule)) works.push(addFile(nextModule));
           } else if (!builtinModules.includes(value)) {
             // 第三方或内置模块
             const nameArray = value.split('/');
@@ -105,17 +104,23 @@ async function main(entry) {
 
   // 复制文件
   await mkdir(distDir, { recursive: true });
-  await Promise.all([...files].map((source) => {
-    if (!source.startsWith(sourceDir)) {
-      console.error('引用了 src 以外的文件', source);
-      return undefined;
-    }
+  await Promise.all(
+    [...files].map((source) => {
+      if (!source.startsWith(sourceDir)) {
+        console.error('引用了 src 以外的文件', source);
+        return undefined;
+      }
 
-    return copyFile(source, source.replace(sourceDir, distDir));
-  }));
+      return copyFile(source, source.replace(sourceDir, distDir));
+    }),
+  );
 
   if (modules.size) {
-    console.log('请在使用的库中先运行以下命令: \n', 'npm install --save', [...modules].join(' '));
+    console.log(
+      '请在使用的库中先运行以下命令: \n',
+      'npm install --save',
+      [...modules].join(' '),
+    );
   }
 }
 
