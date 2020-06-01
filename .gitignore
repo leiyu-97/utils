@@ -7,3 +7,4 @@ doc
 .nyc_output
 coverage
 esm
+.vscode

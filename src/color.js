@@ -2,6 +2,7 @@
  * @module color
  */
 
+const fs = require('fs');
 const { objectToRegExp, exact } = require('./regexp');
 
 const { raw } = String;

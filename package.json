@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "doc": "jsdoc -c .jsdocrc",
-    "esm": "cjstoesm \"src/**/*.*\" dist/esm && eslint dist/esm/src/** --fix --rule 'max-len: 0'",
-    "build": "",
+    "build": "node build/index.js",
     "test": "mocha --require intelli-espower-loader",
     "testReport": "nyc --reporter=html --reporter=text mocha --require intelli-espower-loader test",
     "coveralls": "npm run testReport && nyc report --reporter=text-lcov | coveralls"
@@ -14,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@wessberg/cjs-to-esm-transformer": "0.0.19",
     "coveralls": "^3.0.13",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
@@ -29,6 +27,8 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "@babel/parser": "^7.10.1",
+    "@babel/traverse": "^7.10.1",
     "duplexer3": "^0.1.4"
   }
 }
