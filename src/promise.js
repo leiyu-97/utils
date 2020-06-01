@@ -47,6 +47,7 @@ const retry = (func, times = 1, time = 0) => (...args) => {
 };
 
 /**
+ * @static
  * @summary 为函数设置超时
  * @param {Promise} func 待设置超时的函数
  * @param {Number} time 以毫秒为单位的超时时间
@@ -56,12 +57,31 @@ const retry = (func, times = 1, time = 0) => (...args) => {
 const timeout = (func, time, error = new Error('timeout')) => (...args) =>
   Promise.race([func(...args), wait(time).then(() => Promise.reject(error))]);
 
+/**
+ * @static
+ * @summary 动态的 Promise.all
+ * @param {Promise[]} array Promise 数组
+ * @return {Promise} 当 array 中所有 Promise 状态都转化为 resolved 后 resolve
+ */
+const dynamicAll = async (array) => {
+  let { length } = array;
+  let result;
+  while (true) { // eslint-disable-line no-constant-condition
+    result = await Promise.all(array); // eslint-disable-line no-await-in-loop
+    if (array.length === length) {
+      break;
+    }
+    length = array.length;
+  }
+  return result;
+};
+
 /* eslint-disable no-console */
 /**
  * @static
  * @summary 打印 Promise 内容后原样返回
  * @param {Any} data data
- * @return {Promise} Promise
+ * @return {Any} data
  */
 const log = (data) => {
   console.log(data);
@@ -72,7 +92,7 @@ const log = (data) => {
  * @static
  * @summary 打印 Promise 错误后原样抛出
  * @param {Any} err err
- * @return {Promise} Promise
+ * @return {undefined} undefined
  */
 const error = (err) => {
   console.error(err);
@@ -86,4 +106,5 @@ module.exports = {
   timeout,
   log,
   error,
+  dynamicAll,
 };

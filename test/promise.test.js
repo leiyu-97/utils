@@ -1,5 +1,7 @@
 const assert = require('assert');
-const { wait, timeout, retry } = require('../src/promise');
+const {
+  wait, timeout, retry, dynamicAll,
+} = require('../src/promise');
 
 describe('promise', () => {
   describe('wait', () => {
@@ -101,6 +103,21 @@ describe('promise', () => {
           done(assert(time > 80 && time < 120));
         })
         .catch(done);
+    });
+  });
+
+  describe('dynamicAll', () => {
+    it('resolve 时机正确', (done) => {
+      let index = 0;
+      const array = [wait(100).then(() => {
+        index++;
+        array.push(wait(100).then(() => index++));
+      })];
+
+      dynamicAll(array).then(() => {
+        assert(index === 2);
+        done();
+      });
     });
   });
 });
