@@ -27,7 +27,10 @@ describe('promise', () => {
     });
 
     it('应该超时', (done) => {
-      timeout(wait, 80)(100)
+      timeout(
+        wait,
+        80,
+      )(100)
         .then(() => done(new Error()))
         .catch(() => done());
     });
@@ -109,10 +112,12 @@ describe('promise', () => {
   describe('dynamicAll', () => {
     it('resolve 时机正确', (done) => {
       let index = 0;
-      const array = [wait(100).then(() => {
-        index++;
-        array.push(wait(100).then(() => index++));
-      })];
+      const array = [
+        wait(100).then(() => {
+          index++;
+          array.push(wait(100).then(() => index++));
+        }),
+      ];
 
       dynamicAll(array).then(() => {
         assert(index === 2);
