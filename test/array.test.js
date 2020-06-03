@@ -1,5 +1,7 @@
 const assert = require('assert');
-const { paging, shallowEqual, sort } = require('../src/array');
+const {
+  paging, shallowEqual, sort, classify,
+} = require('../src/array');
 
 describe('array', () => {
   describe('paging', () => {
@@ -44,6 +46,39 @@ describe('array', () => {
     it('不应该相等', () => {
       assert(!shallowEqual([1, 2, 3], [3, 2, 1]));
       assert(!shallowEqual([{}], [{}]));
+    });
+  });
+
+  describe('classify', () => {
+    const data = [
+      { gender: 'male', age: 11 },
+      { gender: 'female', age: 12 },
+      { gender: 'female', age: 13 },
+      { gender: 'male', age: 14 },
+      { gender: 'male', age: 15 },
+      { gender: 'female', age: 16 },
+      { gender: 'female', age: 17 },
+      { gender: 'male', age: 18 },
+      { gender: 'female', age: 19 },
+      { gender: 'apache helicopter', age: 20 },
+    ];
+
+
+    it('单分类条件', () => {
+      const result = classify(data, 'gender');
+      assert(result.length === 3);
+      assert(result.find(({ keys: [gender] }) => gender === 'male').items.length === 4);
+    });
+
+    it('函数分类条件', () => {
+      const result = classify(data, ({ age }) => (age < 18 ? 'minor' : 'major'));
+      assert(result.length === 2);
+      assert(result.find(({ keys: [age] }) => age === 'major').items.length === 3);
+    });
+
+    it('多分类条件', () => {
+      const result = classify(data, ['gender', ({ age }) => (age < 18 ? 'minor' : 'major')]);
+      assert(result.length === 5);
     });
   });
 });
