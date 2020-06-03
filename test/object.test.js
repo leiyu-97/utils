@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { optionalGet, optionalSet } = require('../src/object');
+const { optionalGet, optionalSet, unentries } = require('../src/object');
 
 describe('object', () => {
   describe('optionalGet', () => {
@@ -22,6 +22,18 @@ describe('object', () => {
       obj = { a: {} };
       optionalSet(obj, ['a', 'b', 'c', 'foo'], 'bar');
       assert(obj.a.b.c.foo === 'bar');
+    });
+  });
+
+  describe('unentries', () => {
+    it('正常返回', () => {
+      const array = [
+        ['foo', 'bar'],
+        ['key', 'value'],
+      ];
+      const obj = unentries(array);
+      assert(obj.foo === 'bar');
+      assert(obj.key === 'value');
     });
   });
 });

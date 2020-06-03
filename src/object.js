@@ -3,7 +3,8 @@
  */
 
 /**
- * 获取嵌套对象某一属性值
+ * @static
+ * @summary 获取嵌套对象某一属性值
  * @param {Object} obj 需要获取属性的对象
  * @param  {String[]} keys 键名数组
  * @return {Any} 属性值
@@ -18,7 +19,8 @@ const optionalGet = (obj, [...keys]) => {
 };
 
 /**
- * 嵌套设置对象某一属性值，在访问过程中如果遇到属性不存在的情况时会创建一空对象
+ * @static
+ * @summary 嵌套设置对象某一属性值，在访问过程中如果遇到属性不存在的情况时会创建一空对象
  * @param {Object} obj 设置的对象
  * @param  {String[]} keys 键名数组
  * @param {Any} value 设置的值
@@ -38,7 +40,8 @@ const optionalSet = (obj, [...keys], value) => {
 };
 
 /**
- * 浅对比两个对象
+ * @static
+ * @summary 浅对比两个对象
  * @param {Object} objA 对象A
  * @param {Object} objB 对象B
  * @return {Boolean} 两对象是否浅层相等
@@ -47,8 +50,18 @@ const shallowEqual = (objA, objB) =>
   Object.values(objA).length === Object.values(objB).length
   && Object.entries(objA).every(([key, value]) => objB[key] === value);
 
+/**
+ * @static
+ * @summary 将键值对数组转为对象，Object.entries 的反操作
+ * @param {Array} array 键值对数组
+ * @return {Object} 对象
+ */
+const unentries = (array) =>
+  array.reduce((prev, [key, value]) => ({ ...prev, [key]: value }), {});
+
 module.exports = {
   optionalGet,
   optionalSet,
   shallowEqual,
+  unentries,
 };
