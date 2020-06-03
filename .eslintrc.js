@@ -14,7 +14,8 @@ module.exports = {
     "no-param-reassign": 0,
     "func-names": 0,
     "implicit-arrow-linebreak": 0,
-    "valid-jsdoc": 2
+    "valid-jsdoc": 2,
+    "no-underscore-dangle": 0
   },
   env: {
     node: true,

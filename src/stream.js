@@ -12,6 +12,27 @@ function combine(...streams) {
   return duplexer({ objectMode: true }, start, end);
 }
 
+function readAll(readable) {
+  return new Promise((resolve, reject) => {
+    const result = [];
+
+    readable.on('data', (data) => {
+      result.push(data);
+    });
+
+    readable.on('end', () => {
+      resolve(Buffer.concat(result));
+    });
+
+    readable.on('error', reject);
+
+    if (!readable.readableFlowing) {
+      readable.read();
+    }
+  });
+}
+
 module.exports = {
   combine,
+  readAll,
 };
