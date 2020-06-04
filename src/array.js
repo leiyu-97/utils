@@ -49,7 +49,7 @@ const shallowEqual = (a, b) =>
  * @static
  * @summary 对数组元素进行分类
  * @param {Any[]} array 待分类数组
- * @param {(String|function)[]} keys 分类字段或方法，如果参数类型不为数组会转为单元素数组
+ * @param {String[]|function[]} keys 分类字段或方法，如果参数类型不为数组会转为单元素数组
  * @return {Object[]} result 分类后的数组
  * @return {Any[]} result.keys 分类后的数组
  * @return {Any[]} result.items 分类后的数组

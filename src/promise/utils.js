@@ -98,8 +98,8 @@ const error = (err) => {
   console.error(err);
   throw err;
 };
-/* eslint-enable no-console */
 
+/* eslint-enable no-console */
 module.exports = {
   wait,
   retry,
