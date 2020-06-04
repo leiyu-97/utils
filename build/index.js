@@ -111,13 +111,24 @@ async function main(entry) {
         return undefined;
       }
 
-      return copyFile(source, source.replace(sourceDir, distDir));
+      const dist = source.replace(sourceDir, distDir);
+
+      return copyFile(source, dist).then(() =>
+        console.log(
+          source.replace(baseDir, ''),
+          '=>',
+          dist.replace(baseDir, ''),
+        ));
     }),
   );
 
+  console.log('\n');
+  console.log('复制完成');
+  console.log('\n');
+
   if (modules.size) {
     console.log(
-      '请在使用的库中先运行以下命令: \n',
+      '请在使用的库中运行以下命令: \n',
       'npm install --save',
       [...modules].join(' '),
     );
