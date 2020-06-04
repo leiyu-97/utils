@@ -105,7 +105,7 @@ async function main(entry) {
   // 复制文件
   await mkdir(distDir, { recursive: true });
   await Promise.all(
-    [...files].map((source) => {
+    [...files].map(async (source) => {
       if (!source.startsWith(sourceDir)) {
         console.error('引用了 src 以外的文件', source);
         return undefined;
@@ -113,12 +113,11 @@ async function main(entry) {
 
       const dist = source.replace(sourceDir, distDir);
 
-      return copyFile(source, dist).then(() =>
-        console.log(
-          source.replace(baseDir, ''),
-          '=>',
-          dist.replace(baseDir, ''),
-        ));
+      await mkdir(path.dirname(dist), { recursive: true });
+
+      await copyFile(source, dist);
+
+      console.log(source.replace(baseDir, ''), '=>', dist.replace(baseDir, ''));
     }),
   );
 
@@ -135,5 +134,6 @@ async function main(entry) {
   }
 }
 
-const entry = process.argv.slice(2);
+// const entry = process.argv.slice(2);
+const entry = ['promise'];
 main(entry);

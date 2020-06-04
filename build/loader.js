@@ -5,8 +5,7 @@ const exts = ['.js', '.json'];
 
 function tryFile(requestPath) {
   try {
-    fs.accessSync(requestPath, fs.constants.F_OK);
-    return requestPath;
+    return fs.statSync(requestPath).isFile() ? requestPath : false;
   } catch (e) {
     return false;
   }
