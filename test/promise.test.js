@@ -4,7 +4,7 @@ const {
   timeout,
   retry,
   dynamicAll,
-  StopablePromise,
+  Stopable,
 } = require('../src/promise');
 
 describe('promise', () => {
@@ -130,63 +130,74 @@ describe('promise', () => {
     });
   });
 
-  describe('StopablePromise', () => {
+  describe('Stopable', () => {
     it('正常 resolve', (done) => {
-      new StopablePromise((resolve) => setTimeout(resolve, 100)).then(done);
+      new Stopable((resolve) => setTimeout(resolve, 100)).then(done);
     });
 
     it('正常 catch', (done) => {
-      new StopablePromise((resolve, reject) => setTimeout(reject, 100)).catch(done);
+      new Stopable((resolve, reject) => setTimeout(reject, 100)).catch(
+        done,
+      );
     });
 
     it('正常 stop', (done) => {
-      const stopable = new StopablePromise((resolve) =>
+      const stopable = new Stopable((resolve) =>
         setTimeout(resolve, 100)).then(() => assert(false));
       stopable.stop();
       wait(200).then(done);
     });
 
     it('链式调用正常 resolve', (done) => {
-      const stopable = new StopablePromise((resolve) =>
+      const stopable = new Stopable((resolve) =>
         setTimeout(resolve, 100))
         .then(() => null)
         .then(done);
-      assert(stopable instanceof StopablePromise);
+      assert(stopable instanceof Stopable);
     });
 
     it('链式调用正常 reject', (done) => {
-      const stopable = new StopablePromise((resolve) =>
+      const stopable = new Stopable((resolve) =>
         setTimeout(resolve, 100))
         .catch(() => null)
         .then(() => null)
         .catch(wait(100))
         .then(done);
-      assert(stopable instanceof StopablePromise);
+      assert(stopable instanceof Stopable);
     });
 
     it('链式调用正常 stop', (done) => {
-      const stopable = new StopablePromise((resolve) =>
+      const stopable = new Stopable((resolve) =>
         setTimeout(resolve, 100))
         .then(() => null)
         .then(() => assert(false));
       stopable.stop();
-      assert(stopable instanceof StopablePromise);
+      assert(stopable instanceof Stopable);
       wait(200).then(done);
     });
 
     it('传入 promise 对象正常 resolve', (done) => {
-      new StopablePromise(wait(100)).then(done);
+      new Stopable(wait(100)).then(done);
     });
 
     it('传入 promise 对象正常 stop', (done) => {
-      const stopable = new StopablePromise(wait(100)).then(() => assert(false));
+      const stopable = new Stopable(
+        wait(100).then(() => assert(false)),
+      ).then(() => assert(false));
+      stopable.stop();
+      wait(200).then(done);
+    });
+
+    it('resolve promise 对象正常 stop', (done) => {
+      const stopable = new Stopable((resolve) =>
+        resolve(wait(100).then(() => assert(false)))).then(() => assert(false));
       stopable.stop();
       wait(200).then(done);
     });
 
     it('链式调用中返回 Promise 对象时正常 resolve', (done) => {
       const start = Date.now();
-      new StopablePromise((resolve) => resolve(wait(100))).then(() => {
+      new Stopable((resolve) => resolve(wait(100))).then(() => {
         // 确认是否真的等到 wait 结束才 resolve
         assert(Date.now() - start > 100);
         done();
@@ -196,13 +207,13 @@ describe('promise', () => {
     it('链式调用中返回 Promise 对象时正常 stop', (done) => {
       let thenCalled = false;
 
-      const stopable = new StopablePromise((resolve) => resolve(wait(100)))
+      const stopable = new Stopable((resolve) => resolve(wait(100)))
         .then(() => {
           thenCalled = true;
           return wait(200);
         })
         .then(() => assert(false));
-      assert(stopable instanceof StopablePromise);
+      assert(stopable instanceof Stopable);
       wait(200).then(() => stopable.stop());
       wait(400).then(() => {
         // 确认 .then 中的内容确实被执行了
@@ -213,7 +224,7 @@ describe('promise', () => {
 
     it('从最后 stop 能够阻止', (done) => {
       let step = 1;
-      const stopable = new StopablePromise(wait(100));
+      const stopable = new Stopable(wait(100));
       const stopable2 = stopable.then(() => {
         step++;
         return wait(200);
@@ -235,10 +246,10 @@ describe('promise', () => {
 
     it('stop 前置能够阻止后续', (done) => {
       let step = 1;
-      const stopable = new StopablePromise(wait(100));
+      const stopable = new Stopable(wait(100));
       const stopable2 = stopable.then(() => {
         step++;
-        return wait(200);
+        return wait(200).then(() => assert(false));
       });
       stopable2.then(() => {
         step++;
@@ -257,7 +268,7 @@ describe('promise', () => {
 
     it('若已经结束则无法阻止后续', (done) => {
       let step = 1;
-      const stopable = new StopablePromise(wait(100));
+      const stopable = new Stopable(wait(100));
       const stopable2 = stopable.then(() => {
         step++;
         return wait(200);
@@ -273,6 +284,23 @@ describe('promise', () => {
       });
       wait(400).then(() => {
         assert(step === 3);
+        done();
+      });
+    });
+
+    it('能够停止 async 函数', (done) => {
+      let run = false;
+      async function sample() {
+        await wait(100);
+        run = true;
+        await wait(100);
+        assert(false);
+      }
+
+      const stopable = new Stopable(sample());
+      wait(150).then(() => stopable.stop());
+      wait(300).then(() => {
+        assert(run === true);
         done();
       });
     });

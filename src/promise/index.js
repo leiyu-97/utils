@@ -1,7 +1,7 @@
 const utils = require('./utils');
-const StopablePromise = require('./stopablePromise');
+const Stopable = require('./stopable');
 
 module.exports = {
   ...utils,
-  StopablePromise,
+  Stopable,
 };
