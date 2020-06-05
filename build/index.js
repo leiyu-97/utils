@@ -134,6 +134,5 @@ async function main(entry) {
   }
 }
 
-// const entry = process.argv.slice(2);
-const entry = ['promise'];
+const entry = process.argv.slice(2);
 main(entry);
