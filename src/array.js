@@ -104,10 +104,18 @@ const classify = (array, keys) => {
  */
 const deepFlatten = array => [].concat(...array.map( v => (Array.isArray(v) ? deepFlatten(v) : v)));
 
+/**
+ * @summary 数组取交集
+ * @param {Array} array 第一个数组 
+ * @param {Array} other 第二个数组
+ */
+const unite = (array, other)  => array.filter(v => other.includes(v));
+
 module.exports = {
   paging,
   sort,
   shallowEqual,
   classify,
-  deepFlatten
+  deepFlatten,
+  unite
 };

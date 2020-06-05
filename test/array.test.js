@@ -1,6 +1,6 @@
 const assert = require('assert');
 const {
-  paging, shallowEqual, sort, classify, deepFlatten
+  paging, shallowEqual, sort, classify,deepFlatten,unite
 } = require('../src/array');
 
 describe('array', () => {
@@ -88,6 +88,15 @@ describe('array', () => {
     it('多维转一维', () => {
       const result = deepFlatten(data);
       assert(result.length === 10);
+    });
+  });
+
+  describe('unite', () => {
+    const data = [1, 2, 3, 4, 5]
+    const other = [3, 4, 5, 6, 7]
+    it('数组取交集', () => {
+      const result = unite(data, other);
+      assert(result.length === 3);
     });
   });
 });
