@@ -199,7 +199,7 @@ describe('promise', () => {
       const start = Date.now();
       new Stopable((resolve) => resolve(wait(100))).then(() => {
         // 确认是否真的等到 wait 结束才 resolve
-        assert(Date.now() - start > 100);
+        assert(Date.now() - start >= 100);
         done();
       });
     });
@@ -295,11 +295,13 @@ describe('promise', () => {
         run = true;
         await wait(100);
         assert(false);
+        await wait(100);
+        assert(false);
       }
 
       const stopable = new Stopable(sample());
       wait(150).then(() => stopable.stop());
-      wait(300).then(() => {
+      wait(400).then(() => {
         assert(run === true);
         done();
       });
