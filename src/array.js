@@ -98,9 +98,16 @@ const classify = (array, keys) => {
   return result;
 };
 
+/**
+ * @summary 多维数组转一维数组
+ * @param {Array} array 多维数组 
+ */
+const deepFlatten = array => [].concat(...array.map( v => (Array.isArray(v) ? deepFlatten(v) : v)));
+
 module.exports = {
   paging,
   sort,
   shallowEqual,
   classify,
+  deepFlatten
 };

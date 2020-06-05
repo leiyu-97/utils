@@ -1,6 +1,6 @@
 const assert = require('assert');
 const {
-  paging, shallowEqual, sort, classify,
+  paging, shallowEqual, sort, classify, deepFlatten
 } = require('../src/array');
 
 describe('array', () => {
@@ -79,6 +79,15 @@ describe('array', () => {
     it('多分类条件', () => {
       const result = classify(data, ['gender', ({ age }) => (age < 18 ? 'minor' : 'major')]);
       assert(result.length === 5);
+    });
+  });
+
+  describe('deepFlatten', () => {
+    const data = [1, [2, [3]], [4, 5], [6, 7, 8], 9, [10]];
+    // const flattenData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    it('多维转一维', () => {
+      const result = deepFlatten(data);
+      assert(result.length === 10);
     });
   });
 });
