@@ -136,9 +136,7 @@ describe('promise', () => {
     });
 
     it('正常 catch', (done) => {
-      new Stopable((resolve, reject) => setTimeout(reject, 100)).catch(
-        done,
-      );
+      new Stopable((resolve, reject) => setTimeout(reject, 100)).catch(done);
     });
 
     it('正常 stop', (done) => {
@@ -149,16 +147,14 @@ describe('promise', () => {
     });
 
     it('链式调用正常 resolve', (done) => {
-      const stopable = new Stopable((resolve) =>
-        setTimeout(resolve, 100))
+      const stopable = new Stopable((resolve) => setTimeout(resolve, 100))
         .then(() => null)
         .then(done);
       assert(stopable instanceof Stopable);
     });
 
     it('链式调用正常 reject', (done) => {
-      const stopable = new Stopable((resolve) =>
-        setTimeout(resolve, 100))
+      const stopable = new Stopable((resolve) => setTimeout(resolve, 100))
         .catch(() => null)
         .then(() => null)
         .catch(wait(100))
@@ -167,8 +163,7 @@ describe('promise', () => {
     });
 
     it('链式调用正常 stop', (done) => {
-      const stopable = new Stopable((resolve) =>
-        setTimeout(resolve, 100))
+      const stopable = new Stopable((resolve) => setTimeout(resolve, 100))
         .then(() => null)
         .then(() => assert(false));
       stopable.stop();
@@ -189,10 +184,20 @@ describe('promise', () => {
     });
 
     it('resolve promise 对象正常 stop', (done) => {
-      const stopable = new Stopable((resolve) =>
-        resolve(wait(100).then(() => assert(false)))).then(() => assert(false));
-      stopable.stop();
-      wait(200).then(done);
+      const stopable = new Stopable((resolve) => {
+        resolve(wait(200).then(() => assert(false)));
+      })
+        .then(() => assert(false));
+      wait(100).then(() => stopable.stop());
+      wait(300).then(done);
+    });
+
+    it('then 接受 promise 对象正常 stop', (done) => {
+      const stopable = new Stopable((resolve) => resolve())
+        .then(() => wait(200).then(() => assert(false)))
+        .then(() => assert(false));
+      wait(100).then(() => stopable.stop());
+      wait(300).then(done);
     });
 
     it('链式调用中返回 Promise 对象时正常 resolve', (done) => {

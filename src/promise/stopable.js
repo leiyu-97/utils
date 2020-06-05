@@ -28,8 +28,22 @@ class Stopable extends Promise {
 
     // 调用方法
     func(
-      (...param) => (this._stoped ? undefined : _resolve(...param)),
-      (...param) => (this._stoped ? undefined : _reject(...param)),
+      (param) => {
+        if (this._stoped) return undefined;
+        if (param instanceof Promise) {
+          param = new Stopable(param);
+          this._res = param;
+        }
+        return _resolve(param);
+      },
+      (param) => {
+        if (this._stoped) return undefined;
+        if (param instanceof Promise) {
+          param = new Stopable(param);
+          this._rej = param;
+        }
+        return _reject(param);
+      },
     );
   }
 
@@ -43,6 +57,7 @@ class Stopable extends Promise {
     let promise;
 
     const resolve = resCb ? (...param) => {
+      if (promise._stoped) return new Promise(() => {});
       let result = resCb(...param);
       if (result instanceof Promise) {
         result = new Stopable(result);
@@ -52,6 +67,7 @@ class Stopable extends Promise {
     } : undefined;
 
     const reject = rejCb ? (...param) => {
+      if (promise._stoped) return new Promise(() => {});
       let result = rejCb(...param);
       if (result instanceof Promise) {
         result = new Stopable(result);
@@ -60,6 +76,10 @@ class Stopable extends Promise {
       return result;
     } : undefined;
 
+    // Promise.prototype.then 会取出 this 的 constructor
+    // 然后使用这个 constructor 来新建 Promise 对象
+    // 因此这里的 promise 也是 Stopable 类型
+    // https://tc39.es/ecma262/#sec-promise.prototype.then
     promise = super.then.call(this, resolve, reject);
     promise._prev = this;
     return promise;
@@ -99,7 +119,7 @@ class Stopable extends Promise {
   }
 
   static wrap(promise) {
-    return new Stopable(promise.then.bind(promise));
+    return new Stopable(Promise.prototype.then.bind(promise));
   }
 }
 
