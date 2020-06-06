@@ -296,7 +296,16 @@ function parseColor(color) {
   throw new Error(`非法的颜色值: ${color}`);
 }
 
+/**
+ * @summary rgb 转 16进制 没啥错误处理的
+ * @param {Number} r // 0-255
+ * @param {Number} g // 0-255
+ * @param {Number} b // 0-255
+ */
+const RGBToHex = (r, g, b) => ((r << 16) + (g << 8) + b).toString(16).padStart(6, '0');
+
 module.exports = {
   parseColor,
   namedColors,
+  RGBToHex
 };

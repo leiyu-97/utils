@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { parseColor } = require('../src/color');
+const { parseColor, RGBToHex } = require('../src/color');
 const { shallowEqual } = require('../src/object');
 
 describe('color', () => {
@@ -98,6 +98,10 @@ describe('color', () => {
         blue: 214,
         alpha: 1,
       });
+    });
+
+    it('rgb转16进制', () => {
+      assert(RGBToHex(255, 255, 255), 'ffffff')
     });
   });
 });
