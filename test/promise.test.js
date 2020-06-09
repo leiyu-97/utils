@@ -176,17 +176,13 @@ describe('promise', () => {
     });
 
     it('传入 promise 对象正常 stop', (done) => {
-      const stopable = new Stopable(
-        wait(100).then(() => assert(false)),
-      ).then(() => assert(false));
+      const stopable = new Stopable(wait(100)).then(() => assert(false));
       stopable.stop();
       wait(200).then(done);
     });
 
     it('resolve promise 对象正常 stop', (done) => {
-      const stopable = new Stopable((resolve) => {
-        resolve(wait(200).then(() => assert(false)));
-      })
+      const stopable = new Stopable((resolve) => resolve(wait(200)))
         .then(() => assert(false));
       wait(100).then(() => stopable.stop());
       wait(300).then(done);
@@ -194,7 +190,7 @@ describe('promise', () => {
 
     it('then 接受 promise 对象正常 stop', (done) => {
       const stopable = new Stopable((resolve) => resolve())
-        .then(() => wait(200).then(() => assert(false)))
+        .then(() => wait(200))
         .then(() => assert(false));
       wait(100).then(() => stopable.stop());
       wait(300).then(done);
@@ -289,25 +285,6 @@ describe('promise', () => {
       });
       wait(400).then(() => {
         assert(step === 3);
-        done();
-      });
-    });
-
-    it('能够停止 async 函数', (done) => {
-      let run = false;
-      async function sample() {
-        await wait(100);
-        run = true;
-        await wait(100);
-        assert(false);
-        await wait(100);
-        assert(false);
-      }
-
-      const stopable = new Stopable(sample());
-      wait(150).then(() => stopable.stop());
-      wait(400).then(() => {
-        assert(run === true);
         done();
       });
     });
