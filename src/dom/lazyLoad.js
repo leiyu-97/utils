@@ -3,7 +3,7 @@
  */
 
 /* eslint-env browser */
-const { isParentOf, isElementInView } = require('./utils');
+const { isElementInView } = require('./utils');
 const { debounce } = require('../function');
 
 /**
@@ -15,32 +15,36 @@ const { debounce } = require('../function');
  * @return {Function} 取消监听的函数
  */
 function lazyLoad(options = {}) {
-  const { filter } = Array.prototype;
-  const { debounceTime = 1000, getSrc = (image) => image.dataset.src } = options;
+  const {
+    debounceTime = 1000,
+    getSrc = (image) => image.dataset.src,
+  } = options;
 
-  const handler = (event) => {
-    const images = document.getElementsByTagName('img');
-    let imagesToLoad = filter
-      .call(images, (image) => {
-        const src = getSrc(image);
-        if (!src) return false;
-        return src !== image.src;
-      });
-
-    if (event) {
-      imagesToLoad = imagesToLoad.filter(isParentOf.bind(null, event.target));
-    }
-
-    imagesToLoad
-      .filter(isElementInView)
-      .forEach((image) => { image.src = image.dataset.src; });
+  // 判断元素是否无需懒加载或者已经懒加载
+  const canLoad = (image) => {
+    const src = getSrc(image);
+    if (!src) return false;
+    return src !== image.src;
   };
 
-  const debouncedHandler = debounce(handler, debounceTime);
-  debouncedHandler();
-  window.addEventListener('scroll', debouncedHandler, true);
+  // 加载元素
+  const load = (image) => {
+    image.src = getSrc(image);
+  };
 
-  return () => window.removeEventListener('scroll', debouncedHandler, true);
+  // 激活懒加载扫描
+  const activate = () => {
+    const [...images] = document.getElementsByTagName('img');
+    images.filter(canLoad).filter(isElementInView).forEach(load);
+  };
+
+  // 防抖
+  const onscroll = debounce(activate, debounceTime);
+  // 初次渲染
+  onscroll();
+  // 监听滚动并返回取消监听函数
+  window.addEventListener('scroll', onscroll, true);
+  return () => window.removeEventListener('scroll', onscroll, true);
 }
 
 module.exports = lazyLoad;
