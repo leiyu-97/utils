@@ -56,8 +56,20 @@ function randomStr(length, ...ranges) {
   return result;
 }
 
+/**
+ * @static
+ * @summary 生成任意位数的随机数
+ * @param {Number} digit 
+ * @return {String} 随机数
+ */
+function randomDigit(digit){
+  const  exp10 = Math.pow(10, digit);
+  return Math.floor(Math.random() * exp10).toString().padStart(digit, "0");
+}
+
 module.exports = {
   discontinuousRandom,
   randomChar,
   randomStr,
+  randomDigit
 };
