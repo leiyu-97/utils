@@ -26,6 +26,41 @@ const memorize = (func, options = {}) => {
   };
 };
 
+/**
+ * @static
+ * @summary 函数节流
+ * @param {Function} func 原函数
+ * @param {Number} time 节流时间
+ * @param {Any} context context
+ * @return {Function} 添加了节流后的函数
+ */
+const throttle = (func, time, context = null) => {
+  let releaseTime = 0;
+  return (...params) => {
+    if (Date.now() < releaseTime) return;
+    releaseTime = Date.now() + time;
+    func.call(context, ...params);
+  };
+};
+
+/**
+ * @static
+ * @summary 函数防抖
+ * @param {Function} func 原函数
+ * @param {Number} time 防抖时间
+ * @param {Any} context context
+ * @return {Function} 添加了防抖后的函数
+ */
+const debounce = (func, time, context = null) => {
+  let t;
+  return (...params) => {
+    if (t) clearTimeout(t);
+    t = setTimeout(func.bind(context, ...params), time);
+  };
+};
+
 module.exports = {
   memorize,
+  throttle,
+  debounce,
 };
