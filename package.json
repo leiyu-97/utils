@@ -15,6 +15,8 @@
   "devDependencies": {
     "@babel/parser": "^7.10.1",
     "@babel/traverse": "^7.10.1",
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^8.0.1",
     "coveralls": "^3.0.13",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
@@ -27,7 +29,8 @@
     "mocha": "^7.1.1",
     "nyc": "^15.0.1",
     "power-assert": "^1.6.1",
-    "typescript": "^3.8.3"
+    "puppeteer": "^4.0.0",
+    "rollup": "^2.17.0"
   },
   "dependencies": {
     "duplexer3": "^0.1.4"
