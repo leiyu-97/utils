@@ -102,6 +102,26 @@ describe('function', () => {
       assert(sumArray([[[1, 2], [1, 1]], [1, 1]]) === 17);
     });
 
+    it('存在非 yield recursor 调用的情况', () => {
+      let result = 0;
+      /* eslint-disable */
+      function* sumArrayInner(recursor, arr) {
+        if (typeof arr === 'number') {
+          result += arr;
+          return arr;
+        }
+
+        const a = yield recursor(arr[0]);
+        recursor(arr[1]);
+        return a;
+      }
+      /* eslint-enable */
+
+      const sumArray = recurToIter(sumArrayInner);
+      assert(sumArray([[[2, 1], [1, 1]], [1, 1]]) === 2);
+      assert(result === 7);
+    });
+
     it('不定次 yield 的情况', () => {
       function* sumArrayInner(recursor, arr) {
         if (typeof arr === 'number') {
