@@ -47,6 +47,9 @@ describe('function', () => {
     });
 
     it('减少了调用栈', () => {
+      const temp = Error.stackTraceLimit;
+      Error.stackTraceLimit = Infinity;
+
       function* accumulateInner(recursor, i) {
         if (!i) {
           const error = new Error();
@@ -59,6 +62,7 @@ describe('function', () => {
       const accumulate = recurToIter(accumulateInner);
 
       accumulate(1000);
+      Error.stackTraceLimit = temp;
     });
 
     it('多次 yield 的情况', () => {
