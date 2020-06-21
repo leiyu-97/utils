@@ -16,7 +16,8 @@ module.exports = {
     "implicit-arrow-linebreak": 0,
     "valid-jsdoc": 2,
     "no-underscore-dangle": 0,
-    "no-bitwise": 0
+    "no-bitwise": 0,
+    "no-constant-condition": 0
   },
   env: {
     node: true,

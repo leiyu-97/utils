@@ -1,6 +1,5 @@
 const assert = require('assert');
 const stream = require('stream');
-const { repeat } = require('../src/string');
 const { readAll } = require('../src/stream');
 
 class TestReadable extends stream.Readable {
@@ -26,7 +25,7 @@ class TestReadable extends stream.Readable {
 describe('stream', () => {
   describe('readAll', () => {
     it('正常工作', (done) => {
-      const testReadable = new TestReadable(repeat('0', 100000));
+      const testReadable = new TestReadable('0'.repeat(100000));
       readAll(testReadable).then((data) => {
         assert(data instanceof Buffer);
         assert(data.toString().length === 100000);

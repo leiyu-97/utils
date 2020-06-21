@@ -12,7 +12,7 @@
 function repeat(func, times) {
   const result = [];
   for (let index = 0; index < times; index++) {
-    result.push(func());
+    result.push(func(index));
   }
   return result;
 }
