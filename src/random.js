@@ -9,6 +9,7 @@
  */
 
 const { NUMBER, LOWERCASE, UPPERCASE } = require('./charCodes');
+const { repeat } = require('./base');
 
 /**
  * @static
@@ -49,27 +50,22 @@ function randomChar(...ranges) {
  */
 function randomStr(length, ...ranges) {
   if (!ranges[0]) ranges = [NUMBER, UPPERCASE, LOWERCASE];
-  let result = '';
-  for (let cur = 0; cur < length; cur++) {
-    result += randomChar(...ranges);
-  }
-  return result;
+  return repeat(() => randomChar(...ranges), length).join('');
 }
 
 /**
  * @static
  * @summary 生成任意位数的随机数
- * @param {Number} digit 
+ * @param {Number} length 位数
  * @return {String} 随机数
  */
-function randomDigit(digit){
-  const  exp10 = Math.pow(10, digit);
-  return Math.floor(Math.random() * exp10).toString().padStart(digit, "0");
+function randomDigit(length) {
+  return randomStr(length, NUMBER);
 }
 
 module.exports = {
   discontinuousRandom,
   randomChar,
   randomStr,
-  randomDigit
+  randomDigit,
 };
