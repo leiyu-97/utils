@@ -30,7 +30,7 @@ class MapCache {
   }
 
   /**
-   * @summary 查询缓存
+   * @summary 移除缓存
    * @param {Any} key 缓存主键
    * @return {undefined}
    */
