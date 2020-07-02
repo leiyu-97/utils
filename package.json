@@ -6,8 +6,8 @@
   "scripts": {
     "doc": "jsdoc -c .jsdocrc",
     "build": "node build/index.js",
-    "test": "mocha --require intelli-espower-loader",
-    "testReport": "nyc --reporter=html --reporter=text mocha --require intelli-espower-loader test",
+    "test": "mocha --require intelli-espower-loader --recursive",
+    "testReport": "nyc --reporter=html --reporter=text mocha --require intelli-espower-loader --recursive test",
     "coveralls": "npm run testReport && nyc report --reporter=text-lcov | coveralls"
   },
   "author": "",
