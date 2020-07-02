@@ -9,14 +9,14 @@
  * @param  {String[]} keys 键名数组
  * @return {Any} 属性值
  */
-const optionalGet = (obj, [...keys]) => {
+function optionalGet(obj, [...keys]) {
   let result = obj;
   for (let i = 0; i < keys.length && result !== undefined; i++) {
     const key = keys[i];
     result = result[key];
   }
   return result;
-};
+}
 
 /**
  * @static
@@ -26,7 +26,7 @@ const optionalGet = (obj, [...keys]) => {
  * @param {Any} value 设置的值
  * @return {Any} 属性值
  */
-const optionalSet = (obj, [...keys], value) => {
+function optionalSet(obj, [...keys], value) {
   const lastKey = keys.pop();
 
   keys.reduce((prev, key) => {
@@ -37,7 +37,7 @@ const optionalSet = (obj, [...keys], value) => {
   }, obj)[lastKey] = value;
 
   return value;
-};
+}
 
 /**
  * @static
@@ -46,9 +46,12 @@ const optionalSet = (obj, [...keys], value) => {
  * @param {Object} objB 对象B
  * @return {Boolean} 两对象是否浅层相等
  */
-const shallowEqual = (objA, objB) =>
-  Object.values(objA).length === Object.values(objB).length
-  && Object.entries(objA).every(([key, value]) => objB[key] === value);
+function shallowEqual(objA, objB) {
+  return (
+    Object.values(objA).length === Object.values(objB).length
+    && Object.entries(objA).every(([key, value]) => objB[key] === value)
+  );
+}
 
 /**
  * @static
@@ -56,8 +59,9 @@ const shallowEqual = (objA, objB) =>
  * @param {Array} array 键值对数组
  * @return {Object} 对象
  */
-const unentries = (array) =>
-  array.reduce((prev, [key, value]) => ({ ...prev, [key]: value }), {});
+function unentries(array) {
+  return array.reduce((prev, [key, value]) => ({ ...prev, [key]: value }), {});
+}
 
 module.exports = {
   optionalGet,

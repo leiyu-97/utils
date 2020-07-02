@@ -26,7 +26,9 @@ function objectValuesToString(obj) {
  * @param {String} flags 正则表达式的 flags
  * @return {RegExp} 正则表达式
  */
-const objectToRegExp = (obj, flags) => new RegExp(objectValuesToString(obj), flags);
+function objectToRegExp(obj, flags) {
+  return new RegExp(objectValuesToString(obj), flags);
+}
 
 /**
  * @static
@@ -34,7 +36,9 @@ const objectToRegExp = (obj, flags) => new RegExp(objectValuesToString(obj), fla
  * @param {Object} obj 对象形式的正则表达式
  * @return {Object} obj 首尾限制的对象形式正则表达式
  */
-const exact = (obj) => ({ b: raw`^`, obj, e: raw`$` });
+function exact(obj) {
+  return ({ b: raw`^`, obj, e: raw`$` });
+}
 
 /**
  * @static
@@ -42,7 +46,9 @@ const exact = (obj) => ({ b: raw`^`, obj, e: raw`$` });
  * @param {Object} obj 对象形式的正则表达式
  * @return {Object} obj 首部限制的对象形式正则表达式
  */
-const startsWith = (obj) => ({ b: raw`^`, obj });
+function startsWith(obj) {
+  return ({ b: raw`^`, obj });
+}
 
 /**
  * @static
@@ -50,7 +56,9 @@ const startsWith = (obj) => ({ b: raw`^`, obj });
  * @param {Object} obj 对象形式的正则表达式
  * @return {Object} obj 尾部限制的对象形式正则表达式
  */
-const endsWith = (obj) => ({ obj, e: raw`$` });
+function endsWith(obj) {
+  return ({ obj, e: raw`$` });
+}
 
 module.exports = {
   objectToRegExp,

@@ -16,6 +16,7 @@ function recurToIter(func) {
   const tasks = []; // 递归任务队列
   const results = []; // 结果栈
   const iterators = []; // 正在等待返回的任务栈
+  let context;
 
   // 当用户在没有 yield 关键字的情况下调用 recursor
   // 它的 task 应该被执行，但是它的结果不应该被推入 results 中
@@ -62,15 +63,16 @@ function recurToIter(func) {
     }
   };
 
-  return (...params) => {
+  return function (...params) {
     // 初始化任务
     tasks.push(params);
+    context = this;
 
     while (tasks.length) {
       // 处理 tasks 中的任务，直到处理完成
       while (tasks.length) {
         const task = tasks.pop();
-        const iterator = func(recursor, ...task);
+        const iterator = func.call(context, recursor, ...task);
         next(iterator);
       }
 

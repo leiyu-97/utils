@@ -15,8 +15,9 @@ const DOCUMENT_POSITION_CONTAINED_BY = 16;
  * @param {HTMLElement} parent 父元素
  * @return {Boolean} child 是否为 parent 的子元素
  */
-const isChildOf = (child, parent) =>
-  child.compareDocumentPosition(parent) & DOCUMENT_POSITION_CONTAINS;
+function isChildOf(child, parent) {
+  return child.compareDocumentPosition(parent) & DOCUMENT_POSITION_CONTAINS;
+}
 
 /**
  * @static
@@ -25,8 +26,9 @@ const isChildOf = (child, parent) =>
  * @param {HTMLElement} child 子元素
  * @return {Boolean} parent 是否为 child 的父元素
  */
-const isParentOf = (parent, child) =>
-  parent.compareDocumentPosition(child) & DOCUMENT_POSITION_CONTAINED_BY;
+function isParentOf(parent, child) {
+  return parent.compareDocumentPosition(child) & DOCUMENT_POSITION_CONTAINED_BY;
+}
 
 /**
  * @static
@@ -35,12 +37,12 @@ const isParentOf = (parent, child) =>
  * @param {HTMLElement} endpoint 终点
  * @return {Number} scrollTop
  */
-const getScrollTop = (ele, endpoint = document.documentElement) => {
+function getScrollTop(ele, endpoint = document.documentElement) {
   if (!ele) return 0;
   const parent = ele.parentNode;
   if (parent === endpoint) return parent.scrollTop;
   return parent.scrollTop + getScrollTop(parent, endpoint);
-};
+}
 
 /**
  * @static
@@ -49,12 +51,12 @@ const getScrollTop = (ele, endpoint = document.documentElement) => {
  * @param {HTMLElement} endpoint 终点
  * @return {Number} scrollLeft
  */
-const getScrollLeft = (ele, endpoint = document.documentElement) => {
+function getScrollLeft(ele, endpoint = document.documentElement) {
   if (!ele) return 0;
   const parent = ele.parentNode;
   if (parent === endpoint) return parent.scrollLeft;
   return parent.scrollLeft + getScrollLeft(parent, endpoint);
-};
+}
 
 /**
  * @static
@@ -63,11 +65,11 @@ const getScrollLeft = (ele, endpoint = document.documentElement) => {
  * @param {HTMLElement} endpoint 终点
  * @return {Number} offsetTop
  */
-const getOffsetTop = (ele, endpoint = document.body) => {
+function getOffsetTop(ele, endpoint = document.body) {
   if (!ele) return 0;
   if (ele === endpoint) return 0;
   return ele.offsetTop + getOffsetTop(ele.offsetParent, endpoint);
-};
+}
 
 /**
  * @static
@@ -76,11 +78,11 @@ const getOffsetTop = (ele, endpoint = document.body) => {
  * @param {HTMLElement} endpoint 终点
  * @return {Number} offsetLeft
  */
-const getOffsetLeft = (ele, endpoint = document.body) => {
+function getOffsetLeft(ele, endpoint = document.body) {
   if (!ele) return 0;
   if (ele === endpoint) return 0;
   return ele.offsetLeft + getOffsetLeft(ele.offsetParent, endpoint);
-};
+}
 
 /**
  * @static
@@ -88,13 +90,13 @@ const getOffsetLeft = (ele, endpoint = document.body) => {
  * @param {HTMLElement} ele 元素
  * @return {HTMLElement|Null} 第一个可滚动父元素
  */
-const getScrollParent = (ele) => {
+function getScrollParent(ele) {
   if (!ele) return null;
   const parent = ele.parentNode;
   if (!parent) return null;
   if (parent.scrollHeight > parent.clientHeight) return parent;
   return getScrollParent(parent);
-};
+}
 
 /**
  * @static
@@ -102,7 +104,7 @@ const getScrollParent = (ele) => {
  * @param {HTMLElement} ele 元素
  * @return {Number} offsetLeft
  */
-const isElementInView = (ele) => {
+function isElementInView(ele) {
   const { clientHeight, clientWidth } = document.documentElement;
   const { offsetHeight, offsetWidth } = ele;
 
@@ -126,7 +128,7 @@ const isElementInView = (ele) => {
   const parent = getScrollParent(ele);
   if (!parent) return true;
   return isElementInView(parent);
-};
+}
 
 module.exports = {
   isChildOf,

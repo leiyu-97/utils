@@ -20,7 +20,10 @@ const { repeat } = require('./base');
 function discontinuousRandom(...ranges) {
   const lengths = ranges.map((range) => range[1] - range[0]);
   // 将 lengths 累加成数组
-  const reduceLengths = lengths.reduce((prev, cur) => [...prev, prev[prev.length - 1] + cur], [0]);
+  const reduceLengths = lengths.reduce(
+    (prev, cur) => [...prev, prev[prev.length - 1] + cur],
+    [0],
+  );
   // 长度总和
   const sumLength = reduceLengths[reduceLengths.length - 1];
   // 随机数

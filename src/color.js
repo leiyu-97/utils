@@ -301,11 +301,15 @@ function parseColor(color) {
  * @param {Number} r // 0-255
  * @param {Number} g // 0-255
  * @param {Number} b // 0-255
+ * @return {String} 十六进制颜色代码
  */
-const RGBToHex = (r, g, b) => ((r << 16) + (g << 8) + b).toString(16).padStart(6, '0');
+function RGBToHex(r, g, b) {
+  return ((r << 16) + (g << 8) + b).toString(16).padStart(6, '0');
+}
+
 
 module.exports = {
   parseColor,
   namedColors,
-  RGBToHex
+  RGBToHex,
 };
