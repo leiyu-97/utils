@@ -27,10 +27,12 @@
     "jsdoc-template": "^1.2.0",
     "jsdom": "^16.2.2",
     "mocha": "^7.1.1",
+    "mocha-sinon": "^2.1.2",
     "nyc": "^15.0.1",
     "power-assert": "^1.6.1",
     "puppeteer": "^4.0.0",
-    "rollup": "^2.17.0"
+    "rollup": "^2.17.0",
+    "sinon": "^9.0.2"
   },
   "dependencies": {
     "duplexer3": "^0.1.4"

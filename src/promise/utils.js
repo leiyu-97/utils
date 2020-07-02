@@ -8,7 +8,9 @@
  * @param  {Number} time 等待的毫秒数
  * @return {Promise} Promise
  */
-const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
+function wait(time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
 
 /**
  * @static
@@ -18,44 +20,52 @@ const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
  * @param  {Number} time 重试的间隔毫秒数
  * @return {Function} 带重试的函数
  */
-const retry = (func, times = 1, time = 0) => (...args) => {
-  // 同步函数
-  let result;
-  try {
-    result = func(...args);
-  } catch (e) {
-    if (times > 0) {
-      return wait(time).then(() => retry(func, times - 1, time)(...args));
+function retry(func, times = 1, time = 0) {
+  return function (...args) {
+    // 同步函数
+    let result;
+    try {
+      result = func.call(this, ...args);
+    } catch (e) {
+      if (times > 0) {
+        return wait(time).then(() => retry(func, times - 1, time)(...args));
+      }
+
+      // 重试次数用尽
+      return Promise.reject(e);
     }
 
-    // 重试次数用尽
-    return Promise.reject(e);
-  }
+    // 异步函数
+    if (result instanceof Promise) {
+      if (times > 0) {
+        return result.catch(() =>
+          wait(time).then(() => retry(func, times - 1, time)(...args)));
+      }
 
-  // 异步函数
-  if (result instanceof Promise) {
-    if (times > 0) {
-      return result.catch(() =>
-        wait(time).then(() => retry(func, times - 1, time)(...args)));
+      // 重试次数用尽
+      return result;
     }
 
-    // 重试次数用尽
-    return result;
-  }
-
-  return Promise.resolve(result);
-};
+    return Promise.resolve(result);
+  };
+}
 
 /**
  * @static
  * @summary 为函数设置超时
  * @param {Promise} func 待设置超时的函数
  * @param {Number} time 以毫秒为单位的超时时间
- * @param {Error} [error] 超时时抛出的错误
+ * @param {Error} [err] 超时时抛出的错误
  * @returns {Function} 带超时的函数
  */
-const timeout = (func, time, error = new Error('timeout')) => (...args) =>
-  Promise.race([func(...args), wait(time).then(() => Promise.reject(error))]);
+function timeout(func, time, err = new Error('timeout')) {
+  return function (...args) {
+    return Promise.race([
+      func.call(this, ...args),
+      wait(time).then(() => Promise.reject(err)),
+    ]);
+  };
+}
 
 /**
  * @static
@@ -63,10 +73,10 @@ const timeout = (func, time, error = new Error('timeout')) => (...args) =>
  * @param {Promise[]} array Promise 数组
  * @return {Promise} 当 array 中所有 Promise 状态都转化为 resolved 后 resolve
  */
-const dynamicAll = async (array) => {
+async function dynamicAll(array) {
   let { length } = array;
   let result;
-  while (true) { // eslint-disable-line no-constant-condition
+  while (true) {
     result = await Promise.all(array); // eslint-disable-line no-await-in-loop
     if (array.length === length) {
       break;
@@ -74,7 +84,7 @@ const dynamicAll = async (array) => {
     length = array.length;
   }
   return result;
-};
+}
 
 /* eslint-disable no-console */
 /**
@@ -83,10 +93,10 @@ const dynamicAll = async (array) => {
  * @param {Any} data data
  * @return {Any} data
  */
-const log = (data) => {
+function log(data) {
   console.log(data);
   return data;
-};
+}
 
 /**
  * @static
@@ -94,12 +104,37 @@ const log = (data) => {
  * @param {Any} err err
  * @return {undefined} undefined
  */
-const error = (err) => {
+function error(err) {
   console.error(err);
   throw err;
-};
-
+}
 /* eslint-enable no-console */
+
+/**
+ * @static
+ * @summary 禁止函数并行执行
+ * @param {Function} func 函数
+ * @return {Any} 函数返回结果
+ */
+function noParallel(func) {
+  let pending = false;
+  return function (...param) {
+    if (pending) return undefined;
+    pending = true;
+    const result = func.call(this, ...param);
+
+    if (result instanceof Promise) {
+      result.then(() => {
+        pending = false;
+      });
+      return result;
+    }
+
+    pending = false;
+    return result;
+  };
+}
+
 module.exports = {
   wait,
   retry,
@@ -107,4 +142,5 @@ module.exports = {
   log,
   error,
   dynamicAll,
+  noParallel,
 };
