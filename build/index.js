@@ -110,14 +110,11 @@ async function main(entry) {
         console.error('引用了 src 以外的文件', source);
         return undefined;
       }
-
       const dist = source.replace(sourceDir, distDir);
-
       await mkdir(path.dirname(dist), { recursive: true });
-
       await copyFile(source, dist);
-
       console.log(source.replace(baseDir, ''), '=>', dist.replace(baseDir, ''));
+      return undefined;
     }),
   );
 

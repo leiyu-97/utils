@@ -17,7 +17,8 @@ module.exports = {
     "valid-jsdoc": 2,
     "no-underscore-dangle": 0,
     "no-bitwise": 0,
-    "no-constant-condition": 0
+    "no-constant-condition": 0,
+    "import/no-extraneous-dependencies": [2, {"devDependencies": ["test/**/*", "build/**/*"]}]
   },
   env: {
     node: true,
