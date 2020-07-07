@@ -55,17 +55,33 @@ function shallowEqual(objA, objB) {
 
 /**
  * @static
+ * @summary 将键值对数组转为对象时，传入 reduce 方法中的 reducer
+ * @param {Object|undefined} prev 前一次累计对象
+ * @param {Array} param1 当前键值对
+ * @param {String} param1.0 键
+ * @param {Any} param1.1 值
+ * @return {Object} 累计对象
+ */
+function unentriesReducer(prev, [key, value]) {
+  // 为了 reduce 可以不传入第二个参数而做的兼容
+  if (prev instanceof Array) prev = unentriesReducer({}, prev);
+  return ({ ...prev, [key]: value });
+}
+
+/**
+ * @static
  * @summary 将键值对数组转为对象，Object.entries 的反操作
  * @param {Array} array 键值对数组
  * @return {Object} 对象
  */
 function unentries(array) {
-  return array.reduce((prev, [key, value]) => ({ ...prev, [key]: value }), {});
+  return array.reduce(unentriesReducer);
 }
 
 module.exports = {
   optionalGet,
   optionalSet,
   shallowEqual,
+  unentriesReducer,
   unentries,
 };
