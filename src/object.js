@@ -65,7 +65,8 @@ function shallowEqual(objA, objB) {
 function unentriesReducer(prev, [key, value]) {
   // 为了 reduce 可以不传入第二个参数而做的兼容
   if (prev instanceof Array) prev = unentriesReducer({}, prev);
-  return ({ ...prev, [key]: value });
+  prev[key] = value;
+  return prev;
 }
 
 /**
