@@ -5,10 +5,15 @@
   "main": "index.js",
   "scripts": {
     "doc": "jsdoc -c .jsdocrc",
-    "build": "node build/index.js",
-    "test": "mocha --require intelli-espower-loader --recursive",
-    "testReport": "nyc --reporter=html --reporter=text mocha --require intelli-espower-loader --recursive test",
-    "coveralls": "npm run testReport && nyc report --reporter=text-lcov | coveralls"
+    "build": "node build/build.js",
+    "test:unit": "mocha --require intelli-espower-loader --exclude 'test/dom/**/*.test.js' --recursive",
+    "test:dom": "node build/mocha-puppeteer.js",
+    "test": "npm run test:unit && npm run test:dom",
+    "cover:unit": "nyc --silent --no-clean npm run test:unit",
+    "cover:dom": "nyc --silent --no-clean npm run test:dom",
+    "cover:report": "nyc report --reporter=html --reporter=text --temp-dir .nyc_output",
+    "cover": "npm run cover:unit && npm run cover:dom && npm run cover:report",
+    "coveralls": "npm run cover && nyc report --reporter=text-lcov | coveralls"
   },
   "author": "",
   "license": "ISC",
@@ -32,7 +37,9 @@
     "power-assert": "^1.6.1",
     "puppeteer": "^4.0.0",
     "rollup": "^2.17.0",
-    "sinon": "^9.0.2"
+    "rollup-plugin-istanbul": "^2.0.1",
+    "sinon": "^9.0.2",
+    "uuid": "^8.3.0"
   },
   "dependencies": {
     "duplexer3": "^0.1.4"
