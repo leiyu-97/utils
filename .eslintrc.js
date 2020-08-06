@@ -18,7 +18,7 @@ module.exports = {
     "no-underscore-dangle": 0,
     "no-bitwise": 0,
     "no-constant-condition": 0,
-    "import/no-extraneous-dependencies": [2, {"devDependencies": ["test/**/*", "build/**/*"]}]
+    "import/no-extraneous-dependencies": [2, {"devDependencies": ["test/**/*", "script/**/*"]}]
   },
   env: {
     node: true,

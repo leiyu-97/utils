@@ -6,6 +6,7 @@ const rollup = require('rollup');
 const rollupResolve = require('@rollup/plugin-node-resolve').default;
 const rollupCommonjs = require('@rollup/plugin-commonjs');
 const rollupIstanbul = require('rollup-plugin-istanbul');
+const uuid = require('uuid');
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
@@ -61,7 +62,7 @@ async function runTest(scriptPath, htmlPath, browser) {
 
         if (ableToWriteFile) {
           await writeFile(
-            './.nyc_output/dom-coverage.json',
+            `./.nyc_output/${uuid.v4()}.json`,
             JSON.stringify(coverage),
           );
         }
