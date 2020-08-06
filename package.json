@@ -18,10 +18,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.11.1",
     "@babel/parser": "^7.10.1",
     "@babel/traverse": "^7.10.1",
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-node-resolve": "^8.0.1",
+    "babel-plugin-espower": "^3.0.1",
     "coveralls": "^3.0.13",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",

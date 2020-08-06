@@ -8,3 +8,5 @@ doc
 coverage
 esm
 .vscode
+buildTemp
+

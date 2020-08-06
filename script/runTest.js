@@ -1,20 +1,23 @@
-/* istanbul ignore file */
-const fs = require('fs');
-const { promisify } = require('util');
+const fs = require('fs').promises;
 const path = require('path');
+const babel = require('@babel/core');
 const rollup = require('rollup');
 const rollupResolve = require('@rollup/plugin-node-resolve').default;
 const rollupCommonjs = require('@rollup/plugin-commonjs');
 const rollupIstanbul = require('rollup-plugin-istanbul');
 const uuid = require('uuid');
 
-const mkdir = promisify(fs.mkdir);
-const writeFile = promisify(fs.writeFile);
-
 async function runTest(scriptPath, htmlPath, browser) {
+  // 使用 babel 将测试代码 espowerfy，放到 buildTemp 目录下
+  const result = await babel.transformFileAsync(scriptPath, { plugins: ['babel-plugin-espower'] });
+  const sourceDir = path.dirname(scriptPath);
+  const targetDir = sourceDir.replace(path.resolve(__dirname, '../test'), path.resolve(__dirname, '../buildTemp'));
+  await fs.mkdir(targetDir, { recursive: true });
+  const target = `${targetDir}/${path.basename(scriptPath)}`;
+  await fs.writeFile(target, result.code);
   // 打包测试代码
   const bundle = await rollup.rollup({
-    input: [scriptPath],
+    input: [target],
     onwarn: () => null,
     plugins: [
       rollupResolve(),
@@ -33,7 +36,7 @@ async function runTest(scriptPath, htmlPath, browser) {
 
   const page = await browser.newPage();
   // html
-  const html = fs.readFileSync(htmlPath).toString();
+  const html = (await fs.readFile(htmlPath)).toString();
   await page.setContent(html);
   // 监听输出
   await page.exposeFunction('$consoleLog', console.log);
@@ -53,7 +56,7 @@ async function runTest(scriptPath, htmlPath, browser) {
       if (coverage) {
         let ableToWriteFile = true;
         try {
-          await mkdir('./.nyc_output');
+          await fs.mkdir('./.nyc_output');
         } catch (err) {
           if (err.code !== 'EEXIST') {
             ableToWriteFile = false;
@@ -61,7 +64,7 @@ async function runTest(scriptPath, htmlPath, browser) {
         }
 
         if (ableToWriteFile) {
-          await writeFile(
+          await fs.writeFile(
             `./.nyc_output/${uuid.v4()}.json`,
             JSON.stringify(coverage),
           );

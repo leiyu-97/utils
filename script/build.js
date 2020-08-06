@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const fs = require('fs');
 const { promisify } = require('util');
 const babelParser = require('@babel/parser');
