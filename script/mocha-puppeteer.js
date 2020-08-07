@@ -14,15 +14,10 @@ async function bundleScript(scriptPath, debug) {
     // debug 模式下禁用 espower 和 instrument
     bundle = await rollup.rollup({
       input: [scriptPath],
-      onwarn: () => null,
-      plugins: [
-        rollupResolve(),
-        rollupCommonjs(),
-        process.env.NYC_CONFIG && rollupIstanbul(),
-      ],
+      plugins: [rollupResolve(), rollupCommonjs()],
     });
   } else {
-  // 使用 babel 将测试代码 espowerfy，放到 buildTemp 目录下
+    // 使用 babel 将测试代码 espowerfy，放到 buildTemp 目录下
     const result = await babel.transformFileAsync(scriptPath, {
       plugins: ['babel-plugin-espower'],
     });
@@ -48,12 +43,13 @@ async function bundleScript(scriptPath, debug) {
     });
   }
 
+  // 输出
   const {
     output: [output],
   } = await bundle.generate({
     format: 'iife',
     name: 'dom',
-    globals: { assert: 'assert' },
+    globals: { assert: 'assert', mocha: 'Mocha' },
   });
   const { code } = output;
   return code;
@@ -131,8 +127,7 @@ async function runTest(scriptPath, htmlPath, { browser, debug = false } = {}) {
       content: 'mocha.setup({ ui: "bdd", reporter: "spec", color: true });',
     });
     // 测试代码
-    await page.addScriptTag({ content: code });
-    await page.evaluate(() => { debugger; });
+    await page.addScriptTag({ content: debug ? `debugger;\n${code}` : code });
     // 启动测试
     await page.addScriptTag({
       path: path.resolve(__dirname, './runTest.browser.js'),
