@@ -16,7 +16,7 @@ const DOCUMENT_POSITION_CONTAINED_BY = 16;
  * @return {Boolean} child 是否为 parent 的子元素
  */
 function isChildOf(child, parent) {
-  return child.compareDocumentPosition(parent) & DOCUMENT_POSITION_CONTAINS;
+  return !!(child.compareDocumentPosition(parent) & DOCUMENT_POSITION_CONTAINS);
 }
 
 /**
@@ -27,7 +27,7 @@ function isChildOf(child, parent) {
  * @return {Boolean} parent 是否为 child 的父元素
  */
 function isParentOf(parent, child) {
-  return parent.compareDocumentPosition(child) & DOCUMENT_POSITION_CONTAINED_BY;
+  return !!(parent.compareDocumentPosition(child) & DOCUMENT_POSITION_CONTAINED_BY);
 }
 
 /**
