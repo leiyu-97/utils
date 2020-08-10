@@ -105,9 +105,8 @@ class TestRunner extends EventEmitter {
         ),
       }),
     ]);
-    // 初始化 mocha
     await page.addScriptTag({
-      content: 'mocha.setup({ ui: "bdd", reporter: "spec", color: true });',
+      path: path.resolve(__dirname, './mochaSetup.browser.js'),
     });
     // 初始化测试代码
     const code = await bundleScript(scriptPath, this.debug);
@@ -126,7 +125,9 @@ class TestRunner extends EventEmitter {
     });
   }
 
-  async endTest({ coverage, passed, error }) {
+  async endTest({
+    coverage, passed, error, stats,
+  }) {
     // debug 模式下不结束测试，而是保持浏览器打开
     if (this.debug) {
       return undefined;
@@ -156,7 +157,7 @@ class TestRunner extends EventEmitter {
     // 清除页面或浏览器
     await this.clean();
 
-    this.emit('finish', passed);
+    this.emit('finish', { passed, stats });
     return passed;
   }
 
