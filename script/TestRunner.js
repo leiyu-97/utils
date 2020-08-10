@@ -76,26 +76,35 @@ class TestRunner extends EventEmitter {
     // html
     const html = (await fs.readFile(htmlPath)).toString();
     await page.setContent(html);
+    // 暴露方法
+    await Promise.all([
+      // page 和 browser 方法
+      page.exposeFunction('$execPageCommand', this.execPageCommand.bind(this)),
+      page.exposeFunction('$execBrowserCommand', this.execBrowserCommand.bind(this)),
+      // 控制台输出方法
+      page.exposeFunction('$consoleLog', console.log),
+      page.exposeFunction('$consoleError', console.error),
+      page.exposeFunction('$consoleWarn', console.warn),
+      // 测试结果输出方法
+      page.exposeFunction('$endTest', this.endTest.bind(this)),
+    ]);
     // 监听输出
-    await page.exposeFunction('$consoleLog', console.log);
-    await page.exposeFunction('$consoleError', console.error);
-    await page.exposeFunction('$consoleWarn', console.warn);
     await page.addScriptTag({
       path: path.resolve(__dirname, './mock.browser.js'),
     });
-    // 监听测试结果
-    await page.exposeFunction('$endTest', this.endTest.bind(this));
-    // 引入 mocha
-    await page.addScriptTag({
-      path: path.resolve(__dirname, '../node_modules/mocha/mocha.js'),
-    });
-    // 引入 power-assert
-    await page.addScriptTag({
-      path: path.resolve(
-        __dirname,
-        '../node_modules/power-assert/build/power-assert.js',
-      ),
-    });
+    await Promise.all([
+      // 引入 mocha
+      page.addScriptTag({
+        path: path.resolve(__dirname, '../node_modules/mocha/mocha.js'),
+      }),
+      // 引入 power-assert
+      page.addScriptTag({
+        path: path.resolve(
+          __dirname,
+          '../node_modules/power-assert/build/power-assert.js',
+        ),
+      }),
+    ]);
     // 初始化 mocha
     await page.addScriptTag({
       content: 'mocha.setup({ ui: "bdd", reporter: "spec", color: true });',
@@ -158,6 +167,14 @@ class TestRunner extends EventEmitter {
     if (this.ownBrowser) {
       await this.ownBrowser.close();
     }
+  }
+
+  async execPageCommand({ name, args }) {
+    return this.page[name](...args);
+  }
+
+  async execBrowserCommand({ name, args }) {
+    return this.browser[name](...args);
   }
 }
 
