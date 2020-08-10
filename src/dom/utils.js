@@ -60,28 +60,53 @@ function getScrollLeft(ele, endpoint = document.documentElement) {
 
 /**
  * @static
- * @summary 获取元素的总 offsetTop
- * @param {HTMLElement} ele 元素
- * @param {HTMLElement} endpoint 终点
- * @return {Number} offsetTop
+ * @summary 获取多个元素最低的共同父元素
+ * @param  {...HTMLElement} eles 元素
+ * @return {HTMLElement} 最低共同父元素
  */
-function getOffsetTop(ele, endpoint = document.body) {
-  if (!ele) return 0;
-  if (ele === endpoint) return 0;
-  return ele.offsetTop + getOffsetTop(ele.offsetParent, endpoint);
+function getCommonParent(...eles) {
+  const [ele, ...others] = eles;
+  let parent = ele;
+  const isChildOfParent = (child) => isChildOf(child, parent);
+  while (parent) {
+    if (others.every(isChildOfParent)) return parent;
+    parent = ele.parentNode;
+  }
+  return null;
 }
 
 /**
  * @static
- * @summary 获取元素的总 offsetLeft
- * @param {HTMLElement} ele 元素
- * @param {HTMLElement} endpoint 终点
+ * @summary 获取元素的相对于另一元素的 offsetTop
+ * @param {HTMLElement} a 元素 a
+ * @param {HTMLElement} b 元素 b
+ * @return {Number} offsetTop
+ */
+function getOffsetTop(a, b = document.body) {
+  if (isChildOf(a, b)) {
+    if (a.offsetParent === b) return a.offsetTop;
+    if (a.offsetParent === b.offsetParent) return a.offsetTop - b.offsetTop;
+    return a.offsetTop + getOffsetTop(a.offsetParent, b);
+  }
+  const parent = getCommonParent(b, a);
+  return getOffsetTop(a, parent) - getOffsetTop(b, parent);
+}
+
+/**
+ * @static
+ * @summary 获取元素的相对于另一元素的 offsetLeft
+ * @param {HTMLElement} a 元素 a
+ * @param {HTMLElement} b 元素 b
  * @return {Number} offsetLeft
  */
-function getOffsetLeft(ele, endpoint = document.body) {
-  if (!ele) return 0;
-  if (ele === endpoint) return 0;
-  return ele.offsetLeft + getOffsetLeft(ele.offsetParent, endpoint);
+function getOffsetLeft(a, b = document.body) {
+  if (isChildOf(a, b)) {
+    if (a.offsetParent === b) return a.offsetLeft;
+    if (a.offsetParent === b.offsetParent) return a.offsetLeft - b.offsetLeft;
+    return a.offsetLeft + getOffsetLeft(a.offsetParent, b);
+  }
+  const parent = getCommonParent(b, a);
+  return getOffsetLeft(a, parent) - getOffsetLeft(b, parent);
 }
 
 /**
@@ -102,32 +127,36 @@ function getScrollParent(ele) {
  * @static
  * @summary 判断元素是否在视口内
  * @param {HTMLElement} ele 元素
- * @return {Number} offsetLeft
+ * @param {HTMLElement} endpoint 终点
+ * @return {Boolean} 元素是否在视口内
  */
-function isElementInView(ele) {
-  const { clientHeight, clientWidth } = document.documentElement;
+function isElementInView(ele, endpoint = document.documentElement) {
   const { offsetHeight, offsetWidth } = ele;
+  let parent = ele;
 
-  // 判断纵向是否在视口内
-  const clientTopMin = getScrollTop(ele);
-  const clientTopMax = clientTopMin + clientHeight;
-  const eleTopMin = getOffsetTop(ele);
-  const eleTopMax = eleTopMin + offsetHeight;
-  const isHeightInView = eleTopMax > clientTopMin && eleTopMin < clientTopMax;
-  if (!isHeightInView) return false;
+  while (true) {
+    // 向上寻找第一个可滚动元素
+    parent = getScrollParent(parent);
+    if (!parent || isParentOf(parent, endpoint)) return true;
 
-  // 判断横向是否在视口内
-  const clientLeftMin = getScrollLeft(ele);
-  const clientLeftMax = clientLeftMin + clientWidth;
-  const eleLeftMin = getOffsetLeft(ele);
-  const eleLeftMax = eleLeftMin + offsetWidth;
-  const isWidthInView = eleLeftMax > clientLeftMin && eleLeftMin < clientLeftMax;
-  if (!isWidthInView) return false;
+    const { offsetHeight: clientHeight, offsetWidth: clientWidth } = parent;
 
-  // 判断父窗口是否在视口内
-  const parent = getScrollParent(ele);
-  if (!parent) return true;
-  return isElementInView(parent);
+    // 判断纵向是否在该元素视口内
+    const clientTopMin = getScrollTop(ele, parent);
+    const clientTopMax = clientTopMin + clientHeight;
+    const eleTopMin = getOffsetTop(ele, parent);
+    const eleTopMax = eleTopMin + offsetHeight;
+    const isHeightInView = eleTopMax > clientTopMin && eleTopMin < clientTopMax;
+    if (!isHeightInView) return false;
+
+    // 判断横向是否在该元素视口内
+    const clientLeftMin = getScrollLeft(ele, parent);
+    const clientLeftMax = clientLeftMin + clientWidth;
+    const eleLeftMin = getOffsetLeft(ele, parent);
+    const eleLeftMax = eleLeftMin + offsetWidth;
+    const isWidthInView = eleLeftMax > clientLeftMin && eleLeftMin < clientLeftMax;
+    if (!isWidthInView) return false;
+  }
 }
 
 module.exports = {
@@ -139,4 +168,5 @@ module.exports = {
   getScrollLeft,
   getOffsetLeft,
   isElementInView,
+  getCommonParent,
 };

@@ -25,7 +25,7 @@ describe('dom', () => {
       div3.style.left = 0;
     });
 
-    it('endpoint', () => {
+    it('相对与其他元素', () => {
       div1.style.left = 500;
       div2.style.left = 400;
       div3.style.left = 300;
@@ -53,7 +53,7 @@ describe('dom', () => {
       div3.style.top = 0;
     });
 
-    it('endpoint', () => {
+    it('相对于其他元素', () => {
       div1.style.top = 500;
       div2.style.top = 400;
       div3.style.top = 300;
