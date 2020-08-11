@@ -4,6 +4,9 @@ const qs = require('../src/querystring');
 
 describe('path', () => {
   describe('parse', () => {
+    it('匹配失败时返回 null', () => {
+      assert(parse('https://www.google.com/ ?foo=bar') === null);
+    });
     it('协议正确', () => {
       assert(parse('127.0.0.1').protocol === undefined);
       assert(parse('http://127.0.0.1').protocol === 'http');

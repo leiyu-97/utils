@@ -74,6 +74,8 @@ const urlRegExp = objectToRegExp(exact(urlReg));
  * @return {String} urlObj.hash hash
  */
 function parse(url) {
+  const matchResult = url.match(urlRegExp);
+  if (!matchResult) return null;
   const [
     href,
     protocol,
@@ -88,7 +90,7 @@ function parse(url) {
     search,
     query,
     hash,
-  ] = url.match(urlRegExp);
+  ] = matchResult;
   return {
     href,
     protocol,
