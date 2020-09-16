@@ -1,8 +1,6 @@
 /**
  * @module color
  */
-
-const fs = require('fs');
 const { objectToRegExp, exact } = require('./regexp');
 
 const { raw } = String;
@@ -306,7 +304,6 @@ function parseColor(color) {
 function RGBToHex(r, g, b) {
   return ((r << 16) + (g << 8) + b).toString(16).padStart(6, '0');
 }
-
 
 module.exports = {
   parseColor,
