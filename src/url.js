@@ -53,141 +53,161 @@ const urlReg = {
 };
 
 const urlRegExp = objectToRegExp(exact(urlReg));
+const authRegExp = objectToRegExp(
+  exact([urlReg.oAuth.username, urlReg.oAuth.oPassword]),
+);
+const hostRegExp = objectToRegExp(exact(urlReg.wHost));
+const pathRegExp = objectToRegExp(exact(urlReg.oPath));
+const originRegExp = objectToRegExp(exact([urlReg.oProtocol, urlReg.wHost]));
 
-/**
- * @static
- * @summary 解析 url
- * @param {String} url 待解析的 url
- * @return {Object} urlObj
- * @return {String} urlObj.href url
- * @return {String} urlObj.protocol 协议
- * @return {String} urlObj.auth 鉴权部分
- * @return {String} urlObj.username 用户名
- * @return {String} urlObj.password 密码
- * @return {String} urlObj.host 主机
- * @return {String} urlObj.hostname 域名
- * @return {String} urlObj.port 端口
- * @return {String} urlObj.path 路径（包括查询字符串）
- * @return {String} urlObj.pathname 路径（不包括查询字符串）
- * @return {String} urlObj.search 序列化查询部分
- * @return {String} urlObj.query 查询字符串
- * @return {String} urlObj.hash hash
- */
-function parse(url) {
-  const matchResult = url.match(urlRegExp);
-  if (!matchResult) return null;
-  const [
-    href,
-    protocol,
-    auth,
-    username,
-    password,
-    host,
-    hostname,
-    port,
-    path,
-    pathname,
-    search,
-    query,
-    hash,
-  ] = matchResult;
-  return {
-    href,
-    protocol,
-    auth,
-    username,
-    password,
-    host,
-    hostname,
-    port,
-    path,
-    pathname,
-    search,
-    query,
-    hash,
-    origin: protocol ? `${protocol}://${host}` : host,
-  };
-}
-
-function stringify({
-  protocol,
-  username,
-  password,
-  hostname,
-  port,
-  pathname,
-  query,
-  hash,
-}) {
-  let url = '';
-
-  if (protocol) {
-    url += `${protocol}://`;
-  }
-
-  if (username) {
-    url += username;
-    if (password) {
-      url += `:${password}`;
+class Url {
+  /**
+   * @param {String} str 原始 url 字符串
+   */
+  constructor(str) {
+    const matchResult = str.match(urlRegExp);
+    if (!matchResult) {
+      throw new Error(`"${str}" is not a valid url`);
     }
-    url += '@';
+    /* eslint-disable no-unused-vars */
+    const [
+      href,
+      protocol,
+      auth,
+      username,
+      password,
+      host,
+      hostname,
+      port,
+      path,
+      pathname,
+      search,
+      query,
+      hash,
+    ] = matchResult;
+    /* eslint-enable no-unused-vars */
+    Object.assign(this, {
+      protocol,
+      username,
+      password,
+      hostname,
+      port,
+      pathname,
+      query,
+      hash,
+    });
   }
 
-  url += hostname;
-
-  if (port) {
-    url += `:${port}`;
+  get query() {
+    const { queryObj } = this;
+    return queryObj ? qs.stringify(this.queryObj) : undefined;
   }
 
-  if (pathname) {
-    url += pathname;
+  set query(str) {
+    this.queryObj = str ? qs.parse(str) : null;
   }
 
-  if (query) {
-    url += `?${query}`;
+  get auth() {
+    const { username, password } = this;
+    let res = '';
+    if (username) {
+      res += username;
+      if (password) {
+        res += `:${password}`;
+      }
+    }
+    return res || undefined;
   }
 
-  if (hash) {
-    url += `#${hash}`;
+  set auth(str) {
+    const matchResult = str.match(authRegExp);
+    if (!matchResult) {
+      throw new Error(`"${str}" is not a valid auth`);
+    }
+    const [, username, password] = matchResult;
+    this.username = username;
+    this.password = password;
   }
 
-  return url;
+  get host() {
+    const { hostname, port } = this;
+    return port ? `${hostname}:${port}` : hostname;
+  }
+
+  set host(str) {
+    const matchResult = str.match(hostRegExp);
+    if (!matchResult) {
+      throw new Error(`"${str}" is not a valid host`);
+    }
+    const [, , hostname, port] = matchResult;
+    this.hostname = hostname;
+    this.port = port;
+  }
+
+  get path() {
+    const { pathname, query } = this;
+    let result = pathname;
+
+    if (query) {
+      result += `?${query}`;
+    }
+
+    return result;
+  }
+
+  set path(str) {
+    const matchResult = str.match(pathRegExp);
+    if (!matchResult) {
+      throw new Error(`"${str}" is not a valid path`);
+    }
+    const [, , pathname, , query] = matchResult;
+    this.pathname = pathname;
+    this.query = query;
+  }
+
+  get origin() {
+    const { host, protocol } = this;
+    return protocol ? `${protocol}://${host}` : host;
+  }
+
+  set origin(str) {
+    const matchResult = str.match(originRegExp);
+    if (!matchResult) {
+      throw new Error(`"${str}" is not a valid origin`);
+    }
+    const [, protocol, , hostname, port] = matchResult;
+    this.protocol = protocol;
+    this.hostname = hostname;
+    this.port = port;
+  }
+
+  /**
+   * 返回完整的 url 字符串
+   * @return {String} 完整的 url 字符串
+   */
+  toString() {
+    let url = '';
+    const {
+      protocol, auth, host, path, hash,
+    } = this;
+
+    if (protocol) {
+      url += `${protocol}://`;
+    }
+
+    if (auth) {
+      url += `${auth}@`;
+    }
+
+    url += host;
+    url += path;
+
+    if (hash !== undefined) {
+      url += `#${hash}`;
+    }
+
+    return url;
+  }
 }
 
-/**
- * @static
- * @summary 为 url 中的查询字符串添加参数
- * @param {String} url 原始 url
- * @param {Object} param 添加的参数
- * @return {String} 添加参数后的查询字符串
- */
-function addQuery(url, param) {
-  const {
-    protocol,
-    username,
-    password,
-    hostname,
-    port,
-    pathname,
-    query,
-    hash,
-  } = parse(url);
-  const queryObj = qs.parse(query);
-  Object.assign(queryObj, param);
-  const newQuery = qs.stringify(queryObj);
-  return stringify({
-    protocol,
-    username,
-    password,
-    hostname,
-    port,
-    pathname,
-    hash,
-    query: newQuery,
-  });
-}
-
-module.exports = {
-  parse,
-  addQuery,
-};
+module.exports = Url;

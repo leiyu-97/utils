@@ -31,7 +31,7 @@ function stringify(obj) {
       encodeURIComponent(key),
       encodeURIComponent(value),
     ])
-    .map(([key, value]) => `${key}=${value}`)
+    .map(([key, value]) => (value ? `${key}=${value}` : key))
     .join('&');
 }
 
