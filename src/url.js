@@ -1,5 +1,5 @@
 /**
- * @module http
+ * @module url
  */
 const { objectToRegExp, exact } = require('./regexp');
 const qs = require('./querystring');
@@ -60,6 +60,21 @@ const hostRegExp = objectToRegExp(exact(urlReg.wHost));
 const pathRegExp = objectToRegExp(exact(urlReg.oPath));
 const originRegExp = objectToRegExp(exact([urlReg.oProtocol, urlReg.wHost]));
 
+/**
+ * url 对象
+ * @prop {String} protocal 协议
+ * @prop {String} auth 凭证
+ * @prop {String} username 用户名
+ * @prop {String} password 密码
+ * @prop {String} host 域
+ * @prop {String} hostname 域名
+ * @prop {String} port 端口
+ * @prop {String} path 路径
+ * @prop {String} pathname 路径名
+ * @prop {String} query 查询字符串
+ * @prop {String} queryObj 查询字符串对象
+ * @prop {String} hash hash
+ */
 class Url {
   /**
    * @param {String} str 原始 url 字符串
@@ -182,7 +197,7 @@ class Url {
   }
 
   /**
-   * 返回完整的 url 字符串
+   * @summary 返回完整的 url 字符串
    * @return {String} 完整的 url 字符串
    */
   toString() {
