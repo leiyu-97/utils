@@ -6,10 +6,11 @@
   "scripts": {
     "doc": "jsdoc -c .jsdocrc",
     "build": "node script/build.js",
-    "test:unit": "mocha --require intelli-espower-loader --exclude 'test/dom/**/*.test.js' --recursive",
+    "test:unit": "mocha",
     "test:dom": "node script/domTest.js",
-    "debug:dom": "node script/domDebug.js",
     "test": "npm run test:unit && npm run test:dom",
+    "debug:unit": "mocha --inspect-brk",
+    "debug:dom": "node script/domDebug.js",
     "cover:unit": "nyc --silent npm run test:unit",
     "cover:dom": "nyc --silent --no-clean npm run test:dom",
     "cover:report": "nyc report --reporter=html --reporter=text --temp-dir .nyc_output",

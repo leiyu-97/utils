@@ -2,7 +2,7 @@ const assert = require('assert');
 const Url = require('../src/url');
 
 describe('path', () => {
-  describe('(new Url', () => {
+  describe('Url', () => {
     it('解析失败', () => {
       assert.throws(() => new Url('https://www.google.com/ ?foo=bar'));
     });
