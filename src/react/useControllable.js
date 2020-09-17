@@ -15,7 +15,7 @@ import { useState } from 'react';
 export default function useControllable({ value, defaultValue, onChange }) {
   // 组件是否是受控组件
   const controllableState = useState(undefined);
-  const [controllable] = controllableState;
+  let [controllable] = controllableState;
   const [, setControllable] = controllableState;
 
   // 初始化组件的受控状态
@@ -23,8 +23,10 @@ export default function useControllable({ value, defaultValue, onChange }) {
   if (controllable === undefined) {
     if (value === undefined) {
       setControllable(false);
+      controllable = false;
     } else {
       setControllable(true);
+      controllable = true;
     }
   }
 
