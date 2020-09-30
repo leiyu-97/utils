@@ -1,10 +1,15 @@
 /**
- * @module browser
+ * @module dom
  */
 
 /* eslint-env browser */
-const { isElementInView } = require('./dom');
-const { debounce } = require('../function');
+import { isElementInView } from './utils';
+import { debounce } from '../function';
+
+interface lazyLoadOptions {
+  debounceTime?: number;
+  getSrc?: (image: HTMLImageElement) => string
+}
 
 /**
  * @static
@@ -14,28 +19,28 @@ const { debounce } = require('../function');
  * @param {Function} opions.getSrc 获取真实 src 的方法，接受 image 元素作为参数，默认为获取 image.dataset.src
  * @return {Function} 取消监听的函数
  */
-function lazyLoad(options = {}) {
+export default function lazyLoad(options: lazyLoadOptions = {}): () => void {
   const {
     debounceTime = 1000,
     getSrc = (image) => image.dataset.src,
   } = options;
 
   // 判断元素是否无需懒加载或者已经懒加载
-  const canLoad = (image) => {
+  const canLoad = (image: HTMLImageElement): boolean => {
     const src = getSrc(image);
     if (!src) return false;
     return src !== image.src;
   };
 
   // 加载元素
-  const load = (image) => {
+  const load = (image: HTMLImageElement): void => {
     image.src = getSrc(image);
   };
 
   // 激活懒加载扫描
   const activate = () => {
     const [...images] = document.getElementsByTagName('img');
-    images.filter(canLoad).filter(isElementInView).forEach(load);
+    images.filter(canLoad).filter((image) => isElementInView(image)).forEach(load);
   };
 
   // 防抖
@@ -46,5 +51,3 @@ function lazyLoad(options = {}) {
   window.addEventListener('scroll', onscroll, true);
   return () => window.removeEventListener('scroll', onscroll, true);
 }
-
-module.exports = lazyLoad;

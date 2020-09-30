@@ -10,7 +10,7 @@
  * @param {Number} size 分页数
  * @return {Array} 结果数组
  */
-function paging(array, page = 0, size = 15) {
+export function paging<T>(array: T[], page = 0, size = 15): T[] {
   return array.slice(page * size, (page + 1) * size);
 }
 
@@ -22,7 +22,11 @@ function paging(array, page = 0, size = 15) {
  * @param {String} identity 排序字段
  * @return {Array} 结果数组
  */
-function sort(array, order = 'asc', identity) {
+export function sort<T>(
+  array: T[],
+  order: 'asc' | 'desc' = 'asc',
+  identity: string,
+): T[] {
   const coefficient = order === 'desc' ? -1 : 1;
   array = [...array];
 
@@ -43,7 +47,7 @@ function sort(array, order = 'asc', identity) {
  * @param {Array} b 对比数组
  * @return {Array} 结果数组
  */
-function shallowEqual(a, b) {
+export function shallowEqual(a: Array<any>, b: Array<any>): boolean {
   if (a.length !== b.length) return false;
   return a.every((value, index) => value === b[index]);
 }
@@ -57,7 +61,10 @@ function shallowEqual(a, b) {
  * @return {Any[]} result.keys 分类后的数组
  * @return {Any[]} result.items 分类后的数组
  */
-function classify(array, keys) {
+export function classify<T>(
+  array: T[],
+  keys: ((item: T) => string | string)[],
+): { keys: string[]; items: T[] }[] {
   // 如果参数类型不为数组转为单元素数组
   if (!(keys instanceof Array)) {
     keys = [keys];
@@ -65,7 +72,7 @@ function classify(array, keys) {
 
   // 创建获取分类值的方法
   const [key, ...restKeys] = keys;
-  let getValue;
+  let getValue: (item: T) => string;
   if (key instanceof Function) {
     getValue = key;
   } else {
@@ -73,7 +80,7 @@ function classify(array, keys) {
   }
 
   // 分类
-  const map = new Map();
+  const map = new Map<string, T[]>();
 
   array.forEach((item) => {
     const value = getValue(item);
@@ -104,14 +111,17 @@ function classify(array, keys) {
   return result;
 }
 
+type MultiArray<T> = (T | MultiArray<T>)[];
 /**
  * @static
  * @summary 多维数组转一维数组
  * @param {Array} array 多维数组
  * @return {Array} 一维数组
  */
-function deepFlatten(array) {
-  return [].concat(...array.map((v) => (Array.isArray(v) ? deepFlatten(v) : v)));
+export function deepFlatten<T>(array: MultiArray<T>): T[] {
+  return [].concat(
+    ...array.map((v) => (Array.isArray(v) ? deepFlatten(v) : v)),
+  );
 }
 
 /**
@@ -121,15 +131,6 @@ function deepFlatten(array) {
  * @param {Array} other 第二个数组
  * @return {Array} 交集数组
  */
-function unite(array, other) {
+export function unite<T>(array: T[], other: T[]): T[] {
   return array.filter((v) => other.includes(v));
 }
-
-module.exports = {
-  paging,
-  sort,
-  shallowEqual,
-  classify,
-  deepFlatten,
-  unite,
-};

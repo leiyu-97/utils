@@ -1,13 +1,17 @@
 /**
  * @module cache
  */
+import Cache from './Cache';
 
 /**
  * 使用 Map 的缓存
  */
-class MapCache {
+class MapCache<T> extends Cache<T> {
+  private _cache: Map<string, T>;
+
   constructor() {
-    this._cache = new Map();
+    super();
+    this._cache = new Map<string, T>();
   }
 
   /**
@@ -16,7 +20,7 @@ class MapCache {
    * @param {Any} value 缓存值
    * @return {undefined}
    */
-  set(key, value) {
+  public set(key: string, value: T): void {
     this._cache.set(key, value);
   }
 
@@ -25,7 +29,7 @@ class MapCache {
    * @param {Any} key 缓存主键
    * @return {Any} 缓存值
    */
-  get(key) {
+  public get(key: string): T | undefined {
     return this._cache.get(key);
   }
 
@@ -34,7 +38,7 @@ class MapCache {
    * @param {Any} key 缓存主键
    * @return {undefined}
    */
-  remove(key) {
+  public remove(key: string): void {
     this._cache.delete(key);
   }
 
@@ -42,9 +46,9 @@ class MapCache {
    * @summary 清空缓存
    * @return {undefined}
    */
-  clear() {
+  public clear(): void {
     this._cache.clear();
   }
 }
 
-module.exports = MapCache;
+export default MapCache;
