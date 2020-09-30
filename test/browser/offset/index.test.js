@@ -1,6 +1,5 @@
-/* eslint-env browser */
 const assert = require('assert');
-const { getOffsetLeft, getOffsetTop } = require('../../../src/dom/utils');
+const { getOffsetLeft, getOffsetTop } = require('../../../src/browser/dom');
 
 describe('dom', () => {
   const target = document.getElementById('target');

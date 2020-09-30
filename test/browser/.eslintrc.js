@@ -8,5 +8,9 @@ module.exports = {
     ...globals,
     page: true,
     browser: true
+  },
+  env: {
+    ...base.env,
+    browser: true
   }
 }

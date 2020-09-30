@@ -1,9 +1,9 @@
 /**
- * @module dom
+ * @module browser
  */
 
 /* eslint-env browser */
-const { isElementInView } = require('./utils');
+const { isElementInView } = require('./dom');
 const { debounce } = require('../function');
 
 /**

@@ -1,6 +1,5 @@
-/* eslint-env browser */
 const assert = require('assert');
-const { isChildOf, isParentOf } = require('../../../src/dom/utils');
+const { isChildOf, isParentOf } = require('../../../src/browser/dom');
 
 describe('dom', () => {
   describe('isChildOf', () => {

@@ -1,8 +1,6 @@
 /**
- * @module dom
+ * @module browser
  */
-
-/* eslint-env browser */
 if (!document) throw new Error('该文件只能在浏览器环境中使用');
 
 const DOCUMENT_POSITION_CONTAINS = 8;

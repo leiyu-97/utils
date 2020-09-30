@@ -1,10 +1,7 @@
-/* eslint-env browser */
 const assert = require('assert');
-const { isElementInView } = require('../../../src/dom/utils');
+const { isElementInView } = require('../../../src/browser/dom');
 
 window.isElementInView = isElementInView;
-
-const { page } = window;
 
 describe('isElementInView', () => {
   const target = document.getElementById('target');

@@ -49,7 +49,6 @@ async function bundleScript(scriptPath, debug) {
     output: [output],
   } = await bundle.generate({
     format: 'iife',
-    name: 'dom',
     globals: { assert: 'assert', mocha: 'Mocha' },
   });
   const { code } = output;

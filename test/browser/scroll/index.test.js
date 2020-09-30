@@ -1,6 +1,5 @@
-/* eslint-env browser */
 const assert = require('assert');
-const { getScrollLeft, getScrollTop } = require('../../../src/dom/utils');
+const { getScrollLeft, getScrollTop } = require('../../../src/browser/dom');
 
 describe('dom', () => {
   const target = document.getElementById('target');
