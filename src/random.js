@@ -8,7 +8,7 @@
  * @prop {Number} max 最大值，不可等于
  */
 
-const { NUMBER, LOWERCASE, UPPERCASE } = require('./charCodes');
+const { number, lowercase, uppercase } = require('./charCodes');
 const { repeat } = require('./base');
 
 /**
@@ -27,7 +27,7 @@ function discontinuousRandom(...ranges) {
   // 长度总和
   const sumLength = reduceLengths[reduceLengths.length - 1];
   // 随机数
-  const randomNum = Math.floor(Math.random() * sumLength);
+  const randomNum = Math.random() * sumLength;
   // 取得随机数落到的区间
   const rangeIndex = reduceLengths.findIndex((reduceLength) => randomNum < reduceLength) - 1;
   return ranges[rangeIndex][0] + randomNum - reduceLengths[rangeIndex];
@@ -40,8 +40,9 @@ function discontinuousRandom(...ranges) {
  * @return {String} 随机字符
  */
 function randomChar(...ranges) {
-  if (!ranges[0]) ranges = [NUMBER, UPPERCASE, LOWERCASE];
-  return String.fromCharCode(discontinuousRandom(...ranges));
+  if (!ranges[0]) ranges = [number, uppercase, lowercase];
+  const randomRange = ranges.map(([min, max]) => [min, max]);
+  return String.fromCharCode(Math.floor(discontinuousRandom(...randomRange)));
 }
 
 /**
@@ -52,7 +53,7 @@ function randomChar(...ranges) {
  * @return {String} 随机字符串
  */
 function randomStr(length, ...ranges) {
-  if (!ranges[0]) ranges = [NUMBER, UPPERCASE, LOWERCASE];
+  if (!ranges[0]) ranges = [number, uppercase, lowercase];
   return repeat(() => randomChar(...ranges), length).join('');
 }
 
@@ -63,7 +64,7 @@ function randomStr(length, ...ranges) {
  * @return {String} 随机数
  */
 function randomDigit(length) {
-  return randomStr(length, NUMBER);
+  return randomStr(length, number);
 }
 
 module.exports = {
