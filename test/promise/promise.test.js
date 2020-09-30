@@ -9,6 +9,7 @@ const {
   error,
   noParallel,
 } = require('../../src/promise');
+const { slow: defaultSlow } = require('../.mocharc');
 
 describe('promise', () => {
   describe('wait', () => {
@@ -16,7 +17,8 @@ describe('promise', () => {
       wait(1).then(done);
     });
 
-    it('等待时间正确', (done) => {
+    it('等待时间正确', function (done) {
+      this.slow(defaultSlow + 100);
       const start = Date.now();
       wait(100)
         .then(() => {
@@ -29,11 +31,13 @@ describe('promise', () => {
   });
 
   describe('timeout', () => {
-    it('应该未超时', (done) => {
+    it('应该未超时', function (done) {
+      this.slow(defaultSlow + 100);
       timeout(wait, 100)(80).then(done).catch(done);
     });
 
-    it('应该超时', (done) => {
+    it('应该超时', function (done) {
+      this.slow(defaultSlow + 100);
       timeout(
         wait,
         80,
@@ -100,7 +104,8 @@ describe('promise', () => {
         .catch(() => done(assert(index === 11)));
     });
 
-    it('等待时间正确', (done) => {
+    it('等待时间正确', function (done) {
+      this.slow(defaultSlow + 100);
       let index = 0;
       const func = () => {
         index++;
@@ -117,7 +122,8 @@ describe('promise', () => {
   });
 
   describe('dynamicAll', () => {
-    it('resolve 时机正确', (done) => {
+    it('resolve 时机正确', function (done) {
+      this.slow(defaultSlow + 200);
       let index = 0;
       const array = [
         wait(100).then(() => {
@@ -170,7 +176,8 @@ describe('promise', () => {
   });
 
   describe('noParallel', () => {
-    it('正常执行', (done) => {
+    it('正常执行', function (done) {
+      this.slow(defaultSlow + 150);
       let index = 0;
       const func = () => wait(100).then(() => index++);
       const noParallelFunc = noParallel(func);
@@ -181,7 +188,8 @@ describe('promise', () => {
       });
     });
 
-    it('没有并行执行', (done) => {
+    it('没有并行执行', function (done) {
+      this.slow(defaultSlow + 150);
       let index = 0;
       const func = () => wait(100).then(() => index++);
       const noParallelFunc = noParallel(func);
@@ -193,7 +201,8 @@ describe('promise', () => {
       });
     });
 
-    it('执行完成后仍然可以执行', (done) => {
+    it('执行完成后仍然可以执行', function (done) {
+      this.slow(defaultSlow + 300);
       let index = 0;
       const func = () => wait(100).then(() => index++);
       const noParallelFunc = noParallel(func);

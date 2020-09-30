@@ -1,5 +1,6 @@
 module.exports = {
+  slow: 75,
   recursive: true,
   require: 'intelli-espower-loader',
-  exclude: ['test/dom/**/*.js', 'test/react/**/*.js']
+  exclude: ['test/browser/**/*.js', 'test/react/**/*.js']
 }

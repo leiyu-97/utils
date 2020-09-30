@@ -1,6 +1,7 @@
 const assert = require('assert');
 const { memorize, throttle, debounce } = require('../../src/function');
 const { wait } = require('../../src/promise');
+const { slow: defaultSlow } = require('../.mocharc');
 
 describe('function', () => {
   describe('memorize', () => {
@@ -42,7 +43,8 @@ describe('function', () => {
       assert(counter === 1);
     });
 
-    it('节流功能正常', async () => {
+    it('节流功能正常', async function () {
+      this.slow(defaultSlow + 200);
       let counter = 0;
       const innerFunc = () => counter++;
       const func = throttle(innerFunc, 50);
@@ -58,7 +60,8 @@ describe('function', () => {
   });
 
   describe('debounce', () => {
-    it('函数调用正常', async () => {
+    it('函数调用正常', async function () {
+      this.slow(defaultSlow + 60);
       let counter = 0;
       const innerFunc = () => counter++;
       const func = debounce(innerFunc, 50);
@@ -67,7 +70,8 @@ describe('function', () => {
       assert(counter === 1);
     });
 
-    it('防抖功能正常', async () => {
+    it('防抖功能正常', async function () {
+      this.slow(defaultSlow + 250);
       let counter = 0;
       const innerFunc = () => counter++;
       const func = debounce(innerFunc, 50);
