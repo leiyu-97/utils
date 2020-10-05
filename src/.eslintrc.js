@@ -1,8 +1,7 @@
-const base = require('../.eslintrc.js');
+const base = require('../../.eslintrc.js');
 const basePlugins = base.plugins || [];
 const baseExtends = base.extends || [];
 const baseRules = base.rules || {};
-const baseEnv = base.env || {};
 
 module.exports = {
   ...base,
@@ -15,9 +14,5 @@ module.exports = {
   rules: {
     ...baseRules,
     "@typescript-eslint/no-explicit-any": [1, { ignoreRestArgs: true }],
-  },
-  env: {
-    mocha: true,
-    node: true
   }
 }

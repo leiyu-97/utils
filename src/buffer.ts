@@ -4,7 +4,7 @@
  * @param {String|Buffer} separator 分隔符
  * @return {Buffer[]} 子 Buffer 数组
  */
-function split(buffer, separator) {
+export function split(buffer, separator) {
   const result = [];
   let cur = 0;
   while (true) {
@@ -18,7 +18,3 @@ function split(buffer, separator) {
   }
   return result;
 }
-
-module.exports = {
-  split,
-};

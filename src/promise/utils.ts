@@ -8,7 +8,7 @@
  * @param  {Number} time 等待的毫秒数
  * @return {Promise} Promise
  */
-function wait(time) {
+export function wait(time: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
@@ -20,15 +20,20 @@ function wait(time) {
  * @param  {Number} time 重试的间隔毫秒数
  * @return {Function} 带重试的函数
  */
-function retry(func, times = 1, time = 0) {
-  return function (...args) {
+export function retry<Param extends any[], Result>(
+  func: (...args: Param) => Result | Promise<Result>,
+  times = 1,
+  time = 0,
+): (...args: Param) => Promise<Result> {
+  return async function (...args: Param): Promise<Result> {
     // 同步函数
-    let result;
+    let result: Result | Promise<Result>;
     try {
       result = func.call(this, ...args);
     } catch (e) {
       if (times > 0) {
-        return wait(time).then(() => retry(func, times - 1, time)(...args));
+        await wait(time);
+        return retry(func, times - 1, time)(...args);
       }
 
       // 重试次数用尽
@@ -38,8 +43,12 @@ function retry(func, times = 1, time = 0) {
     // 异步函数
     if (result instanceof Promise) {
       if (times > 0) {
-        return result.catch(() =>
-          wait(time).then(() => retry(func, times - 1, time)(...args)));
+        try {
+          return result;
+        } catch (e) {
+          await wait(time);
+          return retry(func, times - 1, time)(...args);
+        }
       }
 
       // 重试次数用尽
@@ -58,8 +67,12 @@ function retry(func, times = 1, time = 0) {
  * @param {Error} [err] 超时时抛出的错误
  * @returns {Function} 带超时的函数
  */
-function timeout(func, time, err = new Error('timeout')) {
-  return function (...args) {
+export function timeout<Param extends any[], Result>(
+  func: (...args: Param) => Result,
+  time: number,
+  err = new Error('timeout'),
+) {
+  return function (...args: Param): Promise<Result> {
     return Promise.race([
       func.call(this, ...args),
       wait(time).then(() => Promise.reject(err)),
@@ -73,9 +86,9 @@ function timeout(func, time, err = new Error('timeout')) {
  * @param {Promise[]} array Promise 数组
  * @return {Promise} 当 array 中所有 Promise 状态都转化为 resolved 后 resolve
  */
-async function dynamicAll(array) {
+export async function dynamicAll(array: Promise<any>[]): Promise<any[]> {
   let { length } = array;
-  let result;
+  let result: any[];
   while (true) {
     result = await Promise.all(array); // eslint-disable-line no-await-in-loop
     if (array.length === length) {
@@ -93,7 +106,7 @@ async function dynamicAll(array) {
  * @param {Any} data data
  * @return {Any} data
  */
-function log(data) {
+export function log<T>(data: T): T {
   console.log(data);
   return data;
 }
@@ -104,7 +117,7 @@ function log(data) {
  * @param {Any} err err
  * @return {undefined} undefined
  */
-function error(err) {
+export function error<T>(err: T): never {
   console.error(err);
   throw err;
 }
@@ -116,9 +129,11 @@ function error(err) {
  * @param {Function} func 函数
  * @return {Any} 函数返回结果
  */
-function noParallel(func) {
+export function noParallel<Param extends any[], Result>(
+  func: (...args: Param) => Result | Promise<Result>,
+): (...args: Param) => Promise<Result> {
   let pending = false;
-  return function (...param) {
+  return function (...param: Param): Promise<Result | undefined> {
     if (pending) return undefined;
     pending = true;
     const result = func.call(this, ...param);
@@ -134,13 +149,3 @@ function noParallel(func) {
     return result;
   };
 }
-
-module.exports = {
-  wait,
-  retry,
-  timeout,
-  log,
-  error,
-  dynamicAll,
-  noParallel,
-};

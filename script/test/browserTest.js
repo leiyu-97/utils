@@ -1,7 +1,7 @@
 const path = require('path');
 const TestSetRunner = require('./TestSetRunner');
 
-const { walk } = require('../src/fs');
+const { walk } = require('../utils');
 
 const testFileReg = /.+\.test\.js/;
 function isTestFile(file) {
@@ -12,7 +12,7 @@ function isTestFile(file) {
 async function main(files) {
   // 如果没有传入文件，则主动去搜索文件
   if (files.length === 0) {
-    files = (await walk(path.resolve(__dirname, '../test/browser'))).filter(isTestFile);
+    files = (await walk(path.resolve(__dirname, '../../test/browser'))).filter(isTestFile);
   }
   // 测试
   const runner = new TestSetRunner();

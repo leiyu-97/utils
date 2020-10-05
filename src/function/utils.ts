@@ -1,8 +1,13 @@
 /**
  * @module function
  */
-const MapCache = require('../cache/MapCache');
+import Cache from '../cache/Cache';
+import MapCache from '../cache/MapCache';
 
+interface memorizeOptions<T> {
+  getKey?: (...args: any[]) => string;
+  cache?: Cache<T>;
+}
 /**
  * @static
  * @summary 函数缓存
@@ -12,12 +17,15 @@ const MapCache = require('../cache/MapCache');
  * @param {Object} options.cache 缓存对象
  * @return {Any} 函数结果
  */
-function memorize(func, options = {}) {
-  const { getKey = JSON.stringify, cache = new MapCache() } = options;
+export function memorize<Param extends any[], T>(
+  func: (...args: Param) => T,
+  options: memorizeOptions<T> = {},
+): (...args: Param) => T {
+  const { getKey = JSON.stringify, cache = new MapCache<T>() } = options;
 
   return function (...param) {
-    const key = getKey(...param);
-    let value = cache.get(key);
+    const key: string = getKey(...param);
+    let value: T = cache.get(key);
     if (value === undefined) {
       value = func.call(this, ...param);
       cache.set(key, value);
@@ -26,6 +34,8 @@ function memorize(func, options = {}) {
   };
 }
 
+export const a = 1;
+
 /**
  * @static
  * @summary 函数节流
@@ -33,9 +43,12 @@ function memorize(func, options = {}) {
  * @param {Number} time 节流时间
  * @return {Function} 添加了节流后的函数
  */
-function throttle(func, time) {
+export function throttle<Param extends any[]>(
+  func: (...args: Param) => void,
+  time: number,
+): (...args: Param) => void {
   let releaseTime = 0;
-  return function (...params) {
+  return function (...params: Param): void {
     if (Date.now() < releaseTime) return;
     releaseTime = Date.now() + time;
     func.call(this, ...params);
@@ -49,16 +62,13 @@ function throttle(func, time) {
  * @param {Number} time 防抖时间
  * @return {Function} 添加了防抖后的函数
  */
-function debounce(func, time) {
-  let t;
-  return function (...params) {
+export function debounce<Param extends any[]>(
+  func: (...args: Param) => void,
+  time: number,
+): (...args: Param) => void {
+  let t: NodeJS.Timeout;
+  return function (...params: Param) {
     if (t) clearTimeout(t);
     t = setTimeout(func.bind(this, ...params), time);
   };
 }
-
-module.exports = {
-  memorize,
-  throttle,
-  debounce,
-};

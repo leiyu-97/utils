@@ -9,14 +9,10 @@
  * @param {Number} times 执行次数
  * @return {Array} 执行结果组成的数组
  */
-function repeat(func, times) {
-  const result = [];
+export function repeat<T>(func: () => T, times: number): T[] {
+  const result: T[] = [];
   for (let index = 0; index < times; index++) {
-    result.push(func(index));
+    result.push(func.call(this, index));
   }
   return result;
 }
-
-module.exports = {
-  repeat,
-};
