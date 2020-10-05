@@ -4,7 +4,7 @@ const path = require('path');
 const puppeter = require('puppeteer');
 const Mocha = require('mocha');
 const TestRunner = require('./TestRunner');
-const { unentriesReducer } = require('../src/object');
+const { unentriesReducer } = require('../utils');
 
 class TestSetRunner {
   constructor({ debug } = {}) {

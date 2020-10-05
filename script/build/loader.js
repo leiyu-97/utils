@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const exts = ['.js', '.json'];
+const exts = ['.js', '.ts', '.json', '.jsx', '.tsx'];
 
 function tryFile(requestPath) {
   try {

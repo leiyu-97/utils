@@ -1,11 +1,8 @@
 const path = require("path");
 
 module.exports = {
-  parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
   extends: [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
     "airbnb-base",
   ],
   rules: {
@@ -26,7 +23,7 @@ module.exports = {
     "import/prefer-default-export": 0,
     "import/no-extraneous-dependencies": [
       2,
-      { devDependencies: ["test/**/*", "script/**/*"] },
+      { devDependencies: ["test/**/*", "script/**/*", "bin/**/*"] },
     ],
     "import/extensions": [
       "error",
@@ -38,7 +35,6 @@ module.exports = {
         tsx: "never",
       },
     ],
-    "@typescript-eslint/no-explicit-any": [1, { ignoreRestArgs: true }],
   },
   settings: {
     "import/resolver": {

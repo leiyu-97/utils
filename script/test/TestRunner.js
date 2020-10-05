@@ -5,6 +5,7 @@ const rollup = require('rollup');
 const rollupResolve = require('@rollup/plugin-node-resolve').default;
 const rollupCommonjs = require('@rollup/plugin-commonjs');
 const rollupIstanbul = require('rollup-plugin-istanbul');
+const rollupTypescript = require('@rollup/plugin-typescript');
 const puppeteer = require('puppeteer');
 const uuid = require('uuid');
 const { EventEmitter } = require('events');
@@ -20,14 +21,14 @@ async function bundleScript(scriptPath, debug) {
   } else {
     // 使用 babel 将测试代码 espowerfy，放到 buildTemp 目录下
     const result = await babel.transformFileAsync(scriptPath, {
-      plugins: ['babel-plugin-espower'],
+      plugins: ['@babel/plugin-transform-typescript', 'babel-plugin-espower'],
     });
     const sourceDir = path.dirname(scriptPath);
     const targetDir = path
       .resolve(sourceDir)
       .replace(
-        path.resolve(__dirname, '../test'),
-        path.resolve(__dirname, '../buildTemp'),
+        path.resolve(__dirname, '../../test'),
+        path.resolve(__dirname, '../../buildTemp'),
       );
     await fs.mkdir(targetDir, { recursive: true });
     const target = `${targetDir}/${path.basename(scriptPath)}`;
@@ -39,6 +40,7 @@ async function bundleScript(scriptPath, debug) {
       plugins: [
         rollupResolve(),
         rollupCommonjs(),
+        rollupTypescript(),
         process.env.NYC_CONFIG && rollupIstanbul(),
       ],
     });
@@ -94,13 +96,13 @@ class TestRunner extends EventEmitter {
     await Promise.all([
       // 引入 mocha
       page.addScriptTag({
-        path: path.resolve(__dirname, '../node_modules/mocha/mocha.js'),
+        path: path.resolve(__dirname, '../../node_modules/mocha/mocha.js'),
       }),
       // 引入 power-assert
       page.addScriptTag({
         path: path.resolve(
           __dirname,
-          '../node_modules/power-assert/build/power-assert.js',
+          '../../node_modules/power-assert/build/power-assert.js',
         ),
       }),
     ]);
