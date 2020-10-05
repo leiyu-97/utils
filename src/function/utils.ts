@@ -34,6 +34,8 @@ export function memorize<Param extends any[], T>(
   };
 }
 
+export const a = 1;
+
 /**
  * @static
  * @summary 函数节流

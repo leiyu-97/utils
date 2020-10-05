@@ -20,7 +20,7 @@ export default class Stopable<Result> extends Promise<Result> {
    * 传入 Promise 时，将 Promise 转为 Stopable
    */
   constructor(
-    func: ((res: Resolve<Result>, rej: Resolve<Result>) => void) | Promise<any>,
+    func: ((res: Resolve<Result>, rej: Resolve<Result>) => void) | Promise<any>
   ) {
     // 当参数为 promise 对象时改为包裹改 promise 对象
     if (func instanceof Promise) {
@@ -45,7 +45,7 @@ export default class Stopable<Result> extends Promise<Result> {
         if (this._stoped) return undefined;
         if (param instanceof Promise) {
           param = new Stopable(param);
-          this._res = <Stopable<Result>>param;
+          this._res = param as Stopable<Result>;
         }
         return _resolve(param);
       },
@@ -53,10 +53,10 @@ export default class Stopable<Result> extends Promise<Result> {
         if (this._stoped) return undefined;
         if (param instanceof Promise) {
           param = new Stopable(param);
-          this._rej = <Stopable<Result>>param;
+          this._rej = param as Stopable<Result>;
         }
         return _reject(param);
-      },
+      }
     );
   }
 
@@ -68,32 +68,32 @@ export default class Stopable<Result> extends Promise<Result> {
    */
   then<ThenResult1, ThenResult2>(
     resCb: Then<Result, ThenResult1>,
-    rejCb: Then<Result, ThenResult2>,
+    rejCb: Then<Result, ThenResult2>
   ): Stopable<ThenResult1 | ThenResult2> {
     let promise: Stopable<ThenResult1 | ThenResult2>;
 
     const resolve = resCb
       ? (...param: [Result]) => {
-        if (promise._stoped) return new Promise(() => null);
-        let result = resCb(...param);
-        if (result instanceof Promise) {
-          result = new Stopable(result);
-          promise._res = <Stopable<ThenResult1>>result;
+          if (promise._stoped) return new Promise(() => null);
+          let result = resCb(...param);
+          if (result instanceof Promise) {
+            result = new Stopable(result);
+            promise._res = result as Stopable<ThenResult1>;
+          }
+          return result;
         }
-        return result;
-      }
       : undefined;
 
     const reject = rejCb
       ? (...param: [Result]) => {
-        if (promise._stoped) return new Promise(() => null);
-        let result = rejCb(...param);
-        if (result instanceof Promise) {
-          result = new Stopable(result);
-          promise._rej = <Stopable<ThenResult2>>result;
+          if (promise._stoped) return new Promise(() => null);
+          let result = rejCb(...param);
+          if (result instanceof Promise) {
+            result = new Stopable(result);
+            promise._rej = result as Stopable<ThenResult2>;
+          }
+          return result;
         }
-        return result;
-      }
       : undefined;
 
     // Promise.prototype.then 会取出 this 的 constructor
@@ -115,13 +115,13 @@ export default class Stopable<Result> extends Promise<Result> {
 
     const reject = rejCb
       ? (...param: [Result]) => {
-        let result = rejCb(...param);
-        if (result instanceof Promise) {
-          result = new Stopable(result);
-          promise._rej = <Stopable<CatchResult>>result;
+          let result = rejCb(...param);
+          if (result instanceof Promise) {
+            result = new Stopable(result);
+            promise._rej = result as Stopable<CatchResult>;
+          }
+          return result;
         }
-        return result;
-      }
       : undefined;
 
     promise = super.catch.call(this, reject);

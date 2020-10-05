@@ -1,6 +1,6 @@
-const assert = require('assert');
-require('mocha-sinon');
-const {
+import assert from 'assert';
+import 'mocha-sinon';
+import {
   wait,
   timeout,
   retry,
@@ -8,8 +8,8 @@ const {
   log,
   error,
   noParallel,
-} = require('../../src/promise');
-const { slow: defaultSlow } = require('../.mocharc');
+} from '../../src/promise';
+import { slow as defaultSlow } from '../.mocharc';
 
 describe('promise', () => {
   describe('wait', () => {

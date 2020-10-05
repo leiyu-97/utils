@@ -3,7 +3,7 @@
  */
 
 /* eslint-env browser */
-import { isElementInView } from './utils';
+import { isElementInView } from './dom';
 import { debounce } from '../function';
 
 interface lazyLoadOptions {

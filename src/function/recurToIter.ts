@@ -63,12 +63,12 @@ export default function recurToIter<Param extends any[], Result, Context>(
 
       // 内部函数返回了最终结果，将结果推入 results
       if (result.done) {
-        results.push(<Result>result.value);
+        results.push(result.value as Result);
         break;
       }
 
       // 内部函数进行了一次没有意义的 yield，继续 next
-      preResult = <Result>result.value;
+      preResult = result.value as Result;
     }
   };
 

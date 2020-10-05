@@ -1,4 +1,6 @@
-const base = require('../../.eslintrc.js');
+const base = require('../.eslintrc.js');
+const baseExtends = base.extends || [];
+const ruls = base.rules || {};
 
 module.exports = {
   ...base,

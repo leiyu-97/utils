@@ -97,12 +97,12 @@ export function getOffsetTop(
   if (isChildOf(a, b)) {
     if (a.offsetParent === b) return a.offsetTop;
     if (a.offsetParent === b.offsetParent) return a.offsetTop - b.offsetTop;
-    return a.offsetTop + getOffsetTop(<HTMLElement>a.offsetParent, b);
+    return a.offsetTop + getOffsetTop(a.offsetParent as HTMLElement, b);
   }
   if (isChildOf(b, a)) {
     if (b.offsetParent === a) return b.offsetTop;
     if (b.offsetParent === a.offsetParent) return b.offsetTop - a.offsetTop;
-    return b.offsetTop + getOffsetTop(<HTMLElement>b.offsetParent, a);
+    return b.offsetTop + getOffsetTop(b.offsetParent as HTMLElement, a);
   }
   const parent = getCommonParent(a, b);
   return getOffsetTop(a, parent) - getOffsetTop(b, parent);
@@ -122,12 +122,12 @@ export function getOffsetLeft(
   if (isChildOf(a, b)) {
     if (a.offsetParent === b) return a.offsetLeft;
     if (a.offsetParent === b.offsetParent) return a.offsetLeft - b.offsetLeft;
-    return a.offsetLeft + getOffsetLeft(<HTMLElement>a.offsetParent, b);
+    return a.offsetLeft + getOffsetLeft(a.offsetParent as HTMLElement, b);
   }
   if (isChildOf(b, a)) {
     if (b.offsetParent === a) return b.offsetLeft;
     if (b.offsetParent === a.offsetParent) return b.offsetLeft - a.offsetLeft;
-    return b.offsetLeft + getOffsetLeft(<HTMLElement>b.offsetParent, a);
+    return b.offsetLeft + getOffsetLeft(b.offsetParent as HTMLElement, a);
   }
   const parent = getCommonParent(a, b);
   return getOffsetLeft(a, parent) - getOffsetLeft(b, parent);

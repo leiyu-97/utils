@@ -44,7 +44,7 @@ class TimeLimitedCache<T> extends MapCache<
    * @return {Any} 缓存值
    */
   public get(key: string): T | undefined {
-    const result = <TimeLimitedCacheValue<T>> super.get(key);
+    const result =  super.get(key) as TimeLimitedCacheValue<T>;
     if (!result) return undefined;
     const { value, expiresAt } = result;
     if (Date.now() > expiresAt) return undefined;
