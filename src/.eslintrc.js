@@ -1,4 +1,4 @@
-const base = require('../../.eslintrc.js');
+const base = require('../.eslintrc.js');
 const basePlugins = base.plugins || [];
 const baseExtends = base.extends || [];
 const baseRules = base.rules || {};
@@ -8,7 +8,7 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   plugins: [...basePlugins, "@typescript-eslint"],
   extends: [
-    ...baseExtends
+    ...baseExtends,
     "plugin:@typescript-eslint/recommended",
   ],
   rules: {
