@@ -1,12 +1,12 @@
 /**
  * @module function
  */
-import Cache from '../cache/Cache';
+import CustomCache from '../cache/Cache';
 import MapCache from '../cache/MapCache';
 
 interface memorizeOptions<T> {
   getKey?: (...args: any[]) => string;
-  cache?: Cache<T>;
+  cache?: CustomCache<T>;
 }
 /**
  * @static
@@ -66,7 +66,7 @@ export function debounce<Param extends any[]>(
   func: (...args: Param) => void,
   time: number,
 ): (...args: Param) => void {
-  let t: NodeJS.Timeout;
+  let t;
   return function (...params: Param) {
     if (t) clearTimeout(t);
     t = setTimeout(func.bind(this, ...params), time);

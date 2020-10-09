@@ -44,7 +44,7 @@ export function retry<Param extends any[], Result>(
     if (result instanceof Promise) {
       if (times > 0) {
         try {
-          return result;
+          await result;
         } catch (e) {
           await wait(time);
           return retry(func, times - 1, time)(...args);

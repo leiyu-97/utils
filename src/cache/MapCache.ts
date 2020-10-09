@@ -1,12 +1,12 @@
 /**
  * @module cache
  */
-import Cache from './Cache';
+import CustomCache from './Cache';
 
 /**
  * 使用 Map 的缓存
  */
-class MapCache<T> extends Cache<T> {
+class MapCache<T> extends CustomCache<T> {
   private _cache: Map<string, T>;
 
   constructor() {

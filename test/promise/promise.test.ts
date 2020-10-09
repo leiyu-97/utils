@@ -1,5 +1,5 @@
-import assert from 'assert';
-import 'mocha-sinon';
+const assert = require('assert');
+import 'mocha-sinon'
 import {
   wait,
   timeout,
@@ -78,7 +78,7 @@ describe('promise', () => {
         throw new Error();
       };
       retry(func)()
-        .then(() => done(new Error('成功')))
+        .then(() => done(false))
         .catch(() => done());
     });
 
@@ -128,7 +128,9 @@ describe('promise', () => {
       const array = [
         wait(100).then(() => {
           index++;
-          array.push(wait(100).then(() => index++));
+          array.push(wait(100).then(() => {
+            index++
+          }));
         }),
       ];
 
@@ -147,7 +149,7 @@ describe('promise', () => {
     it('数据正常打印', () => {
       Promise.resolve({ foo: 'bar' })
         .then(log)
-        .then(() => assert(console.log.calledOnce));
+        .then(() => assert((console.log as any).calledOnce));
     });
 
     it('对业务无影响', () => {
@@ -165,7 +167,7 @@ describe('promise', () => {
     it('数据正常打印', () => {
       Promise.reject(new Error('foo'))
         .catch(error)
-        .catch(() => assert(console.error.calledOnce));
+        .catch(() => assert((console.error as any).calledOnce));
     });
 
     it('对业务无影响', () => {

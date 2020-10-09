@@ -1,4 +1,4 @@
-abstract class Cache<Value> {
+abstract class CustomCache<Value> {
   abstract get(key: string): Value;
 
   abstract set(key: string, value: Value): void;
@@ -8,4 +8,4 @@ abstract class Cache<Value> {
   abstract clear(): void;
 }
 
-export default Cache;
+export default CustomCache;
