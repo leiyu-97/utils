@@ -1,17 +1,17 @@
+import assert from 'power-assert';
 import React, { useState } from 'react';
 import { shallow, mount } from 'enzyme';
-import assert from 'assert';
 import sinon from 'sinon';
 import useControllable from '../../src/react/useControllable';
 
-function ControllableCounter({ value, defaultValue, onChange }) {
+function ControllableCounter({ value, defaultValue = 0, onChange }) {
   const [count, setCount] = useControllable({ value, defaultValue, onChange });
   return <div id="counter" onClick={() => setCount((prev) => prev + 1)}>{`${count}`}</div>;
 }
 
 describe('useControllable', () => {
   it('基本测试', () => {
-    const wrapper = shallow(<ControllableCounter/>);
+    const wrapper = mount(<ControllableCounter/>);
     const counter = wrapper.find('#counter');
     assert(counter.text() === '0');
     counter.simulate('click');
@@ -61,7 +61,7 @@ describe('useControllable', () => {
     const spyCall0 = obj.onChange.getCall(0);
     const spyCall1 = obj.onChange.getCall(1);
 
-    assert(spyCall0[0] === 1);
-    assert(spyCall1[0] === 2);
+    assert(spyCall0.args[0] === 1);
+    assert(spyCall1.args[0] === 2);
   });
 });

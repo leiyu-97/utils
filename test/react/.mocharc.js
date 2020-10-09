@@ -1,5 +1,9 @@
+const path = require("path");
 module.exports = {
   recursive: true,
-  require: ['intelli-espower-loader', '@babel/register', 'test/react/setup.js'],
-  extension: ['jsx']
-}
+  require: [
+    path.resolve(__dirname, "./babel-register"),
+    path.resolve(__dirname, "./setup.js"),
+  ],
+  extension: ["jsx"],
+};

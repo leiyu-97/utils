@@ -1,7 +1,14 @@
 {
   "presets": [
-    "@babel/env",
-    "@babel/react"
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ],
+    "@babel/preset-typescript"
   ],
   "plugins": [
     "babel-plugin-espower",

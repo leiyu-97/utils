@@ -11,50 +11,56 @@ const uuid = require('uuid');
 const { EventEmitter } = require('events');
 
 async function bundleScript(scriptPath, debug) {
-  let bundle;
-  if (debug) {
-    // debug 模式下禁用 espower 和 instrument
-    bundle = await rollup.rollup({
-      input: [scriptPath],
-      plugins: [rollupResolve(), rollupCommonjs()],
-    });
-  } else {
-    // 使用 babel 将测试代码 espowerfy，放到 buildTemp 目录下
-    const result = await babel.transformFileAsync(scriptPath, {
-      plugins: ['@babel/plugin-transform-typescript', 'babel-plugin-espower'],
-    });
-    const sourceDir = path.dirname(scriptPath);
-    const targetDir = path
-      .resolve(sourceDir)
-      .replace(
-        path.resolve(__dirname, '../../test'),
-        path.resolve(__dirname, '../../buildTemp'),
-      );
-    await fs.mkdir(targetDir, { recursive: true });
-    const target = `${targetDir}/${path.basename(scriptPath)}`;
-    await fs.writeFile(target, result.code);
-    // 打包测试代码
-    bundle = await rollup.rollup({
-      input: [target],
-      onwarn: () => null,
-      plugins: [
-        rollupResolve(),
-        rollupCommonjs(),
-        rollupTypescript(),
-        process.env.NYC_CONFIG && rollupIstanbul(),
-      ],
-    });
-  }
+  const basename = path.basename(scriptPath);
+  const rootDir = path.resolve(__dirname, '../../');
+  const sourceDir = `${rootDir}/test`;
+  const targetDir = `${rootDir}/buildTemp`;
+  const serverDir = 'http://localhost:3000/buildTemp';
+  const targetPath = scriptPath.replace(sourceDir, targetDir);
+  const serverPath = scriptPath.replace(sourceDir, serverDir);
 
-  // 输出
-  const {
-    output: [output],
+  let result = {};
+
+  const bundle = await rollup.rollup({
+    input: [scriptPath],
+    onwarn: () => null,
+    plugins: [
+      rollupResolve(),
+      rollupCommonjs(),
+      rollupTypescript(),
+      process.env.NYC_CONFIG && rollupIstanbul(),
+    ],
+  });
+
+  ({
+    output: [result],
   } = await bundle.generate({
     format: 'iife',
     globals: { assert: 'assert', mocha: 'Mocha' },
-  });
-  const { code } = output;
-  return code;
+    sourcemap: true,
+  }));
+
+  // espower 与 istanbul 有冲突，不能同时使用
+  if (!process.env.NYC_CONFIG) {
+    result = await babel.transformAsync(result.code, {
+      plugins: ['babel-plugin-espower'],
+      inputSourceMap: result.map,
+    });
+  }
+  result.map.sources = result.map.sources.map((url) =>
+    path.relative(path.dirname(targetPath), `${rootDir}/${url}`));
+  if (debug) {
+    result.code = `debugger;${result.code}`;
+  }
+
+  await fs.mkdir(path.dirname(targetPath), { recursive: true });
+  await fs.writeFile(
+    targetPath,
+    `${result.code}//# sourceMappingURL=${basename}.map`,
+  );
+  await fs.writeFile(`${targetPath}.map`, JSON.stringify(result.map));
+
+  return serverPath;
 }
 
 class TestRunner extends EventEmitter {
@@ -81,7 +87,10 @@ class TestRunner extends EventEmitter {
     await Promise.all([
       // page 和 browser 方法
       page.exposeFunction('$execPageCommand', this.execPageCommand.bind(this)),
-      page.exposeFunction('$execBrowserCommand', this.execBrowserCommand.bind(this)),
+      page.exposeFunction(
+        '$execBrowserCommand',
+        this.execBrowserCommand.bind(this),
+      ),
       // 控制台输出方法
       page.exposeFunction('$consoleLog', console.log),
       page.exposeFunction('$consoleError', console.error),
@@ -110,8 +119,8 @@ class TestRunner extends EventEmitter {
       path: path.resolve(__dirname, './mochaSetup.browser.js'),
     });
     // 初始化测试代码
-    const code = await bundleScript(scriptPath, this.debug);
-    await page.addScriptTag({ content: this.debug ? `debugger;\n${code}` : code });
+    const url = await bundleScript(scriptPath, this.debug);
+    await page.addScriptTag({ url });
   }
 
   run() {

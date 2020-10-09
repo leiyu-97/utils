@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const puppeter = require('puppeteer');
 const Mocha = require('mocha');
+const Server = require('./server');
 const TestRunner = require('./TestRunner');
 const { unentriesReducer } = require('../utils');
 
@@ -13,6 +14,8 @@ class TestSetRunner {
 
   async run(testSet) {
     const { debug } = this;
+    // 启动 server
+    const server = new Server();
     // 启动浏览器
     let browser;
     if (debug) {
@@ -40,6 +43,8 @@ class TestSetRunner {
       results.push(result);
     }
 
+    // 关闭 server
+    await server.stop();
     // 关闭浏览器
     await browser.close();
 

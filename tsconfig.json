@@ -4,7 +4,7 @@
     "module": "esnext",
     "strict": false,
     "jsx": "preserve",
-    "importHelpers": true,
+    "importHelpers": false,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,

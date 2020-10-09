@@ -23,7 +23,7 @@ module.exports = {
     "import/prefer-default-export": 0,
     "import/no-extraneous-dependencies": [
       2,
-      { devDependencies: ["test/**/*", "script/**/*", "bin/**/*"] },
+      { devDependencies: ["test/**/*", "script/**/*", "bin/**/*", "./*"] },
     ],
     "import/extensions": [
       "error",
