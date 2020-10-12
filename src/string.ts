@@ -1,9 +1,9 @@
-const { fullwidth } = require('./charCodes');
-const Range = require('./range');
+import { fullwidth } from './charCodes';
+import Range from './range';
 
 const fullwidthRange = new Range(fullwidth);
 const { reduce } = Array.prototype;
-let regexSymbolWithCombiningMarks;
+let regexSymbolWithCombiningMarks: RegExp;
 try {
   // 这个正则在 IE 下无法使用
   regexSymbolWithCombiningMarks = /(\P{Mark})(\p{Mark}+)/gu;
@@ -16,7 +16,7 @@ try {
  * @param {String} str 文本
  * @return {Number} 字符宽度
  */
-function getTextWidth(str) {
+export function getTextWidth(str: string): number {
   // 移除修饰字符
   const normalized = str.replace(
     regexSymbolWithCombiningMarks,
@@ -25,11 +25,7 @@ function getTextWidth(str) {
 
   return reduce.call(
     normalized,
-    (res, char) => res + (fullwidthRange.includes(char.codePointAt(0)) ? 2 : 1),
+    (res: number, char: string) => res + (fullwidthRange.includes(char.codePointAt(0)) ? 2 : 1),
     0,
   );
 }
-
-module.exports = {
-  getTextWidth,
-};

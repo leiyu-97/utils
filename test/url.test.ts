@@ -1,5 +1,5 @@
-const assert = require('assert');
-const Url = require('../src/url');
+import assert from 'assert';
+import Url from '../src/url';
 
 describe('path', () => {
   describe('Url', () => {

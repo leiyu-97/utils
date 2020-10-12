@@ -9,7 +9,7 @@
  * @param  {String[]} keys 键名数组
  * @return {Any} 属性值
  */
-function optionalGet(obj, [...keys]) {
+export function optionalGet(obj: any, [...keys]: Array<string | number>): any {
   let result = obj;
   for (let i = 0; i < keys.length && result !== undefined; i++) {
     const key = keys[i];
@@ -26,7 +26,11 @@ function optionalGet(obj, [...keys]) {
  * @param {Any} value 设置的值
  * @return {Any} 属性值
  */
-function optionalSet(obj, [...keys], value) {
+export function optionalSet(
+  obj: any,
+  [...keys]: Array<string | number>,
+  value: any,
+): any {
   const lastKey = keys.pop();
 
   keys.reduce((prev, key) => {
@@ -46,7 +50,7 @@ function optionalSet(obj, [...keys], value) {
  * @param {Object} objB 对象B
  * @return {Boolean} 两对象是否浅层相等
  */
-function shallowEqual(objA, objB) {
+export function shallowEqual(objA: any, objB: any): boolean {
   return (
     Object.values(objA).length === Object.values(objB).length
     && Object.entries(objA).every(([key, value]) => objB[key] === value)
@@ -62,9 +66,10 @@ function shallowEqual(objA, objB) {
  * @param {Any} param1.1 值
  * @return {Object} 累计对象
  */
-function unentriesReducer(prev, [key, value]) {
-  // 为了 reduce 可以不传入第二个参数而做的兼容
-  if (prev instanceof Array) prev = unentriesReducer({}, prev);
+export function unentriesReducer<T>(
+  prev: Record<string | number, T>,
+  [key, value]: [string | number, T],
+): Record<string | number, T> {
   prev[key] = value;
   return prev;
 }
@@ -75,14 +80,8 @@ function unentriesReducer(prev, [key, value]) {
  * @param {Array} array 键值对数组
  * @return {Object} 对象
  */
-function unentries(array) {
-  return array.reduce(unentriesReducer);
+export function unentries<T>(
+  array: Array<[string | number, T]>,
+): Record<string | number, T> {
+  return array.reduce<Record<string | number, T>>(unentriesReducer, {});
 }
-
-module.exports = {
-  optionalGet,
-  optionalSet,
-  shallowEqual,
-  unentriesReducer,
-  unentries,
-};

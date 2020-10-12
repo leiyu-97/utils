@@ -1,3 +1,8 @@
+import { number } from './charCodes';
+
+type Point = [number, number];
+type PointWithGradient = [number, number, number];
+
 /**
  * @static
  * @summary 线性插值
@@ -9,7 +14,10 @@
  * @param {Number} param1.1 y1，该点的 y 坐标
  * @return {Function} 插值函数
  */
-function linearInterpolation([x0, y0], [x1, y1]) {
+export function linearInterpolation(
+  [x0, y0]: Point,
+  [x1, y1]: Point,
+): (x: number) => number {
   return (x) => y0 + (x - x0) * ((y1 - y0) / (x1 - x0));
 }
 
@@ -26,7 +34,10 @@ function linearInterpolation([x0, y0], [x1, y1]) {
  * @param {Number} param1.2 m1，该点的梯度
  * @return {Function} 插值函数
  */
-function cubicHermiteInterpolation([x0, y0, m0], [x1, y1, m1]) {
+export function cubicHermiteInterpolation(
+  [x0, y0, m0]: PointWithGradient,
+  [x1, y1, m1]: PointWithGradient,
+): (x: number) => number {
   return (x) =>
     y0 * (1 + 2 * ((x - x0) / (x1 - x0))) * ((x - x1) / (x0 - x1)) ** 2
     + y1 * (1 + 2 * ((x - x1) / (x0 - x1))) * ((x - x0) / (x1 - x0)) ** 2
@@ -40,12 +51,6 @@ function cubicHermiteInterpolation([x0, y0, m0], [x1, y1, m1]) {
  * @param {Number} t 1 > t > 0
  * @return {Function} 插值函数
  */
-function fade(t) {
+export function fade(t: number): number {
   return t * t * t * (t * (t * 6 - 15) + 10);
 }
-
-module.exports = {
-  cubicHermiteInterpolation,
-  linearInterpolation,
-  fade,
-};

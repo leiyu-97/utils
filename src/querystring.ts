@@ -1,6 +1,9 @@
 /**
  * @module querystring
  */
+interface Query {
+  [key: string]: string | undefined;
+}
 
 /**
  * @static
@@ -8,15 +11,21 @@
  * @param {String} query 待解析的查询字符串
  * @return {Object} 查询对象
  */
-function parse(query) {
+export function parse(query: string): Query {
   return query
     .split('&')
-    .map((str) => str.split('='))
+    .map((str: string) => str.split('='))
     .map(([key, value = '']) => [
       decodeURIComponent(key),
       decodeURIComponent(value),
     ])
-    .reduce((prev, [key, value]) => ({ ...prev, [key]: value }), {});
+    .reduce(
+      (prev: Query, [key, value]: [string, string | undefined]) => ({
+        ...prev,
+        [key]: value,
+      }),
+      {},
+    );
 }
 
 /**
@@ -25,7 +34,7 @@ function parse(query) {
  * @param {Object} obj 查询对象
  * @return {String} 查询字符串
  */
-function stringify(obj) {
+export function stringify(obj: Query): string {
   return Object.entries(obj)
     .map(([key, value = '']) => [
       encodeURIComponent(key),
@@ -34,8 +43,3 @@ function stringify(obj) {
     .map(([key, value]) => (value ? `${key}=${value}` : key))
     .join('&');
 }
-
-module.exports = {
-  parse,
-  stringify,
-};

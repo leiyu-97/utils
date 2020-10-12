@@ -12,10 +12,6 @@
  * @param {Number} uncertainty 误差系数
  * @return {Boolean} 是否相等
  */
-function isEqual(a, b, uncertainty = 1) {
+export function isEqual(a: number, b: number, uncertainty = 1): boolean {
   return Math.abs(a - b) < Number.EPSILON * uncertainty;
 }
-
-module.exports = {
-  isEqual,
-};

@@ -4,14 +4,18 @@
 
 const { raw } = String;
 
+type RegObject =
+  | { [key: string]: RegObject | string }
+  | Array<RegObject | string>;
+
 /**
  * @static
  * @summary 将对象的值拼接成字符串
  * @param {Object} obj 待拼接的对象
  * @return {String} 拼接后的字符串
  */
-function objectValuesToString(obj) {
-  return Object.values(obj).reduce((prev, cur) => {
+export function objectValuesToString(obj: RegObject): string {
+  return Object.values(obj).reduce<string>((prev, cur) => {
     if (typeof cur === 'string') {
       return prev + cur;
     }
@@ -26,7 +30,7 @@ function objectValuesToString(obj) {
  * @param {String} flags 正则表达式的 flags
  * @return {RegExp} 正则表达式
  */
-function objectToRegExp(obj, flags) {
+export function objectToRegExp(obj: RegObject, flags?: string): RegExp {
   return new RegExp(objectValuesToString(obj), flags);
 }
 
@@ -36,8 +40,8 @@ function objectToRegExp(obj, flags) {
  * @param {Object} obj 对象形式的正则表达式
  * @return {Object} obj 首尾限制的对象形式正则表达式
  */
-function exact(obj) {
-  return ({ b: raw`^`, obj, e: raw`$` });
+export function exact(obj: RegObject): RegObject {
+  return { b: raw`^`, obj, e: raw`$` };
 }
 
 /**
@@ -46,8 +50,8 @@ function exact(obj) {
  * @param {Object} obj 对象形式的正则表达式
  * @return {Object} obj 首部限制的对象形式正则表达式
  */
-function startsWith(obj) {
-  return ({ b: raw`^`, obj });
+export function startsWith(obj: RegObject): RegObject {
+  return { b: raw`^`, obj };
 }
 
 /**
@@ -56,14 +60,6 @@ function startsWith(obj) {
  * @param {Object} obj 对象形式的正则表达式
  * @return {Object} obj 尾部限制的对象形式正则表达式
  */
-function endsWith(obj) {
-  return ({ obj, e: raw`$` });
+export function endsWith(obj: RegObject): RegObject {
+  return { obj, e: raw`$` };
 }
-
-module.exports = {
-  objectToRegExp,
-  objectValuesToString,
-  exact,
-  startsWith,
-  endsWith,
-};

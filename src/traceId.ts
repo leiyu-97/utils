@@ -1,7 +1,7 @@
 /**
  * @module traceId
  */
-const { getHexIPAddress } = require('./os');
+import { getHexIPAddress } from './os';
 
 let index = 1000;
 const ip = getHexIPAddress();
@@ -10,7 +10,7 @@ const ip = getHexIPAddress();
  * @summary 生成 traceId
  * @return {String} traceId
  */
-function traceId() {
+export function traceId():string {
   const result = `${ip}${Date.now()}${index++}`;
   // 保持 index 在 1000 到 9000 之间
   if (index > 9000) {
@@ -18,5 +18,3 @@ function traceId() {
   }
   return result;
 }
-
-module.exports = traceId;

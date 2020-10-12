@@ -1,8 +1,8 @@
 /**
  * @module url
  */
-const { objectToRegExp, exact } = require('./regexp');
-const qs = require('./querystring');
+import { objectToRegExp, exact } from './regexp';
+import * as qs from './querystring';
 
 const { raw } = String;
 
@@ -75,11 +75,27 @@ const originRegExp = objectToRegExp(exact([urlReg.oProtocol, urlReg.wHost]));
  * @prop {String} queryObj 查询字符串对象
  * @prop {String} hash hash
  */
-class Url {
+export default class Url {
+  public queryObj: Record<string, string | undefined>;
+
+  public protocol: string;
+
+  public username: string;
+
+  public password: string;
+
+  public hostname: string;
+
+  public port: string;
+
+  public pathname: string;
+
+  public hash: string;
+
   /**
    * @param {String} str 原始 url 字符串
    */
-  constructor(str) {
+  constructor(str: string) {
     const matchResult = str.match(urlRegExp);
     if (!matchResult) {
       throw new Error(`"${str}" is not a valid url`);
@@ -113,16 +129,16 @@ class Url {
     });
   }
 
-  get query() {
+  get query(): string | undefined {
     const { queryObj } = this;
     return queryObj ? qs.stringify(this.queryObj) : undefined;
   }
 
-  set query(str) {
+  set query(str: string) {
     this.queryObj = str ? qs.parse(str) : null;
   }
 
-  get auth() {
+  get auth(): string | undefined {
     const { username, password } = this;
     let res = '';
     if (username) {
@@ -134,7 +150,7 @@ class Url {
     return res || undefined;
   }
 
-  set auth(str) {
+  set auth(str: string) {
     const matchResult = str.match(authRegExp);
     if (!matchResult) {
       throw new Error(`"${str}" is not a valid auth`);
@@ -144,12 +160,12 @@ class Url {
     this.password = password;
   }
 
-  get host() {
+  get host(): string {
     const { hostname, port } = this;
     return port ? `${hostname}:${port}` : hostname;
   }
 
-  set host(str) {
+  set host(str: string) {
     const matchResult = str.match(hostRegExp);
     if (!matchResult) {
       throw new Error(`"${str}" is not a valid host`);
@@ -159,7 +175,7 @@ class Url {
     this.port = port;
   }
 
-  get path() {
+  get path(): string {
     const { pathname, query } = this;
     let result = pathname;
 
@@ -170,7 +186,7 @@ class Url {
     return result;
   }
 
-  set path(str) {
+  set path(str: string) {
     const matchResult = str.match(pathRegExp);
     if (!matchResult) {
       throw new Error(`"${str}" is not a valid path`);
@@ -180,12 +196,12 @@ class Url {
     this.query = query;
   }
 
-  get origin() {
+  get origin(): string {
     const { host, protocol } = this;
     return protocol ? `${protocol}://${host}` : host;
   }
 
-  set origin(str) {
+  set origin(str: string) {
     const matchResult = str.match(originRegExp);
     if (!matchResult) {
       throw new Error(`"${str}" is not a valid origin`);
@@ -200,7 +216,7 @@ class Url {
    * @summary 返回完整的 url 字符串
    * @return {String} 完整的 url 字符串
    */
-  toString() {
+  toString(): string {
     let url = '';
     const {
       protocol, auth, host, path, hash,
@@ -224,5 +240,3 @@ class Url {
     return url;
   }
 }
-
-module.exports = Url;

@@ -1,6 +1,6 @@
 /** @module react */
-import React from 'react';
-import useControllable from './useControllable';
+import React, { ComponentType, FunctionComponent } from "react";
+import useControllable from "./useControllable";
 
 /**
  * @static
@@ -12,15 +12,23 @@ import useControllable from './useControllable';
  * @param {String} [options.onChange="onChange"] onChange 的键名
  * @return {React.Component} 可受控组件
  */
-export default function withControllable(
-  Component,
+export default function withControllable<T>(
+  Component: ComponentType,
   {
-    valueKey = 'value',
-    defaultValueKey = 'defaultValue',
-    onChangeKey = 'onChange',
-  } = {},
-) {
-  return function (props) {
+    valueKey = "value",
+    defaultValueKey = "defaultValue",
+    onChangeKey = "onChange",
+  }: {
+    valueKey: string;
+    defaultValueKey: string;
+    onChangeKey: string;
+  } = {
+    valueKey: "value",
+    defaultValueKey: "defaultValue",
+    onChangeKey: "onChange",
+  }
+): FunctionComponent<T> {
+  return function (props: T) {
     const [value, onChange] = useControllable({
       value: props[valueKey],
       defaultValue: props[defaultValueKey],

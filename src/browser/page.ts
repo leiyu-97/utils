@@ -1,4 +1,4 @@
-export function visibleTimeout(callback, time) {
+export function visibleTimeout(callback: () => void, time: number): () => void {
   let startTime = Date.now();
   let t;
 
@@ -30,8 +30,11 @@ export function visibleTimeout(callback, time) {
   return clear;
 }
 
-export function visibleInterval(callback, time) {
-  let clear;
+export function visibleInterval(
+  callback: () => void,
+  time: number,
+): () => void {
+  let clear: () => void;
   function innerCallback() {
     callback();
     clear = visibleTimeout(innerCallback, time);

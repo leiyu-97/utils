@@ -1,9 +1,10 @@
 /** @module react */
-import { useState } from 'react';
+import { useState } from "react";
 
 /**
  * @static
  * @summary 可受控状态
+ * @template T
  * @param {Object} param 参数
  * @param {Object} param.value 从 props 中收到的 value
  * @param {Object} param.defaultValue 从 props 中收到的 defaultValue
@@ -12,9 +13,17 @@ import { useState } from 'react';
  * @return {Any} data[0] 渲染中使用的值
  * @return {Function} data[1] 修改值的函数
  */
-export default function useControllable({ value, defaultValue, onChange }) {
+export default function useControllable<T>({
+  value,
+  defaultValue,
+  onChange,
+}: {
+  value: T;
+  defaultValue: T;
+  onChange: (value: T) => void;
+}): [value: T, setValue: (value: T) => void] {
   // 组件是否是受控组件
-  const controllableState = useState(undefined);
+  const controllableState = useState<boolean>(undefined);
   let [controllable] = controllableState;
   const [, setControllable] = controllableState;
 
@@ -31,8 +40,8 @@ export default function useControllable({ value, defaultValue, onChange }) {
   }
 
   // 组件内部保存的 value
-  const [innerValue, setInnerValue] = useState(
-    controllable ? value : defaultValue,
+  const [innerValue, setInnerValue] = useState<T>(
+    controllable ? value : defaultValue
   );
 
   return [

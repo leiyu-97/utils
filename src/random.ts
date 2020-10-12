@@ -8,8 +8,13 @@
  * @prop {Number} max 最大值，不可等于
  */
 
-const { number, lowercase, uppercase } = require('./charCodes');
-const { repeat } = require('./base');
+import { repeat } from './base';
+
+type Range = [number, number]
+
+const number: Range = [0x0030, 0x0039 + 1]; // 数字
+const uppercase: Range = [0x0041, 0x005a + 1]; // 英文大写字母
+const lowercase: Range = [0x0061, 0x007a + 1]; // 英文小写字母
 
 /**
  * @static
@@ -17,7 +22,7 @@ const { repeat } = require('./base');
  * @param  {Range} range 范围数组
  * @return {Number} 随机数
  */
-function discontinuousRandom(...ranges) {
+export function discontinuousRandom(...ranges: Array<Range>): number {
   const lengths = ranges.map((range) => range[1] - range[0]);
   // 将 lengths 累加成数组
   const reduceLengths = lengths.reduce(
@@ -39,9 +44,9 @@ function discontinuousRandom(...ranges) {
  * @param {Range} range 范围数组
  * @return {String} 随机字符
  */
-function randomChar(...ranges) {
+export function randomChar(...ranges: Array<Range>): string {
   if (!ranges[0]) ranges = [number, uppercase, lowercase];
-  const randomRange = ranges.map(([min, max]) => [min, max]);
+  const randomRange = ranges.map(([min, max]) => [min, max] as Range);
   return String.fromCharCode(Math.floor(discontinuousRandom(...randomRange)));
 }
 
@@ -52,7 +57,7 @@ function randomChar(...ranges) {
  * @param {Range} range 范围数组
  * @return {String} 随机字符串
  */
-function randomStr(length, ...ranges) {
+export function randomStr(length: number, ...ranges: Array<Range>): string {
   if (!ranges[0]) ranges = [number, uppercase, lowercase];
   return repeat(() => randomChar(...ranges), length).join('');
 }
@@ -63,13 +68,6 @@ function randomStr(length, ...ranges) {
  * @param {Number} length 位数
  * @return {String} 随机数
  */
-function randomDigit(length) {
+export function randomDigit(length: number): string {
   return randomStr(length, number);
 }
-
-module.exports = {
-  discontinuousRandom,
-  randomChar,
-  randomStr,
-  randomDigit,
-};

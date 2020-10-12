@@ -1,3 +1,5 @@
+type Point = [number, number];
+
 const {
   sin, cos, sqrt, tan, atan, atan2, abs, PI,
 } = Math;
@@ -17,7 +19,11 @@ const meanRadius = (2 * equatorRadius + polesRadius) / 3; // 平均半径
  * @param {Number} r 球半径
  * @return {Number} 两点球面距离
  */
-function haversine([phi1, lamda1], [phi2, lamda2], r) {
+function haversine(
+  [phi1, lamda1]: Point,
+  [phi2, lamda2]: Point,
+  r: number,
+): number {
   const deltaLamda = Math.abs(lamda1 - lamda2);
   const sigma = atan(
     sqrt(
@@ -42,7 +48,12 @@ function haversine([phi1, lamda1], [phi2, lamda2], r) {
  * @param {Number} b 两极半径
  * @return {Number} 两点球面距离
  */
-function vincenty([phi1, L1], [phi2, L2], a, b) {
+function vincenty(
+  [phi1, L1]: Point,
+  [phi2, L2]: Point,
+  a: number,
+  b: number,
+): number {
   phi1 %= PI / 2;
   phi2 %= PI / 2;
   L1 %= PI / 2;
@@ -60,15 +71,15 @@ function vincenty([phi1, L1], [phi2, L2], a, b) {
 
   let lamda = L;
   let lamdaPrime = null;
-  let cosAlphaSquare;
-  let sinLamda;
-  let cosLamda;
-  let sinSigma;
-  let cosSigma;
-  let sigma;
-  let sinAlpha;
-  let cos2SigmaM;
-  let C;
+  let cosAlphaSquare: number;
+  let sinLamda: number;
+  let cosLamda: number;
+  let sinSigma: number;
+  let cosSigma: number;
+  let sigma: number;
+  let sinAlpha: number;
+  let cos2SigmaM: number;
+  let C: number;
 
   let i = 0;
   while (i++ < 1000 && (!lamdaPrime || abs(lamdaPrime - lamda) > 1e-12)) {
@@ -127,7 +138,11 @@ function vincenty([phi1, L1], [phi2, L2], a, b) {
  * @param {Boolean} accurate 是否使用精度更高但更加消耗性能的模式
  * @return {Number} 距离(米)
  */
-function computeDistance([lat1, lon1], [lat2, lon2], accurate) {
+export function computeDistance(
+  [lat1, lon1]: Point,
+  [lat2, lon2]: Point,
+  accurate: boolean,
+): number {
   const phi1 = (lat1 / 180) * Math.PI;
   const phi2 = (lat2 / 180) * Math.PI;
   const lamda1 = (lon1 / 180) * Math.PI;
@@ -137,7 +152,3 @@ function computeDistance([lat1, lon1], [lat2, lon2], accurate) {
     ? vincenty([phi1, lamda1], [phi2, lamda2], equatorRadius, polesRadius)
     : haversine([phi1, lamda1], [phi2, lamda2], meanRadius);
 }
-
-module.exports = {
-  computeDistance,
-};

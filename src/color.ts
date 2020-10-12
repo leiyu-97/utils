@@ -1,15 +1,25 @@
 /**
  * @module color
  */
-const { objectToRegExp, exact } = require('./regexp');
+import { objectToRegExp, exact } from './regexp';
 
 const { raw } = String;
 
+interface Color {
+  red: number,
+  blue: number,
+  green: number,
+  alpha: number
+}
+
+interface NamedColors {
+  [name: string]: [number, number, number]
+}
 /**
  * @summary HTML 命名颜色
  * @type Obejct
  */
-const namedColors = {
+const namedColors: NamedColors = {
   INDIANRED: [205, 92, 92],
   LIGHTCORAL: [240, 128, 128],
   SALMON: [250, 128, 114],
@@ -203,7 +213,7 @@ const hexColorRegExp = objectToRegExp(exact(hexColorExp), 'i');
  * @return {Number} data.blue 蓝色值
  * @return {Number} data.alpha 不透明度
  */
-function parseColor(color) {
+export function parseColor(color: string): Color {
   // 处理 "rgb(255, 255, 255)"
   const rgb = color.match(rgbRegExp);
   if (rgb) {
@@ -232,10 +242,10 @@ function parseColor(color) {
   const hex = color.match(hexColorRegExp);
   if (hex) {
     const [, value] = hex;
-    let r;
-    let g;
-    let b;
-    let a;
+    let r:string;
+    let g:string;
+    let b:string;
+    let a:string;
     switch (value.length) {
       case 3:
         [r, g, b] = value;
@@ -301,12 +311,6 @@ function parseColor(color) {
  * @param {Number} b // 0-255
  * @return {String} 十六进制颜色代码
  */
-function RGBToHex(r, g, b) {
+export function RGBToHex(r: number, g: number, b: number): string {
   return ((r << 16) + (g << 8) + b).toString(16).padStart(6, '0');
 }
-
-module.exports = {
-  parseColor,
-  namedColors,
-  RGBToHex,
-};
