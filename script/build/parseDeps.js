@@ -60,7 +60,7 @@ async function parseDeps(modules) {
     const content = contentBuffer.toString();
     const ast = babelParser.parse(content, {
       sourceType: 'module',
-      plugins: ['jsx', 'typescript'],
+      plugins: ['jsx', 'typescript', 'classProperties'],
     });
 
     // 处理依赖

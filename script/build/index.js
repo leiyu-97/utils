@@ -25,13 +25,18 @@ async function processFile(file, type) {
   }
   const target = `${distDir}/${type}/${innerDirname}/${basename}${targetExtname}`;
 
-  await compile({
-    input: file,
-    output: target,
-    type,
-    isReact,
-  });
-  console.log(`src/${innerDirname}/${basename}${extname}`, '=>', `dist/${innerDirname}/${basename}${targetExtname}`);
+  try {
+    await compile({
+      input: file,
+      output: target,
+      type,
+      isReact,
+    });
+    console.log(`src/${innerDirname}/${basename}${extname}`, '=>', `dist/${innerDirname}/${basename}${targetExtname}`);
+  } catch (e) {
+    console.log(`src/${innerDirname}/${basename}${extname} compile to ${type} error:`);
+    console.error(e);
+  }
 }
 
 async function main({ modules, types }) {

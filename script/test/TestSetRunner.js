@@ -43,10 +43,12 @@ class TestSetRunner {
       results.push(result);
     }
 
-    // 关闭 server
-    await server.stop();
-    // 关闭浏览器
-    await browser.close();
+    await Promise.all([
+      // 关闭 server
+      server.stop(),
+      // 关闭浏览器
+      browser.close(),
+    ]);
 
     // 统计
     const stats = results

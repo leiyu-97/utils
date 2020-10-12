@@ -1,3 +1,9 @@
+/**
+ * 本 transformer 并非将 esm 完美编译为 cjs
+ * 而是将 esm 写法转为 cjs 写法，因此在 default 的处理上会有不同
+ * 在 esm 中 export default 在 cjs 中会变为 module.exports =
+ */
+
 function replace(path, newPath) {
   newPath.forEach((item) => path.insertBefore(item));
   path.remove();
@@ -109,11 +115,11 @@ module.exports = function ({ types: t }) {
 
         const defaultSpecifiers = [];
         const nonDefaultSpecifiers = [];
-        specifiers.forEach((specify) =>
-          (t.isImportDefaultSpecifier(specify)
+        specifiers.forEach((specifier) =>
+          (t.isImportDefaultSpecifier(specifier) || t.isImportNamespaceSpecifier(specifier)
             ? defaultSpecifiers
             : nonDefaultSpecifiers
-          ).push(specify));
+          ).push(specifier));
         // import bar from './foo'
         // =>
         // const bar = require('./foo')

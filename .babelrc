@@ -12,7 +12,6 @@
   ],
   "plugins": [
     "babel-plugin-espower",
-    "@babel/plugin-proposal-export-default-from",
     "@babel/plugin-proposal-class-properties"
   ]
 }

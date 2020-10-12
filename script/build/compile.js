@@ -6,39 +6,42 @@ function compileRaw(input) {
   return input;
 }
 
-function compileEsm(input, isReact) {
-  const compiledCode = babel.transformFileAsync(input, {
+async function compileEsm(input) {
+  const compiledCode = await babel.transformAsync(input, {
     sourceType: 'module',
-    plugins: [['@babel/plugin-transform-typescript', { isTSX: isReact }]],
+    plugins: [
+      ['@babel/plugin-transform-typescript', { isTSX: true }],
+      ['@babel/plugin-proposal-class-properties', { loose: true }],
+    ],
   });
   return compiledCode.code;
 }
 
-function compileCjs(input, isReact) {
-  const compiledCode = babel.transformFileAsync(input, {
+async function compileCjs(input) {
+  const compiledCode = await babel.transformAsync(input, {
     sourceType: 'module',
     plugins: [
-      ['@babel/plugin-transform-typescript', { isTSX: isReact }],
+      ['@babel/plugin-transform-typescript', { isTSX: true }],
+      '@babel/plugin-proposal-optional-chaining',
+      ['@babel/plugin-proposal-class-properties', { loose: true }],
       path.resolve(__dirname, './esm-to-cjs'),
     ],
   });
   return compiledCode.code;
 }
 
-async function compile({
-  input, output, type, isReact,
-}) {
+async function compile({ input, output, type }) {
   const code = (await fs.readFile(input)).toString();
   let compiledCode;
   switch (type) {
     case 'raw':
-      compiledCode = await compileRaw(code, isReact);
+      compiledCode = await compileRaw(code, input);
       break;
     case 'esm':
-      compiledCode = await compileEsm(code, isReact);
+      compiledCode = await compileEsm(code, input);
       break;
     case 'cjs':
-      compiledCode = await compileCjs(code, isReact);
+      compiledCode = await compileCjs(code, input);
       break;
     default:
       throw new Error('unknown type');

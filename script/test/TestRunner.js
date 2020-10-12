@@ -172,11 +172,12 @@ class TestRunner extends EventEmitter {
   }
 
   async clean() {
-    // 关闭页面
-    await this.page.close();
-    // 关闭浏览器
     if (this.ownBrowser) {
+      // 关闭浏览器
       await this.ownBrowser.close();
+    } else {
+      // 关闭页面
+      await this.page.close();
     }
   }
 
