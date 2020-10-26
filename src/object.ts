@@ -26,11 +26,7 @@ export function optionalGet(obj: any, [...keys]: Array<string | number>): any {
  * @param {Any} value 设置的值
  * @return {Any} 属性值
  */
-export function optionalSet(
-  obj: any,
-  [...keys]: Array<string | number>,
-  value: any,
-): any {
+export function optionalSet(obj: any, [...keys]: Array<string | number>, value: any): any {
   const lastKey = keys.pop();
 
   keys.reduce((prev, key) => {
@@ -66,10 +62,10 @@ export function shallowEqual(objA: any, objB: any): boolean {
  * @param {Any} param1.1 值
  * @return {Object} 累计对象
  */
-export function unentriesReducer<T>(
-  prev: Record<string | number, T>,
-  [key, value]: [string | number, T],
-): Record<string | number, T> {
+function unentriesReducer<T>(
+  prev: Record<string, T>,
+  [key, value]: [string, T],
+): Record<string, T> {
   prev[key] = value;
   return prev;
 }
@@ -80,8 +76,6 @@ export function unentriesReducer<T>(
  * @param {Array} array 键值对数组
  * @return {Object} 对象
  */
-export function unentries<T>(
-  array: Array<[string | number, T]>,
-): Record<string | number, T> {
-  return array.reduce<Record<string | number, T>>(unentriesReducer, {});
+export function unentries<T>(array: Array<[string, T]>): Record<string, T> {
+  return array.reduce<Record<string, T>>(unentriesReducer, {});
 }
