@@ -123,18 +123,37 @@ export function error<T>(err: T): never {
 }
 /* eslint-enable no-console */
 
+export enum PromiseActions {
+  resolve = 'resolve',
+  reject = 'reject',
+  pending = 'pending'
+}
+
 /**
  * @static
  * @summary 禁止函数并行执行
  * @param {Function} func 函数
+ * @param {String} action 并行下的行为，可填 'resolve', 'reject', 'pending'
  * @return {Any} 函数返回结果
  */
 export function noParallel<Param extends any[], Result>(
   func: (...args: Param) => Result | Promise<Result>,
-): (...args: Param) => Promise<Result> {
+  action: PromiseActions = PromiseActions.pending,
+): (...args: Param) => Promise<Result|void> {
   let pending = false;
-  return function (...param: Param): Promise<Result | undefined> {
-    if (pending) return undefined;
+  return function (...param: Param): Promise<Result | void> {
+    if (pending) {
+      switch (action) {
+        case PromiseActions.resolve:
+          return Promise.resolve();
+        case PromiseActions.reject:
+          return Promise.reject();
+        case PromiseActions.pending:
+          return new Promise(() => undefined);
+        default:
+          return undefined;
+      }
+    }
     pending = true;
     const result = func.call(this, ...param);
 
