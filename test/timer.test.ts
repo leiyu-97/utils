@@ -11,7 +11,7 @@ describe('timer', () => {
       timer.start();
       await wait(100);
       const time = timer.getTime();
-      assert(time >= 100 && time < 110);
+      assert(time > 90 && time < 110);
     });
 
     it('暂停计时', async function() {
@@ -22,7 +22,7 @@ describe('timer', () => {
       timer.pause();
       await wait(50)
       const time = timer.getTime();
-      assert(time >= 100 && time < 110);
+      assert(time > 90 && time < 110);
     });
 
     it('恢复计时', async function() {
@@ -35,7 +35,7 @@ describe('timer', () => {
       timer.start();
       await wait(50)
       const time = timer.getTime();
-      assert(time >= 150 && time < 170);
+      assert(time > 140 && time < 170);
     });
 
     it('重置', async function() {
@@ -57,7 +57,7 @@ describe('timer', () => {
       timer.start();
       await wait(100);
       const time = timer.getTime();
-      assert(time >= 100 && time < 110);
+      assert(time > 90 && time < 110);
     });
 
     it('重新计时', async function() {
@@ -68,7 +68,7 @@ describe('timer', () => {
       timer.restart();
       await wait(100);
       const time = timer.getTime();
-      assert(time >= 100 && time < 110);
+      assert(time > 90 && time < 110);
     });
 
     it('暂停状态下重新计时', async function() {
@@ -80,16 +80,17 @@ describe('timer', () => {
       timer.restart();
       await wait(100);
       const time = timer.getTime();
-      assert(time >= 100 && time < 110);
+      assert(time > 90 && time < 110);
     });
 
     it('setTimeout', function(done) {
       this.slow(defaultSlow + 150);
       const timer = new Timer();
       const startTime = Date.now();
-      timer.setTimeout(() => {
+      timer.setTimeout((innerTime) => {
         const time = Date.now() - startTime
-        assert(time >= 150 && time < 160);
+        assert(time > 140 && time < 160);
+        assert(innerTime > 90 && innerTime < 110);
         done();
       }, 100)
       timer.start();
@@ -102,14 +103,16 @@ describe('timer', () => {
       const timer = new Timer();
       const startTime = Date.now();
       let n = 0;
-      const t = timer.setInterval(() => {
+      const t = timer.setInterval((innerTime) => {
         const time = Date.now() - startTime
         switch(n) {
           case 0:
-            assert(time >= 150 && time < 160);
+            assert(time > 140 && time < 160);
+            assert(innerTime > 90 && innerTime < 110);
             break;
           default:
-            assert(time >= 250 && time < 260);
+            assert(time > 240 && time < 260);
+            assert(innerTime > 190 && innerTime < 210);
             done()
         }
         n++

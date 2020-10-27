@@ -59,44 +59,46 @@ class Timer {
     this.start();
   }
 
-  private innerSetTimeout(
-    callback: () => void,
-    time: number,
-    t: ReturnType<typeof setTimeout>,
-  ): void {
-    const handler = {
-      time: this.getTime() + time,
-      callback,
-      t: null,
-    };
-
+  private setHandler(handler: Handler): void {
+    const { time, t, callback } = handler;
     if (this.running) {
-      handler.t = setTimeout(handler.callback, time);
+      handler.t = setTimeout(callback, time - this.getTime());
     }
 
     this.handlers.set(t, handler);
   }
 
-  setTimeout(callback: () => void, time: number): ReturnType<typeof setTimeout> {
+  /**
+   * 设置一段时间后执行 callback
+   * @param {Function} callback callback 第一个参数为计时器记录的时间（并非从调用 setTimeout 开始记录的时间）
+   * @param {Number} time 时间
+   * @return {undefined}
+   */
+  setTimeout(callback: (time: number) => void, time: number): ReturnType<typeof setTimeout> {
     const t = setTimeout(() => null, time);
-    this.innerSetTimeout(
-      () => {
-        callback();
-        this.handlers.delete(t);
-      },
-      time,
-      t,
-    );
+    const wrappedCallback = () => {
+      callback(this.getTime());
+      this.handlers.delete(t);
+    };
+    this.setHandler({ callback: wrappedCallback, time: this.getTime() + time, t });
     return t;
   }
 
-  setInterval(callback: () => void, time: number): ReturnType<typeof setTimeout> {
+  /**
+   * 每隔一段时间执行一次 callback
+   * @param {Function} callback callback 第一个参数为计时器记录的时间（并非从调用 setInterval 开始记录的时间）
+   * @param {Number} time 时间
+   * @return {undefined}
+   */
+  setInterval(callback: (time: number) => void, time: number): ReturnType<typeof setTimeout> {
     const t = setTimeout(() => null, time);
+    let nextTime = time + this.getTime();
     const wrappedCallback = () => {
-      callback();
-      this.innerSetTimeout(callback, time, t);
+      nextTime += time;
+      this.setHandler({ callback: wrappedCallback, time: nextTime, t });
+      callback(this.getTime());
     };
-    this.innerSetTimeout(wrappedCallback, time, t);
+    this.setHandler({ callback: wrappedCallback, time: nextTime, t });
     return t;
   }
 
