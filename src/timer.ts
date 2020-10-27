@@ -25,7 +25,7 @@ class Timer {
     if (this.running) return;
     // 启动所有 handlers
     const curTime = this.getTime();
-    [...this.handlers.values()].forEach((handler) => {
+    Array.from(this.handlers.values()).forEach((handler) => {
       const { callback, time } = handler;
       handler.t = setTimeout(callback, time - curTime);
     });
@@ -41,7 +41,7 @@ class Timer {
     this.accumulationTime += Date.now() - this.startTime;
     this.running = false;
     // 暂停所有 handlers
-    [...this.handlers.values()].forEach((handler) => {
+    Array.from(this.handlers.values()).forEach((handler) => {
       clearTimeout(handler.t);
       handler.t = null;
     });
