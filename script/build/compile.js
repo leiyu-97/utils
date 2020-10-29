@@ -22,6 +22,7 @@ async function compileCjs(input) {
   const compiledCode = await babel.transformAsync(input, {
     sourceType: 'module',
     plugins: [
+      path.resolve(__dirname, './enum-to-object'),
       ['@babel/plugin-transform-typescript', { isTSX: true }],
       '@babel/plugin-proposal-optional-chaining',
       ['@babel/plugin-proposal-class-properties', { loose: true }],
