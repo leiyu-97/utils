@@ -6,8 +6,7 @@ interface Query {
 }
 
 /**
- * @static
- * @summary 解析查询字符串
+ * 解析查询字符串
  * @param {String} query 待解析的查询字符串
  * @return {Object} 查询对象
  */
@@ -29,8 +28,7 @@ export function parse(query: string): Query {
 }
 
 /**
- * @static
- * @summary 将对象转换为查询字符串
+ * 将对象转换为查询字符串
  * @param {Object} obj 查询对象
  * @return {String} 查询字符串
  */

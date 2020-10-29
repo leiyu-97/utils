@@ -9,8 +9,7 @@ interface memorizeOptions<T> {
   cache?: CustomCache<T>;
 }
 /**
- * @static
- * @summary 函数缓存
+ * 函数缓存
  * @param {Function} func 原函数
  * @param {Object} options 配置
  * @param {Class} options.getKey 获取缓存主键的函数
@@ -34,11 +33,8 @@ export function memorize<Param extends any[], T>(
   };
 }
 
-export const a = 1;
-
 /**
- * @static
- * @summary 函数节流
+ * 函数节流
  * @param {Function} func 原函数
  * @param {Number} time 节流时间
  * @return {Function} 添加了节流后的函数
@@ -56,8 +52,7 @@ export function throttle<Param extends any[]>(
 }
 
 /**
- * @static
- * @summary 函数防抖
+ * 函数防抖
  * @param {Function} func 原函数
  * @param {Number} time 防抖时间
  * @return {Function} 添加了防抖后的函数

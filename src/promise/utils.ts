@@ -3,8 +3,7 @@
  */
 
 /**
- * @static
- * @summary 等待一段时间
+ * 等待一段时间
  * @param  {Number} time 等待的毫秒数
  * @return {Promise} Promise
  */
@@ -13,8 +12,7 @@ export function wait(time: number): Promise<void> {
 }
 
 /**
- * @static
- * @summary 为函数添加重试逻辑
+ * 为函数添加重试逻辑
  * @param {Function} func 待重试的函数
  * @param  {Number} times 重试的次数
  * @param  {Number} time 重试的间隔毫秒数
@@ -60,8 +58,7 @@ export function retry<Param extends any[], Result>(
 }
 
 /**
- * @static
- * @summary 为函数设置超时
+ * 为函数设置超时
  * @param {Promise} func 待设置超时的函数
  * @param {Number} time 以毫秒为单位的超时时间
  * @param {Error} [err] 超时时抛出的错误
@@ -81,8 +78,7 @@ export function timeout<Param extends any[], Result>(
 }
 
 /**
- * @static
- * @summary 动态的 Promise.all
+ * 动态的 Promise.all
  * @param {Promise[]} array Promise 数组
  * @return {Promise} 当 array 中所有 Promise 状态都转化为 resolved 后 resolve
  */
@@ -101,8 +97,7 @@ export async function dynamicAll(array: Promise<any>[]): Promise<any[]> {
 
 /* eslint-disable no-console */
 /**
- * @static
- * @summary 打印 Promise 内容后原样返回
+ * 打印 Promise 内容后原样返回
  * @param {Any} data data
  * @return {Any} data
  */
@@ -112,8 +107,7 @@ export function log<T>(data: T): T {
 }
 
 /**
- * @static
- * @summary 打印 Promise 错误后原样抛出
+ * 打印 Promise 错误后原样抛出
  * @param {Any} err err
  * @return {undefined} undefined
  */
@@ -130,8 +124,7 @@ export enum PromiseActions {
 }
 
 /**
- * @static
- * @summary 禁止函数并行执行
+ * 禁止函数并行执行
  * @param {Function} func 函数
  * @param {String} action 并行下的行为，可填 'resolve', 'reject', 'pending'
  * @return {Any} 函数返回结果

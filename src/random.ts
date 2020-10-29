@@ -17,8 +17,7 @@ const uppercase: Range = [0x0041, 0x005a + 1]; // 英文大写字母
 const lowercase: Range = [0x0061, 0x007a + 1]; // 英文小写字母
 
 /**
- * @static
- * @summary 从一组不连续的范围中生成随机数
+ * 从一组不连续的范围中生成随机数
  * @param  {Range} range 范围数组
  * @return {Number} 随机数
  */
@@ -39,8 +38,7 @@ export function discontinuousRandom(...ranges: Array<Range>): number {
 }
 
 /**
- * @static
- * @summary 生成随机字符
+ * 生成随机字符
  * @param {Range} range 范围数组
  * @return {String} 随机字符
  */
@@ -51,8 +49,7 @@ export function randomChar(...ranges: Array<Range>): string {
 }
 
 /**
- * @static
- * @summary 生成随机字符串
+ * 生成随机字符串
  * @param {Number} length 字符串长度
  * @param {Range} range 范围数组
  * @return {String} 随机字符串
@@ -63,8 +60,7 @@ export function randomStr(length: number, ...ranges: Array<Range>): string {
 }
 
 /**
- * @static
- * @summary 生成任意位数的随机数
+ * 生成任意位数的随机数
  * @param {Number} length 位数
  * @return {String} 随机数
  */

@@ -3,8 +3,7 @@
  */
 
 /**
- * @static
- * @summary 分页
+ * 分页
  * @param {Array} array 待排序数组
  * @param {Number} page 页码
  * @param {Number} size 分页数
@@ -15,8 +14,7 @@ export function paging<T>(array: T[], page = 0, size = 15): T[] {
 }
 
 /**
- * @static
- * @summary 排序
+ * 排序
  * @param {Array} array 待排序数组
  * @param {"asc"|"desc"} order 顺序
  * @param {String} identity 排序字段
@@ -41,8 +39,7 @@ export function sort<T>(
 }
 
 /**
- * @static
- * @summary 浅对比数组
+ * 浅对比数组
  * @param {Array} a 对比数组
  * @param {Array} b 对比数组
  * @return {Array} 结果数组
@@ -53,8 +50,7 @@ export function shallowEqual(a: Array<any>, b: Array<any>): boolean {
 }
 
 /**
- * @static
- * @summary 对数组元素进行分类
+ * 对数组元素进行分类
  * @param {Any[]} array 待分类数组
  * @param {String[]|function[]} keys 分类字段或方法，如果参数类型不为数组会转为单元素数组
  * @return {Object[]} result 分类后的数组
@@ -113,8 +109,7 @@ export function classify<T>(
 
 type MultiArray<T> = (T | MultiArray<T>)[];
 /**
- * @static
- * @summary 多维数组转一维数组
+ * 多维数组转一维数组
  * @param {Array} array 多维数组
  * @return {Array} 一维数组
  */
@@ -125,8 +120,7 @@ export function deepFlatten<T>(array: MultiArray<T>): T[] {
 }
 
 /**
- * @static
- * @summary 数组取交集
+ * 数组取交集
  * @param {Array} array 第一个数组
  * @param {Array} other 第二个数组
  * @return {Array} 交集数组

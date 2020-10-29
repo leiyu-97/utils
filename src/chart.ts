@@ -4,8 +4,7 @@ type Point = [number, number];
 type PointWithGradient = [number, number, number];
 
 /**
- * @static
- * @summary 线性插值
+ * 线性插值
  * @param {Array} param0 第一个点
  * @param {Number} param0.0 x0，该点的 x 坐标
  * @param {Number} param0.1 y0，该点的 y 坐标
@@ -22,8 +21,7 @@ export function linearInterpolation(
 }
 
 /**
- * @static
- * @summary 三次 Hermite 插值
+ * 三次 Hermite 插值
  * @param {Array} param0 第一个点
  * @param {Number} param0.0 x0，该点的 x 坐标
  * @param {Number} param0.1 y0，该点的 y 坐标
@@ -46,8 +44,7 @@ export function cubicHermiteInterpolation(
 }
 
 /**
- * @static
- * @summary 缓动函数
+ * 缓动函数
  * @param {Number} t 1 > t > 0
  * @return {Function} 插值函数
  */

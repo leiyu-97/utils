@@ -12,8 +12,7 @@ interface lazyLoadOptions {
 }
 
 /**
- * @static
- * @summary 添加懒加载的监听方法
+ * 添加懒加载的监听方法
  * @param {Object} options 选项
  * @param {Number} options.debounceTime 防抖时间
  * @param {Function} opions.getSrc 获取真实 src 的方法，接受 image 元素作为参数，默认为获取 image.dataset.src

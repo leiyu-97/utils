@@ -33,8 +33,7 @@ export const DAY = 24 * HOUR;
 export const WEEK = 7 * DAY;
 
 /**
- * @static
- * @summary 日期格式化，格式参考 https://www.php.net/manual/zh/function.date.php
+ * 日期格式化，格式参考 https://www.php.net/manual/zh/function.date.php
  * @param {Date|String|Number} dateStr 需要格式化的日期
  * @param {String} format 格式
  * @returns {String} 格式化后的字符串

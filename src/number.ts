@@ -3,8 +3,7 @@
  */
 
 /**
- * @static
- * @summary 对比两个浮点数是否相等
+ * 对比两个浮点数是否相等
  *
  * 参考 [https://zh.wikipedia.org/wiki/%E8%AF%AF%E5%B7%AE%E4%BC%A0%E6%92%AD](误差传递公式)
  * @param {Number} a 待对比数字

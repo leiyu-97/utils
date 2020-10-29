@@ -3,8 +3,7 @@ import React, { ComponentType, FunctionComponent } from "react";
 import useControllable from "./useControllable";
 
 /**
- * @static
- * @summary 将一个完全受控组件转化为可受控组件
+ * 将一个完全受控组件转化为可受控组件
  * @param {React.Component} Component 完全受控组件
  * @param {Object} [options] 选项
  * @param {String} [options.valueKey="value"] value 的键名

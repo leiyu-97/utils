@@ -9,8 +9,7 @@ const DOCUMENT_POSITION_CONTAINS = 8;
 const DOCUMENT_POSITION_CONTAINED_BY = 16;
 
 /**
- * @static
- * @summary 判断元素是否为另一元素的子元素
+ * 判断元素是否为另一元素的子元素
  * @param {HTMLElement} child 子元素
  * @param {HTMLElement} parent 父元素
  * @return {Boolean} child 是否为 parent 的子元素
@@ -20,8 +19,7 @@ export function isChildOf(child: HTMLElement, parent: HTMLElement): boolean {
 }
 
 /**
- * @static
- * @summary 判断元素是否为另一元素的父元素
+ * 判断元素是否为另一元素的父元素
  * @param {HTMLElement} parent 父元素
  * @param {HTMLElement} child 子元素
  * @return {Boolean} parent 是否为 child 的父元素
@@ -33,8 +31,7 @@ export function isParentOf(parent: HTMLElement, child: HTMLElement): boolean {
 }
 
 /**
- * @static
- * @summary 获取元素的总 scrollTop
+ * 获取元素的总 scrollTop
  * @param {HTMLElement} ele 元素
  * @param {HTMLElement} endpoint 终点
  * @return {Number} scrollTop
@@ -50,8 +47,7 @@ export function getScrollTop(
 }
 
 /**
- * @static
- * @summary 获取元素的总 scrollLeft
+ * 获取元素的总 scrollLeft
  * @param {HTMLElement} ele 元素
  * @param {HTMLElement} endpoint 终点
  * @return {Number} scrollLeft
@@ -67,8 +63,7 @@ export function getScrollLeft(
 }
 
 /**
- * @static
- * @summary 获取多个元素最低的共同父元素
+ * 获取多个元素最低的共同父元素
  * @param  {...HTMLElement} eles 元素
  * @return {HTMLElement} 最低共同父元素
  */
@@ -84,8 +79,7 @@ export function getCommonParent(...eles: HTMLElement[]): HTMLElement | null {
 }
 
 /**
- * @static
- * @summary 获取元素的相对于另一元素的 offsetTop
+ * 获取元素的相对于另一元素的 offsetTop
  * @param {HTMLElement} a 元素 a
  * @param {HTMLElement} b 元素 b
  * @return {Number} offsetTop
@@ -109,8 +103,7 @@ export function getOffsetTop(
 }
 
 /**
- * @static
- * @summary 获取元素的相对于另一元素的 offsetLeft
+ * 获取元素的相对于另一元素的 offsetLeft
  * @param {HTMLElement} a 元素 a
  * @param {HTMLElement} b 元素 b
  * @return {Number} offsetLeft
@@ -134,8 +127,7 @@ export function getOffsetLeft(
 }
 
 /**
- * @static
- * @summary 获取元素的第一个可滚动父元素
+ * 获取元素的第一个可滚动父元素
  * @param {HTMLElement} ele 元素
  * @return {HTMLElement|Null} 第一个可滚动父元素
  */
@@ -148,8 +140,7 @@ export function getScrollParent(ele: HTMLElement): HTMLElement | null {
 }
 
 /**
- * @static
- * @summary 判断元素是否在视口内
+ * 判断元素是否在视口内
  * @param {HTMLElement} ele 元素
  * @param {HTMLElement} endpoint 终点
  * @return {Boolean} 元素是否在视口内

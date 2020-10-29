@@ -4,8 +4,7 @@
 import os from 'os';
 
 /**
- * @static
- * @summary 获取本机 IP
+ * 获取本机 IP
  * @return {String} 本机 IP
  */
 export function getIPAddress(): string | undefined {
@@ -29,8 +28,7 @@ export function getIPAddress(): string | undefined {
 }
 
 /**
- * @static
- * @summary 获取十六进制的本机 IP
+ * 获取十六进制的本机 IP
  * @return {String} 十六进制的本机 IP
  */
 export function getHexIPAddress(): string | undefined {

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "doc": "jsdoc -c .jsdocrc",
+    "doc": "typedoc",
     "build": "bin/build",
     "test:unit": "mocha --config ./test/.mocharc.js",
     "test:browser": "node script/test/browserTest.js",
@@ -57,9 +57,6 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-react": "^7.20.6",
-    "ink-docstrap": "^1.3.2",
-    "jsdoc": "^3.6.3",
-    "jsdoc-template": "^1.2.0",
     "jsdom": "^16.4.0",
     "koa": "^2.13.0",
     "koa-static": "^5.0.0",
@@ -73,6 +70,9 @@
     "rollup": "^2.17.0",
     "rollup-plugin-istanbul": "^2.0.1",
     "sinon": "^9.0.2",
+    "typedoc": "^0.19.2",
+    "typedoc-neo-theme": "^1.0.10",
+    "typedoc-plugin-external-module-name": "^4.0.3",
     "typescript": "^3.9.7",
     "uuid": "^8.3.0"
   },

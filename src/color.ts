@@ -204,8 +204,7 @@ const rgbaRegExp = objectToRegExp(exact(rgbaExp), 'i');
 const hexColorRegExp = objectToRegExp(exact(hexColorExp), 'i');
 
 /**
- * @static
- * @summary 解析颜色字符串
+ * 解析颜色字符串
  * @param {String} color 颜色字符串
  * @return {Object} data
  * @return {Number} data.red 红色值
