@@ -8,6 +8,7 @@ const parseDeps = require('./parseDeps');
 const rimrafAsync = promisify(rimraf);
 
 const baseDir = path.resolve(__dirname, '../../');
+const sourceDir = path.join(baseDir, '/src');
 const distDir = path.join(baseDir, '/dist');
 
 async function processFile(file, type) {
@@ -15,15 +16,15 @@ async function processFile(file, type) {
   const extname = path.extname(file);
   const basename = path.basename(file).replace(extname, '');
   const isReact = extname === '.jsx' || extname === '.tsx';
-  if (!dirname.startsWith(baseDir)) {
+  if (!dirname.startsWith(sourceDir)) {
     throw new Error('引用了 src 以外目录的文件');
   }
-  const innerDirname = dirname.replace(`${baseDir}/`, '');
+  const innerDirname = dirname.replace(sourceDir, '');
   let targetExtname = extname;
   if (type !== 'raw') {
     targetExtname = isReact ? '.jsx' : '.js';
   }
-  const target = `${distDir}/${type}/${innerDirname}/${basename}${targetExtname}`;
+  const target = `${distDir}/${type}${innerDirname}/${basename}${targetExtname}`;
 
   try {
     await compile({
@@ -32,9 +33,9 @@ async function processFile(file, type) {
       type,
       isReact,
     });
-    console.log(`src/${innerDirname}/${basename}${extname}`, '=>', `dist/${innerDirname}/${basename}${targetExtname}`);
+    console.log(`src${innerDirname}/${basename}${extname}`, '=>', `dist${innerDirname}/${basename}${targetExtname}`);
   } catch (e) {
-    console.log(`src/${innerDirname}/${basename}${extname} compile to ${type} error:`);
+    console.log(`src${innerDirname}/${basename}${extname} compile to ${type} error:`);
     console.error(e);
   }
 }
