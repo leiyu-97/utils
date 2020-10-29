@@ -7,12 +7,7 @@ import CustomCache from './Cache';
  * 使用 Map 的缓存
  */
 class MapCache<T> extends CustomCache<T> {
-  private _cache: Map<string, T>;
-
-  constructor() {
-    super();
-    this._cache = new Map<string, T>();
-  }
+  private cache = new Map<string, T>();
 
   /**
    * @summary 设置缓存
@@ -21,7 +16,7 @@ class MapCache<T> extends CustomCache<T> {
    * @return {undefined}
    */
   public set(key: string, value: T): void {
-    this._cache.set(key, value);
+    this.cache.set(key, value);
   }
 
   /**
@@ -30,7 +25,7 @@ class MapCache<T> extends CustomCache<T> {
    * @return {Any} 缓存值
    */
   public get(key: string): T | undefined {
-    return this._cache.get(key);
+    return this.cache.get(key);
   }
 
   /**
@@ -39,7 +34,7 @@ class MapCache<T> extends CustomCache<T> {
    * @return {undefined}
    */
   public remove(key: string): void {
-    this._cache.delete(key);
+    this.cache.delete(key);
   }
 
   /**
@@ -47,7 +42,7 @@ class MapCache<T> extends CustomCache<T> {
    * @return {undefined}
    */
   public clear(): void {
-    this._cache.clear();
+    this.cache.clear();
   }
 }
 

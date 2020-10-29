@@ -1,6 +1,7 @@
 /**
  * @module cache
  */
+import CustomCache from './Cache';
 import MapCache from './MapCache';
 
 interface TimeLimitedCacheOptions {
@@ -13,10 +14,10 @@ interface TimeLimitedCacheValue<T> {
 /**
  * 有过期时间的缓存
  */
-class TimeLimitedCache<T> extends MapCache<
-  T | TimeLimitedCacheValue<T>
-> {
-  private _maxAge: number;
+class TimeLimitedCache<T> extends CustomCache<T> {
+  private maxAge: number;
+
+  private cache = new MapCache<TimeLimitedCacheValue<T>>()
 
   /**
    * @param {Object} options 选项
@@ -24,7 +25,7 @@ class TimeLimitedCache<T> extends MapCache<
    */
   constructor({ maxAge = Infinity }: TimeLimitedCacheOptions = {}) {
     super();
-    this._maxAge = maxAge;
+    this.maxAge = maxAge;
   }
 
   /**
@@ -34,8 +35,8 @@ class TimeLimitedCache<T> extends MapCache<
    * @param {Number} [maxAge] 过期时间，会覆盖默认的过期时间
    * @return {undefined}
    */
-  public set(key: string, value: T, maxAge: number = this._maxAge): void {
-    super.set(key, { value, expiresAt: Date.now() + maxAge });
+  public set(key: string, value: T, maxAge: number = this.maxAge): void {
+    this.cache.set(key, { value, expiresAt: Date.now() + maxAge });
   }
 
   /**
@@ -44,11 +45,28 @@ class TimeLimitedCache<T> extends MapCache<
    * @return {Any} 缓存值
    */
   public get(key: string): T | undefined {
-    const result = super.get(key) as TimeLimitedCacheValue<T>;
+    const result = this.cache.get(key) as TimeLimitedCacheValue<T>;
     if (!result) return undefined;
     const { value, expiresAt } = result;
     if (Date.now() > expiresAt) return undefined;
     return value;
+  }
+
+  /**
+   * @summary 移除缓存
+   * @param {Any} key 缓存主键
+   * @return {undefined}
+   */
+  public remove(key: string): void {
+    this.cache.remove(key);
+  }
+
+  /**
+   * @summary 清空缓存
+   * @return {undefined}
+   */
+  public clear(): void {
+    this.cache.clear();
   }
 }
 
