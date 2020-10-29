@@ -10,6 +10,7 @@ async function compileEsm(input) {
   const compiledCode = await babel.transformAsync(input, {
     sourceType: 'module',
     plugins: [
+      path.resolve(__dirname, './enum-to-object'),
       ['@babel/plugin-transform-typescript', { isTSX: true }],
       ['@babel/plugin-proposal-class-properties', { loose: true }],
     ],
