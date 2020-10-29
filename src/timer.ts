@@ -119,6 +119,12 @@ class Timer {
     if (this.running) time += Date.now() - this.startTime;
     return time;
   }
+
+  getRestTime(t: ReturnType<typeof setTimeout>): null | number {
+    const handler = this.handlers.get(t);
+    if (!handler) return null;
+    return handler.time - this.getTime();
+  }
 }
 
 export default Timer;
