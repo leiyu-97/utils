@@ -3,11 +3,7 @@
  * 而是将 esm 写法转为 cjs 写法，因此在 default 的处理上会有不同
  * 在 esm 中 export default 在 cjs 中会变为 module.exports =
  */
-
-function replace(path, newPath) {
-  newPath.forEach((item) => path.insertBefore(item));
-  path.remove();
-}
+const { replacePath } = require('./utils');
 
 module.exports = function ({ types: t }) {
   return {
@@ -30,7 +26,7 @@ module.exports = function ({ types: t }) {
           requireExpression,
         ]);
         newPath.push(t.expressionStatement(expression));
-        replace(path, newPath);
+        replacePath(path, newPath);
       },
       ExportDefaultDeclaration(path) {
         // export default a;
@@ -54,7 +50,7 @@ module.exports = function ({ types: t }) {
         }
         const expression = t.assignmentExpression('=', left, right);
         newPath.push(t.expressionStatement(expression));
-        replace(path, newPath);
+        replacePath(path, newPath);
       },
       ExportNamedDeclaration(path) {
         const newPath = [];
@@ -104,7 +100,7 @@ module.exports = function ({ types: t }) {
             newPath.push(t.expressionStatement(expression));
           });
         }
-        replace(path, newPath);
+        replacePath(path, newPath);
       },
       ImportDeclaration(path) {
         const newPath = [];
@@ -139,7 +135,7 @@ module.exports = function ({ types: t }) {
           newPath.push(t.variableDeclaration('const', declarations));
         }
 
-        replace(path, newPath);
+        replacePath(path, newPath);
       },
     },
   };
