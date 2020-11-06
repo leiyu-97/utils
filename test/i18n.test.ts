@@ -1,4 +1,4 @@
-import { assert } from 'console';
+import assert from 'power-assert';
 import { getClosestLang } from '../src/i18n'
 
 const langs = [
