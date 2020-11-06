@@ -21,6 +21,7 @@ module.exports = {
       2,
       { devDependencies: ['test/**/*', 'script/**/*', 'bin/**/*', './*'] },
     ],
+    'max-len': [1, 120],
     'import/extensions': [
       'error',
       'ignorePackages',
