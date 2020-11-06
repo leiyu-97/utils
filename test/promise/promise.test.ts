@@ -5,8 +5,6 @@ import {
   timeout,
   retry,
   dynamicAll,
-  log,
-  error,
   noParallel,
 } from '../../src/promise';
 import { slow as defaultSlow } from '../.mocharc';
@@ -138,42 +136,6 @@ describe('promise', () => {
         assert(index === 2);
         done();
       });
-    });
-  });
-
-  describe('log', () => {
-    beforeEach(function () {
-      this.sinon.stub(console, 'log');
-    });
-
-    it('数据正常打印', () => {
-      Promise.resolve({ foo: 'bar' })
-        .then(log)
-        .then(() => assert((console.log as any).calledOnce));
-    });
-
-    it('对业务无影响', () => {
-      Promise.resolve({ foo: 'bar' })
-        .then(log)
-        .then((data) => assert(data.foo === 'bar'));
-    });
-  });
-
-  describe('error', () => {
-    beforeEach(function () {
-      this.sinon.stub(console, 'error');
-    });
-
-    it('数据正常打印', () => {
-      Promise.reject(new Error('foo'))
-        .catch(error)
-        .catch(() => assert((console.error as any).calledOnce));
-    });
-
-    it('对业务无影响', () => {
-      Promise.reject(new Error('foo'))
-        .catch(error)
-        .catch((e) => assert(e.message === 'foo'));
     });
   });
 

@@ -95,28 +95,6 @@ export async function dynamicAll(array: Promise<any>[]): Promise<any[]> {
   return result;
 }
 
-/* eslint-disable no-console */
-/**
- * 打印 Promise 内容后原样返回
- * @param {Any} data data
- * @return {Any} data
- */
-export function log<T>(data: T): T {
-  console.log(data);
-  return data;
-}
-
-/**
- * 打印 Promise 错误后原样抛出
- * @param {Any} err err
- * @return {undefined} undefined
- */
-export function error<T>(err: T): never {
-  console.error(err);
-  throw err;
-}
-/* eslint-enable no-console */
-
 export enum PromiseActions {
   resolve = 'resolve',
   reject = 'reject',
