@@ -5,6 +5,6 @@ module.exports = {
   recursive: true,
   require: [path.resolve(__dirname, './babel-register')],
   spec: ["test/**/*.test.js", "test/**/*.test.ts"],
-  exclude: ["test/browser/**/*.js", "test/react/**/*.js"],
-  extension: ["js", "jsx", "ts", "tsx"],
+  exclude: ["test/browser/**/*.js", "test/react/**/*.*", "test/vue/**/*.*"],
+  extension: ["js", "ts"],
 };
