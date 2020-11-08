@@ -3,6 +3,7 @@
  */
 import CustomCache from '../cache/Cache';
 import MapCache from '../cache/MapCache';
+import { AnyFunc } from '../typescript/utilityTypes';
 
 interface memorizeOptions<T> {
   getKey?: (...args: any[]) => string;
@@ -16,17 +17,17 @@ interface memorizeOptions<T> {
  * @param {Object} options.cache 缓存对象
  * @return {Any} 函数结果
  */
-export function memorize<Param extends any[], T>(
-  func: (...args: Param) => T,
-  options: memorizeOptions<T> = {},
-): (...args: Param) => T {
-  const { getKey = JSON.stringify, cache = new MapCache<T>() } = options;
+export function memorize<T extends AnyFunc>(
+  func: T,
+  options: memorizeOptions<ReturnType<T>> = {},
+): (...args: Parameters<T>) => ReturnType<T> {
+  const { getKey = JSON.stringify, cache = new MapCache<ReturnType<T>>() } = options;
 
-  return function (...param) {
-    const key: string = getKey(...param);
-    let value: T = cache.get(key);
+  return function (...param: Parameters<T>): ReturnType<T> {
+    const key: string = getKey(...param as any[]);
+    let value: ReturnType<T> = cache.get(key);
     if (value === undefined) {
-      value = func.call(this, ...param);
+      value = func.apply(this, param);
       cache.set(key, value);
     }
     return value;
@@ -39,15 +40,15 @@ export function memorize<Param extends any[], T>(
  * @param {Number} time 节流时间
  * @return {Function} 添加了节流后的函数
  */
-export function throttle<Param extends any[]>(
-  func: (...args: Param) => void,
+export function throttle<T extends AnyFunc>(
+  func: (...args: Parameters<T>) => void,
   time: number,
-): (...args: Param) => void {
+): (...args: Parameters<T>) => void {
   let releaseTime = 0;
-  return function (...params: Param): void {
+  return function (...params: Parameters<T>): void {
     if (Date.now() < releaseTime) return;
     releaseTime = Date.now() + time;
-    func.call(this, ...params);
+    func.apply(this, params);
   };
 }
 
@@ -57,13 +58,15 @@ export function throttle<Param extends any[]>(
  * @param {Number} time 防抖时间
  * @return {Function} 添加了防抖后的函数
  */
-export function debounce<Param extends any[]>(
-  func: (...args: Param) => void,
+export function debounce<T extends AnyFunc>(
+  func: (...args: Parameters<T>) => void,
   time: number,
-): (...args: Param) => void {
-  let t;
-  return function (...params: Param) {
+): (...args: Parameters<T>) => void {
+  let t: ReturnType<typeof setTimeout>;
+  return function (...params: Parameters<T>) {
     if (t) clearTimeout(t);
-    t = setTimeout(func.bind(this, ...params), time);
+    t = setTimeout(() => {
+      func.apply(this, params);
+    }, time);
   };
 }

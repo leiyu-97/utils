@@ -2,6 +2,10 @@
  * @module promise
  */
 
+import {
+  AnyAsyncFunc, AnyFunc, AwaitReturnType, AwaitType, EleType,
+} from '../typescript/utilityTypes';
+
 /**
  * 等待一段时间
  * @param  {Number} time 等待的毫秒数
@@ -13,21 +17,23 @@ export function wait(time: number): Promise<void> {
 
 /**
  * 为函数添加重试逻辑
- * @param {Function} func 待重试的函数
- * @param  {Number} times 重试的次数
- * @param  {Number} time 重试的间隔毫秒数
- * @return {Function} 带重试的函数
+ * @param func 待重试的函数
+ * @param times 重试的次数
+ * @param time 重试的间隔毫秒数
+ * @return 带重试的函数
  */
-export function retry<Param extends any[], Result>(
-  func: (...args: Param) => Result | Promise<Result>,
+export function retry<T extends AnyFunc>(
+  func: T,
   times = 1,
   time = 0,
-): (...args: Param) => Promise<Result> {
-  return async function (...args: Param): Promise<Result> {
+): (...args: Parameters<T>) => Promise<AwaitReturnType<T>> {
+  return async function (...args: Parameters<T>): Promise<AwaitReturnType<T>> {
+    let syncResult: ReturnType<T> | Promise<AwaitReturnType<T>>;
+    let asyncResult: AwaitReturnType<T>;
+
     // 同步函数
-    let result: Result | Promise<Result>;
     try {
-      result = func.call(this, ...args);
+      syncResult = func.apply(this, args) as ReturnType<T>;
     } catch (e) {
       if (times > 0) {
         await wait(time);
@@ -35,56 +41,64 @@ export function retry<Param extends any[], Result>(
       }
 
       // 重试次数用尽
-      return Promise.reject(e);
+      throw e;
     }
 
     // 异步函数
-    if (result instanceof Promise) {
+    if (syncResult instanceof Promise) {
       if (times > 0) {
         try {
-          await result;
+          asyncResult = await syncResult;
         } catch (e) {
           await wait(time);
           return retry(func, times - 1, time)(...args);
         }
-      }
 
-      // 重试次数用尽
-      return result;
+        return asyncResult;
+      }
     }
 
-    return Promise.resolve(result);
+    return syncResult as AwaitReturnType<T>;
   };
+}
+
+/** timeout 函数中标识超时的错误 */
+export class TimeoutError extends Error {
+  constructor(message = 'timeout') {
+    super(message);
+  }
 }
 
 /**
  * 为函数设置超时
- * @param {Promise} func 待设置超时的函数
- * @param {Number} time 以毫秒为单位的超时时间
- * @param {Error} [err] 超时时抛出的错误
- * @returns {Function} 带超时的函数
+ * @param func 待设置超时的函数
+ * @param time 以毫秒为单位的超时时间
+ * @param onTimeout 超时时的处理逻辑
+ *
+ * @returns 带超时的函数
  */
-export function timeout<Param extends any[], Result>(
-  func: (...args: Param) => Result,
-  time: number,
-  err = new Error('timeout'),
+export function timeout<T extends AnyAsyncFunc>(
+  func: T,
+  time = 0,
+  onTimeout = () => Promise.reject(new TimeoutError()),
 ) {
-  return function (...args: Param): Promise<Result> {
-    return Promise.race([
-      func.call(this, ...args),
-      wait(time).then(() => Promise.reject(err)),
-    ]);
+  return function (...args: Parameters<T>): ReturnType<T> {
+    const tasks = [func.apply(this, args)];
+    if (time > 0) {
+      tasks.push(wait(time).then(onTimeout));
+    }
+    return Promise.race(tasks) as ReturnType<T>;
   };
 }
 
 /**
  * 动态的 Promise.all
- * @param {Promise[]} array Promise 数组
- * @return {Promise} 当 array 中所有 Promise 状态都转化为 resolved 后 resolve
+ * @param array Promise 数组
+ * @return 当 array 中所有 Promise 状态都转化为 resolved 后 resolve
  */
-export async function dynamicAll(array: Promise<any>[]): Promise<any[]> {
+export async function dynamicAll(array: Promise<any>[]): Promise<EleType<typeof array>> {
   let { length } = array;
-  let result: any[];
+  let result: AwaitType<EleType<typeof array>>;
   while (true) {
     result = await Promise.all(array); // eslint-disable-line no-await-in-loop
     if (array.length === length) {
@@ -98,7 +112,7 @@ export async function dynamicAll(array: Promise<any>[]): Promise<any[]> {
 export enum PromiseActions {
   resolve = 'resolve',
   reject = 'reject',
-  pending = 'pending'
+  pending = 'pending',
 }
 
 /**
@@ -107,12 +121,12 @@ export enum PromiseActions {
  * @param {String} action 并行下的行为，可填 'resolve', 'reject', 'pending'
  * @return {Any} 函数返回结果
  */
-export function noParallel<Param extends any[], Result>(
-  func: (...args: Param) => Result | Promise<Result>,
+export function noParallel<T extends AnyFunc>(
+  func: T,
   action: PromiseActions = PromiseActions.pending,
-): (...args: Param) => Promise<Result|void> {
+): (...args: Parameters<typeof func>) => ReturnType<typeof func> | Promise<void> {
   let pending = false;
-  return function (...param: Param): Promise<Result | void> {
+  return function (...params: Parameters<typeof func>): ReturnType<typeof func> | Promise<void> {
     if (pending) {
       switch (action) {
         case PromiseActions.resolve:
@@ -126,7 +140,7 @@ export function noParallel<Param extends any[], Result>(
       }
     }
     pending = true;
-    const result = func.call(this, ...param);
+    const result = func.apply(this, params);
 
     if (result instanceof Promise) {
       result.then(() => {

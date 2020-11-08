@@ -2,6 +2,7 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'airbnb-base',
+    'plugin:@typescript-eslint/recommended',
   ],
   rules: {
     'no-param-reassign': [2, { props: false }],
@@ -21,6 +22,7 @@ module.exports = {
       2,
       { devDependencies: ['test/**/*', 'script/**/*', 'bin/**/*', './*'] },
     ],
+    'function-paren-newline': 0,
     'max-len': [1, 120],
     'import/extensions': [
       'error',
