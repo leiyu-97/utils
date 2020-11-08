@@ -1,5 +1,5 @@
 const assert = require('assert');
-import MapCache from '../../src/cache/MapCache';
+import MapCache from '../../../src/common/cache/MapCache';
 
 describe('cache', () => {
   describe('MapCache', () => {

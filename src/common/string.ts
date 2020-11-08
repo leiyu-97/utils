@@ -1,4 +1,4 @@
-import { fullwidth } from './charCodes';
+import { fullwidth } from './common/charCodes';
 import Range from './range';
 
 const fullwidthRange = new Range(fullwidth);

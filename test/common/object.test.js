@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { optionalGet, optionalSet, unentries } = require('../src/object');
+const { optionalGet, optionalSet, unentries } = require('../../src/common/object');
 
 describe('object', () => {
   describe('optionalGet', () => {

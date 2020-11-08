@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { isEqual } = require('../src/number');
+const { isEqual } = require('../../src/common/number');
 
 describe('number', () => {
   describe('isEqual', () => {

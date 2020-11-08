@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
-import { deepFlatten } from './array';
+import { deepFlatten } from '../common/array';
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);

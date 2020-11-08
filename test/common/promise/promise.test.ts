@@ -6,7 +6,7 @@ import {
   retry,
   dynamicAll,
   noParallel,
-} from '../../src/promise';
+} from '../../../src/common/promise';
 import { slow as defaultSlow } from '../.mocharc';
 
 describe('promise', () => {

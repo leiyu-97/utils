@@ -1,6 +1,6 @@
 const assert = require('assert');
-const TimeLimitedCache = require('../../src/cache/TimeLimitedCache');
-const { wait } = require('../../src/promise');
+const TimeLimitedCache = require('../../../src/common/cache/TimeLimitedCache');
+const { wait } = require('../../../src/common/promise');
 const { slow: defaultSlow } = require('../.mocharc');
 
 describe('cache', () => {

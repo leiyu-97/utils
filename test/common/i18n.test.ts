@@ -1,5 +1,5 @@
 import assert from 'power-assert';
-import { getClosestLang } from '../src/i18n'
+import { getClosestLang } from '../../src/common/i18n'
 
 const langs = [
   'zh-Hant-TW',

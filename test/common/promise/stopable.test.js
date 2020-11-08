@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { Stopable, wait } = require('../../src/promise');
+const { Stopable, wait } = require('../../../src/common/promise');
 const { slow: defaultSlow } = require('../.mocharc');
 
 describe('promise', () => {

@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { computeDistance } = require('../src/location');
+const { computeDistance } = require('../../src/common/location');
 
 describe('location', () => {
   describe('computeDistance', () => {

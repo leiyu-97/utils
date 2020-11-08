@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { getHexIPAddress, getIPAddress } = require('../src/os');
+const { getHexIPAddress, getIPAddress } = require('../../src/node/os');
 
 describe('os', () => {
   describe('getIPAddress', () => {

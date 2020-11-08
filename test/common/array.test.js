@@ -1,7 +1,7 @@
 const assert = require('assert');
 const {
   paging, shallowEqual, sort, classify,deepFlatten,unite
-} = require('../src/array');
+} = require('../../src/common/array');
 
 describe('array', () => {
   describe('paging', () => {

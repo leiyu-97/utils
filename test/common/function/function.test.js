@@ -1,6 +1,6 @@
 const assert = require('assert');
-const { memorize, throttle, debounce } = require('../../src/function');
-const { wait } = require('../../src/promise');
+const { memorize, throttle, debounce } = require('../../../src/common/function');
+const { wait } = require('../../../src/common/promise');
 const { slow: defaultSlow } = require('../.mocharc');
 
 describe('function', () => {

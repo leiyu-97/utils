@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { parse, stringify } = require('../src/querystring');
+const { parse, stringify } = require('../../src/common/querystring');
 
 describe('querystring', () => {
   describe('parse', () => {

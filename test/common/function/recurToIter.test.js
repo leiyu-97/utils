@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { recurToIter } = require('../../src/function');
+const { recurToIter } = require('../../../src/common/function');
 
 describe('function', () => {
   describe('recursiveToIteration', () => {

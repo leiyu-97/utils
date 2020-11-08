@@ -1,6 +1,6 @@
 const assert = require('assert');
-const { parseColor, RGBToHex } = require('../src/color');
-const { shallowEqual } = require('../src/object');
+const { parseColor, RGBToHex } = require('../../src/common/color');
+const { shallowEqual } = require('../../src/common/object');
 
 describe('color', () => {
   describe('parseColor', () => {

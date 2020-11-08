@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 const assert = require('assert');
 const stream = require('stream');
-const { readAll, combine } = require('../src/stream');
+const { readAll, combine } = require('../../src/node/stream');
 
 class TestReadable extends stream.Readable {
   constructor(string) {

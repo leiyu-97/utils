@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Url from '../src/url';
+import Url from '../../src/common/url';
 
 describe('path', () => {
   describe('Url', () => {

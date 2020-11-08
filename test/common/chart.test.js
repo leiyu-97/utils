@@ -1,7 +1,7 @@
 const assert = require('assert');
-const { linearInterpolation, cubicHermiteInterpolation, fade } = require('../src/chart');
-const { isEqual } = require('../src/number');
-const { repeat } = require('../src/base');
+const { linearInterpolation, cubicHermiteInterpolation, fade } = require('../../src/common/chart');
+const { isEqual } = require('../../src/common/number');
+const { repeat } = require('../../src/common/base');
 
 describe('chart', () => {
   describe('linearInterpolation', () => {

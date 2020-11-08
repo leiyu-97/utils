@@ -1,6 +1,6 @@
 import assert from 'power-assert';
-import Timer from '../src/timer'
-import { wait } from '../src/promise'
+import Timer from '../../src/common/timer'
+import { wait } from '../../src/common/promise'
 import { slow as defaultSlow } from './.mocharc';
 
 describe('timer', () => {

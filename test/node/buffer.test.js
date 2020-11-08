@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { split } = require('../src/buffer');
+const { split } = require('../../src/node/buffer');
 
 describe('buffer', () => {
   describe('split', () => {
