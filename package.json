@@ -15,7 +15,7 @@
     "debug:browser": "node script/test/browserDebug.js",
     "debug:react": "npm run test:react -- --inspect-brk",
     "cover:common": "nyc --silent npm run test:common",
-    "cover:node": "nyc --silent npm run test:node",
+    "cover:node": "nyc --silent --no-clean npm run test:node",
     "cover:browser": "nyc --silent --no-clean npm run test:browser",
     "cover:react": "nyc --silent --no-clean npm run test:react",
     "cover:report": "nyc report --reporter=html --reporter=text --temp-dir .nyc_output",
