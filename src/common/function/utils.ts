@@ -3,7 +3,7 @@
  */
 import CustomCache from '../cache/Cache';
 import MapCache from '../cache/MapCache';
-import { AnyFunc } from '../typescript/utilityTypes';
+import { AnyFunc } from '../../typescript/utilityTypes';
 
 interface memorizeOptions<T> {
   getKey?: (...args: any[]) => string;

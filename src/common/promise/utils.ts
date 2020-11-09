@@ -4,7 +4,7 @@
 
 import {
   AnyAsyncFunc, AnyFunc, AwaitReturnType, AwaitType, EleType,
-} from '../typescript/utilityTypes';
+} from '../../typescript/utilityTypes';
 
 /**
  * 等待一段时间
