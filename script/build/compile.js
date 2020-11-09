@@ -12,7 +12,6 @@ async function compileEsm(input) {
     plugins: [
       path.resolve(__dirname, './enum-to-object'),
       ['@babel/plugin-transform-typescript', { isTSX: true }],
-      ['@babel/plugin-proposal-class-properties', { loose: true }],
     ],
   });
   return compiledCode.code;

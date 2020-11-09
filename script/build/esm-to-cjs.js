@@ -17,14 +17,8 @@ module.exports = function ({ types: t }) {
         const { source } = node;
         const callee = t.identifier('require');
         const requireExpression = t.callExpression(callee, [source]);
-        const objectAssign = t.memberExpression(
-          t.identifier('Object'),
-          t.identifier('assign'),
-        );
-        const expression = t.callExpression(objectAssign, [
-          t.identifier('exports'),
-          requireExpression,
-        ]);
+        const objectAssign = t.memberExpression(t.identifier('Object'), t.identifier('assign'));
+        const expression = t.callExpression(objectAssign, [t.identifier('exports'), requireExpression]);
         newPath.push(t.expressionStatement(expression));
         replacePath(path, newPath);
       },
@@ -61,11 +55,11 @@ module.exports = function ({ types: t }) {
           // =>
           // exports.bar = require('./foo').foo
           const requirement = t.callExpression(t.identifier('require'), [source]);
-          specifiers.forEach((specify) => {
-            const { local, exported } = specify;
+          specifiers.forEach((specifier) => {
+            const { local, exported } = specifier;
             const left = t.memberExpression(t.identifier('exports'), exported);
             let right;
-            if (t.isIdentifier(local, { name: 'default' })) {
+            if (t.isIdentifier(local, { name: 'default' }) || t.isExportNamespaceSpecifier(specifier)) {
               // 由于 export default 时是直接覆盖了 module.exports
               // 因此在 import 的时候也不需要在后面加 .default
               right = requirement;
@@ -115,7 +109,8 @@ module.exports = function ({ types: t }) {
           (t.isImportDefaultSpecifier(specifier) || t.isImportNamespaceSpecifier(specifier)
             ? defaultSpecifiers
             : nonDefaultSpecifiers
-          ).push(specifier));
+          ).push(specifier),
+        );
         // import bar from './foo'
         // =>
         // const bar = require('./foo')
@@ -128,8 +123,7 @@ module.exports = function ({ types: t }) {
         // =>
         // const bar = require('./foo')
         if (nonDefaultSpecifiers.length) {
-          const properties = nonDefaultSpecifiers.map(({ local, imported }) =>
-            t.objectProperty(local, imported));
+          const properties = nonDefaultSpecifiers.map(({ local, imported }) => t.objectProperty(local, imported));
           const kind = t.objectPattern(properties);
           const declarations = [t.variableDeclarator(kind, init)];
           newPath.push(t.variableDeclaration('const', declarations));

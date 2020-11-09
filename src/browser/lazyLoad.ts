@@ -4,7 +4,7 @@
 
 /* eslint-env browser */
 import { isElementInView } from './dom';
-import { debounce } from '../function';
+import { debounce } from '../common/function';
 
 interface lazyLoadOptions {
   debounceTime?: number;

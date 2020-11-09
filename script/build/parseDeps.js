@@ -53,6 +53,8 @@ async function parseDeps(modules) {
   async function addFile(module) {
     // 查找实际的文件路径
     const filePath = tryPackage(module);
+    // TODO: 暂时不包含 vue 文件
+    if (path.extname(filePath) === '.vue') return;
     files.add(filePath);
 
     // 读取并解析文件内容
