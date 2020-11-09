@@ -3,6 +3,8 @@ const { promisify } = require('util');
 const babelParser = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 const path = require('path');
+const vueTemplateCompiler = require('vue-template-compiler');
+const vueCompiler = require('@vue/component-compiler-utils');
 const { tryPackage } = require('./loader');
 const { dynamicAll } = require('../utils');
 
@@ -53,16 +55,23 @@ async function parseDeps(modules) {
   async function addFile(module) {
     // 查找实际的文件路径
     const filePath = tryPackage(module);
-    // TODO: 暂时不包含 vue 文件
-    if (path.extname(filePath) === '.vue') return;
     files.add(filePath);
 
     // 读取并解析文件内容
     const contentBuffer = await readFile(filePath);
-    const content = contentBuffer.toString();
+    let content = contentBuffer.toString();
+    if (path.extname(filePath) === '.vue') {
+      const descriptor = vueCompiler.parse({
+        source: content,
+        compiler: vueTemplateCompiler,
+        needMap: false,
+      });
+
+      content = descriptor.script ? descriptor.script.content : '';
+    }
     const ast = babelParser.parse(content, {
       sourceType: 'module',
-      plugins: ['jsx', 'typescript', 'classProperties'],
+      plugins: ['jsx', 'typescript', 'classProperties', 'decorators-legacy'],
     });
 
     // 处理依赖

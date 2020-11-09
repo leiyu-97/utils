@@ -16,13 +16,20 @@ async function processFile(file, type) {
   const extname = path.extname(file);
   const basename = path.basename(file).replace(extname, '');
   const isReact = extname === '.jsx' || extname === '.tsx';
+  const isVue = extname === '.vue';
   if (!dirname.startsWith(sourceDir)) {
     throw new Error('引用了 src 以外目录的文件');
   }
   const innerDirname = dirname.replace(sourceDir, '');
   let targetExtname = extname;
   if (type !== 'raw') {
-    targetExtname = isReact ? '.jsx' : '.js';
+    if (isReact) {
+      targetExtname = '.jsx';
+    } else if (isVue) {
+      targetExtname = '.vue';
+    } else {
+      targetExtname = '.js';
+    }
   }
   const target = `${distDir}/${type}${innerDirname}/${basename}${targetExtname}`;
 
