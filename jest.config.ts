@@ -34,5 +34,14 @@ export default {
       setupFiles: ["./test/react/setup.js"],
       testEnvironment: "node",
     },
+    {
+      testMatch: ["**/test/vue/**/*.test.*"],
+      setupFiles: ["./test/vue/setup.js"],
+      testEnvironment: "node",
+      transform: {
+        ".*\\.(vue)$": "vue-jest",
+        "\\.[jt]sx?$": "babel-jest"
+      }
+    }
   ]
 };
