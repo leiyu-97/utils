@@ -3,7 +3,7 @@
     "target": "es6",
     "module": "esnext",
     "strict": false,
-    "jsx": "preserve",
+    "jsx": "react",
     "importHelpers": false,
     "experimentalDecorators": true,
     "moduleResolution": "node",
@@ -11,7 +11,8 @@
     "sourceMap": true,
     "types": [
       "node",
-      "mocha",
+      "jest",
+      "react"
     ],
     "lib": [
       "esnext",

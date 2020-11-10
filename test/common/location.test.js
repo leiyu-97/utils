@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const { computeDistance } = require('../../src/common/location');
 
 describe('location', () => {

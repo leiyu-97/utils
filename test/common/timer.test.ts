@@ -1,12 +1,10 @@
 import assert from 'power-assert';
 import Timer from '../../src/common/timer'
 import { wait } from '../../src/common/promise'
-import { slow as defaultSlow } from './.mocharc';
 
 describe('timer', () => {
   describe('timer', () => {
     it('正常计时', async function () {
-      this.slow(defaultSlow + 100);
       const timer = new Timer();
       timer.start();
       await wait(100);
@@ -15,7 +13,6 @@ describe('timer', () => {
     });
 
     it('暂停计时', async function() {
-      this.slow(defaultSlow + 150);
       const timer = new Timer();
       timer.start();
       await wait(100);
@@ -26,7 +23,6 @@ describe('timer', () => {
     });
 
     it('恢复计时', async function() {
-      this.slow(defaultSlow + 200);
       const timer = new Timer();
       timer.start();
       await wait(100);
@@ -39,7 +35,6 @@ describe('timer', () => {
     });
 
     it('重置', async function() {
-      this.slow(defaultSlow + 50);
       const timer = new Timer();
       timer.start();
       await wait(50)
@@ -49,7 +44,6 @@ describe('timer', () => {
     });
 
     it('重置后计时正常', async function() {
-      this.slow(defaultSlow + 150);
       const timer = new Timer();
       timer.start();
       await wait(50)
@@ -61,7 +55,6 @@ describe('timer', () => {
     });
 
     it('重新计时', async function() {
-      this.slow(defaultSlow + 150);
       const timer = new Timer();
       timer.start();
       await wait(50)
@@ -72,7 +65,6 @@ describe('timer', () => {
     });
 
     it('暂停状态下重新计时', async function() {
-      this.slow(defaultSlow + 150);
       const timer = new Timer();
       timer.start();
       await wait(50)
@@ -84,7 +76,6 @@ describe('timer', () => {
     });
 
     it('setTimeout', function(done) {
-      this.slow(defaultSlow + 150);
       const timer = new Timer();
       const startTime = Date.now();
       timer.setTimeout((innerTime) => {
@@ -99,7 +90,6 @@ describe('timer', () => {
     })
 
     it('setInterval', function(done) {
-      this.slow(defaultSlow + 250);
       const timer = new Timer();
       const startTime = Date.now();
       let n = 0;

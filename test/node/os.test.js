@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const { getHexIPAddress, getIPAddress } = require('../../src/node/os');
 
 describe('os', () => {

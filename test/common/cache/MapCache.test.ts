@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('power-assert');
 import MapCache from '../../../src/common/cache/MapCache';
 
 describe('cache', () => {

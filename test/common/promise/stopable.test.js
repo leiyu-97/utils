@@ -1,21 +1,21 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const { Stopable, wait } = require('../../../src/common/promise');
-const { slow: defaultSlow } = require('../.mocharc');
+
 
 describe('promise', () => {
   describe('Stopable', () => {
     it('正常 resolve', function (done) {
-      this.slow(defaultSlow + 100);
+      
       new Stopable((resolve) => setTimeout(resolve, 100)).then(done);
     });
 
     it('正常 catch', function (done) {
-      this.slow(defaultSlow + 100);
+      
       new Stopable((resolve, reject) => setTimeout(reject, 100)).catch(done);
     });
 
     it('正常 stop', function (done) {
-      this.slow(defaultSlow + 200);
+      
       const stopable = new Stopable((resolve) =>
         setTimeout(resolve, 100)).then(() => assert(false));
       stopable.stop();
@@ -23,7 +23,7 @@ describe('promise', () => {
     });
 
     it('链式调用正常 resolve', function (done) {
-      this.slow(defaultSlow + 100);
+      
       const stopable = new Stopable((resolve) => setTimeout(resolve, 100))
         .then(() => null)
         .then(done);
@@ -31,7 +31,7 @@ describe('promise', () => {
     });
 
     it('链式调用正常 reject', function (done) {
-      this.slow(defaultSlow + 200);
+      
       const stopable = new Stopable((resolve) => setTimeout(resolve, 100))
         .catch(() => null)
         .then(() => null)
@@ -41,7 +41,7 @@ describe('promise', () => {
     });
 
     it('链式调用正常 stop', function (done) {
-      this.slow(defaultSlow + 200);
+      
       const stopable = new Stopable((resolve) => setTimeout(resolve, 100))
         .then(() => null)
         .then(() => assert(false));
@@ -51,19 +51,19 @@ describe('promise', () => {
     });
 
     it('传入 promise 对象正常 resolve', function (done) {
-      this.slow(defaultSlow + 100);
+      
       new Stopable(wait(100)).then(done);
     });
 
     it('传入 promise 对象正常 stop', function (done) {
-      this.slow(defaultSlow + 200);
+      
       const stopable = new Stopable(wait(100)).then(() => assert(false));
       stopable.stop();
       wait(200).then(done);
     });
 
     it('resolve promise 对象正常 stop', function (done) {
-      this.slow(defaultSlow + 300);
+      
       const stopable = new Stopable((resolve) => resolve(wait(200)))
         .then(() => assert(false));
       wait(100).then(() => stopable.stop());
@@ -71,7 +71,7 @@ describe('promise', () => {
     });
 
     it('then 接受 promise 对象正常 stop', function (done) {
-      this.slow(defaultSlow + 300);
+      
       const stopable = new Stopable((resolve) => resolve())
         .then(() => wait(200))
         .then(() => assert(false));
@@ -80,7 +80,7 @@ describe('promise', () => {
     });
 
     it('链式调用中返回 Promise 对象时正常 resolve', function (done) {
-      this.slow(defaultSlow + 100);
+      
       const start = Date.now();
       new Stopable((resolve) => resolve(wait(100))).then(() => {
         // 确认是否真的等到 wait 结束才 resolve
@@ -90,7 +90,7 @@ describe('promise', () => {
     });
 
     it('链式调用中返回 Promise 对象时正常 stop', function (done) {
-      this.slow(defaultSlow + 400);
+      
       let thenCalled = false;
 
       const stopable = new Stopable((resolve) => resolve(wait(100)))
@@ -109,7 +109,7 @@ describe('promise', () => {
     });
 
     it('从最后 stop 能够阻止', function (done) {
-      this.slow(defaultSlow + 400);
+      
       let step = 1;
       const stopable = new Stopable(wait(100));
       const stopable2 = stopable.then(() => {
@@ -132,7 +132,7 @@ describe('promise', () => {
     });
 
     it('stop 前置能够阻止后续', function (done) {
-      this.slow(defaultSlow + 400);
+      
       let step = 1;
       const stopable = new Stopable(wait(100));
       const stopable2 = stopable.then(() => {
@@ -155,7 +155,7 @@ describe('promise', () => {
     });
 
     it('若已经结束则无法阻止后续', function (done) {
-      this.slow(defaultSlow + 400);
+      
       let step = 1;
       const stopable = new Stopable(wait(100));
       const stopable2 = stopable.then(() => {

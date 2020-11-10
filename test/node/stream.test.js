@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-const assert = require('assert');
+const assert = require('power-assert');
 const stream = require('stream');
 const { readAll, combine } = require('../../src/node/stream');
 

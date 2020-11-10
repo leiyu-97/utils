@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const { parseColor, RGBToHex } = require('../../src/common/color');
 const { shallowEqual } = require('../../src/common/object');
 

@@ -1,7 +1,7 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const TimeLimitedCache = require('../../../src/common/cache/TimeLimitedCache');
 const { wait } = require('../../../src/common/promise');
-const { slow: defaultSlow } = require('../.mocharc');
+
 
 describe('cache', () => {
   describe('TimeLimitedCache', () => {
@@ -30,7 +30,7 @@ describe('cache', () => {
     });
 
     it('缓存超时', function (done) {
-      this.slow(100 + defaultSlow);
+      
       cache.set('foo', 'bar');
       wait(100).then(() => {
         assert(cache.get('foo') === undefined);
@@ -39,7 +39,7 @@ describe('cache', () => {
     });
 
     it('自定义超时时间', function (done) {
-      this.slow(200 + defaultSlow);
+      
       cache.set('foo', 'bar', 150);
       wait(100).then(() => {
         assert(cache.get('foo') === 'bar');

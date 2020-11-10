@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const { optionalGet, optionalSet, unentries } = require('../../src/common/object');
 
 describe('object', () => {

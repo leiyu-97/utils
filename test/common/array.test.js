@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const {
   paging, shallowEqual, sort, classify,deepFlatten,unite
 } = require('../../src/common/array');

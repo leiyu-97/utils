@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const { isEqual } = require('../../src/common/number');
 
 describe('number', () => {

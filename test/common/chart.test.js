@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const { linearInterpolation, cubicHermiteInterpolation, fade } = require('../../src/common/chart');
 const { isEqual } = require('../../src/common/number');
 const { repeat } = require('../../src/common/base');

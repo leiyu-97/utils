@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const { parse, stringify } = require('../../src/common/querystring');
 
 describe('querystring', () => {

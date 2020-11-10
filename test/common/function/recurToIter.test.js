@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('power-assert');
 const { recurToIter } = require('../../../src/common/function');
 
 describe('function', () => {
