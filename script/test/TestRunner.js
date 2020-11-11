@@ -8,6 +8,7 @@ const rollupTypescript = require('@rollup/plugin-typescript');
 const puppeteer = require('puppeteer');
 const uuid = require('uuid');
 const { EventEmitter } = require('events');
+const DelayLogger = require('./DelayLogger');
 
 async function bundleScript(scriptPath, debug) {
   const basename = path.basename(scriptPath);
@@ -66,6 +67,7 @@ class TestRunner extends EventEmitter {
     super();
     this.debug = debug;
     this.browser = browser;
+    this.logger = new DelayLogger();
   }
 
   async init(scriptPath, htmlPath) {
@@ -90,9 +92,9 @@ class TestRunner extends EventEmitter {
         this.execBrowserCommand.bind(this),
       ),
       // 控制台输出方法
-      page.exposeFunction('$consoleLog', console.log),
-      page.exposeFunction('$consoleError', console.error),
-      page.exposeFunction('$consoleWarn', console.warn),
+      page.exposeFunction('$consoleLog', this.logger.log.bind(this.logger)),
+      page.exposeFunction('$consoleError', this.logger.error.bind(this.logger)),
+      page.exposeFunction('$consoleWarn', this.logger.warn.bind(this.logger)),
       // 测试结果输出方法
       page.exposeFunction('$endTest', this.endTest.bind(this)),
     ]);
@@ -136,6 +138,7 @@ class TestRunner extends EventEmitter {
   async endTest({
     coverage, passed, error, stats,
   }) {
+    this.logger.output();
     // debug 模式下不结束测试，而是保持浏览器打开
     if (this.debug) {
       return undefined;

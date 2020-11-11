@@ -28,9 +28,7 @@ class TestSetRunner {
       browser = await puppeter.launch({});
     }
 
-    const results = [];
-    for (let index = 0; index < testSet.length; index++) {
-      const file = testSet[index];
+    const results = await Promise.all(testSet.map(async (file) => {
       const dir = path.dirname(file);
       const html = `${dir}/index.html`;
       const htmlStat = await fs.stat(html);
@@ -39,9 +37,8 @@ class TestSetRunner {
       }
       const runner = new TestRunner({ browser, debug });
       await runner.init(file, html);
-      const result = await runner.run();
-      results.push(result);
-    }
+      return runner.run();
+    }));
 
     await Promise.all([
       // 关闭 server
