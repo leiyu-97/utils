@@ -19,6 +19,7 @@ export default {
       }
     }
   },
+  collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx,vue}", "!**/node_modules/**", "!**/.*.js", "!src/dom/*"],
   coverageDirectory: './.nyc_output',
   coverageReporters: ['json'],
   transform: {"\\.[jt]sx?$": "babel-jest"},
@@ -41,7 +42,7 @@ export default {
       transform: {
         ".*\\.(vue)$": "vue-jest",
         "\\.[jt]sx?$": "babel-jest"
-      }
+      },
     }
   ]
 };
