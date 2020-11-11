@@ -2,9 +2,8 @@ const fs = require('fs').promises;
 const path = require('path');
 const babel = require('@babel/core');
 const rollup = require('rollup');
-const rollupResolve = require('@rollup/plugin-node-resolve').default;
 const rollupCommonjs = require('@rollup/plugin-commonjs');
-const rollupIstanbul = require('rollup-plugin-istanbul');
+const rollupIstanbul = require('rollup-plugin-istanbul2');
 const rollupTypescript = require('@rollup/plugin-typescript');
 const puppeteer = require('puppeteer');
 const uuid = require('uuid');
@@ -25,10 +24,9 @@ async function bundleScript(scriptPath, debug) {
     input: [scriptPath],
     onwarn: () => null,
     plugins: [
-      rollupResolve(),
-      rollupCommonjs(),
-      rollupTypescript(),
-      process.env.NYC_CONFIG && rollupIstanbul(),
+      rollupCommonjs({ sourceMap: true }),
+      rollupTypescript({ sourceMap: true }),
+      process.env.NYC_CONFIG && rollupIstanbul({ sourceMap: true }),
     ],
   });
 
