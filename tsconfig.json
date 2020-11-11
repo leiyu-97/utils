@@ -21,6 +21,11 @@
       "scripthost"
     ]
   },
+  "paths": {
+    "@/*": [
+      "./src/*"
+    ]
+  },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",

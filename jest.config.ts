@@ -40,7 +40,7 @@ export default {
       setupFiles: ["./test/vue/setup.js"],
       testEnvironment: "node",
       transform: {
-        ".*\\.(vue)$": "vue-jest",
+        "\\.(vue)$": "vue-jest",
         "\\.[jt]sx?$": "babel-jest"
       },
     }
