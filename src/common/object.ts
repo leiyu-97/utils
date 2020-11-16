@@ -58,7 +58,7 @@ export function shallowEqual(objA: any, objB: any): boolean {
  * @param {Any} param1.1 值
  * @return {Object} 累计对象
  */
-function unentriesReducer<T>(
+export function unentriesReducer<T>(
   prev: Record<string, T>,
   [key, value]: [string, T],
 ): Record<string, T> {
