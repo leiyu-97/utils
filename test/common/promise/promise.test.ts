@@ -1,5 +1,5 @@
-const assert = require('power-assert');
-import 'jest-sinon'
+import assert from 'power-assert';
+import 'jest-sinon';
 import {
   wait,
   timeout,
@@ -14,7 +14,7 @@ describe('promise', () => {
       wait(1).then(done);
     });
 
-    it('等待时间正确', function (done) {
+    it('等待时间正确', (done) => {
       const start = Date.now();
       wait(100)
         .then(() => {
@@ -27,11 +27,11 @@ describe('promise', () => {
   });
 
   describe('timeout', () => {
-    it('应该未超时', function (done) {
+    it('应该未超时', (done) => {
       timeout(wait, 100)(80).then(done).catch(done);
     });
 
-    it('应该超时', function (done) {
+    it('应该超时', (done) => {
       timeout(
         wait,
         80,
@@ -98,7 +98,7 @@ describe('promise', () => {
         .catch(() => done(assert(index === 11)));
     });
 
-    it('等待时间正确', function (done) {
+    it('等待时间正确', (done) => {
       let index = 0;
       const func = () => {
         index++;
@@ -115,13 +115,13 @@ describe('promise', () => {
   });
 
   describe('dynamicAll', () => {
-    it('resolve 时机正确', function (done) {
+    it('resolve 时机正确', (done) => {
       let index = 0;
       const array = [
         wait(100).then(() => {
           index++;
           array.push(wait(100).then(() => {
-            index++
+            index++;
           }));
         }),
       ];
@@ -134,7 +134,7 @@ describe('promise', () => {
   });
 
   describe('noParallel', () => {
-    it('正常执行', function (done) {
+    it('正常执行', (done) => {
       let index = 0;
       const func = () => wait(100).then(() => index++);
       const noParallelFunc = noParallel(func);
@@ -145,7 +145,7 @@ describe('promise', () => {
       });
     });
 
-    it('没有并行执行', function (done) {
+    it('没有并行执行', (done) => {
       let index = 0;
       const func = () => wait(100).then(() => index++);
       const noParallelFunc = noParallel(func);
@@ -157,9 +157,9 @@ describe('promise', () => {
       });
     });
 
-    it('执行完成后仍然可以执行', function (done) {
+    it('执行完成后仍然可以执行', (done) => {
       let index = 0;
-      const func = () => wait(100).then(() => { index++ });
+      const func = () => wait(100).then(() => { index++; });
       const noParallelFunc = noParallel(func);
       noParallelFunc();
       wait(150).then(noParallelFunc);
