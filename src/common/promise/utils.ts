@@ -113,6 +113,7 @@ export enum PromiseActions {
   resolve = 'resolve',
   reject = 'reject',
   pending = 'pending',
+  wait = 'wait', /* eslint-disable-line no-shadow */
 }
 
 /**
@@ -126,6 +127,7 @@ export function noParallel<T extends AnyFunc>(
   action: PromiseActions = PromiseActions.pending,
 ): (...args: Parameters<typeof func>) => ReturnType<typeof func> | Promise<void> {
   let pending = false;
+  let result = null;
   return function (...params: Parameters<typeof func>): ReturnType<typeof func> | Promise<void> {
     if (pending) {
       switch (action) {
@@ -135,12 +137,14 @@ export function noParallel<T extends AnyFunc>(
           return Promise.reject();
         case PromiseActions.pending:
           return new Promise(() => undefined);
+        case PromiseActions.wait:
+          return result;
         default:
           return undefined;
       }
     }
     pending = true;
-    const result = func.apply(this, params);
+    result = func.apply(this, params);
 
     if (result instanceof Promise) {
       result.then(() => {
