@@ -1,6 +1,8 @@
 /**
  * @module querystring
  */
+import { unentriesReducer } from './object';
+
 interface Query {
   [key: string]: string | undefined;
 }
@@ -18,13 +20,7 @@ export function parse(query: string): Query {
       decodeURIComponent(key),
       decodeURIComponent(value),
     ])
-    .reduce(
-      (prev: Query, [key, value]: [string, string | undefined]) => ({
-        ...prev,
-        [key]: value,
-      }),
-      {},
-    );
+    .reduce(unentriesReducer, {});
 }
 
 /**
