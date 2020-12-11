@@ -8,6 +8,7 @@
     "build": "bin/build",
     "test:node": "jest --config ./jest.config.ts",
     "test:browser": "node script/test/browserTest.js",
+    "test": "npm run test:node && npm run test:browser",
     "debug:node": "node --inspect-brk ./node_modules/.bin/jest --config ./jest.config.ts",
     "debug:browser": "node script/test/browserDebug.js",
     "cover:node": "jest --config ./jest.config.ts --coverage",
