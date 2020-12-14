@@ -1,12 +1,7 @@
 /**
  * @module regexp
  */
-
-const { raw } = String;
-
-type RegObject =
-  | { [key: string]: RegObject | string }
-  | Array<RegObject | string>;
+type RegObject = { [key: string]: RegObject | string } | Array<RegObject | string> | string;
 
 /**
  * 将对象的值拼接成字符串
@@ -32,29 +27,45 @@ export function objectToRegExp(obj: RegObject, flags?: string): RegExp {
   return new RegExp(objectValuesToString(obj), flags);
 }
 
-/**
- * 为对象形式的正则表达式添加首尾限制
- * @param {Object} obj 对象形式的正则表达式
- * @return {Object} obj 首尾限制的对象形式正则表达式
- */
+/** 可选 */
+export function optional(obj: RegObject): RegObject {
+  return { b: '(?:', optional: obj, e: ')?' };
+}
+
+/** 分组 */
+export function group(obj: RegObject, capture = true): RegObject {
+  return {
+    b: '(',
+    capture: capture ? '' : '?:',
+    group: obj,
+    e: ')',
+  };
+}
+
+/** 匹配其中之一 */
+export function oneOf(...objs: RegObject[]): RegObject {
+  return {
+    b: '(?:',
+    oneOf: objs.reduce<RegObject[]>((prev, cur) => {
+      if (prev.length) prev.push('|');
+      prev.push(cur);
+      return prev;
+    }, []),
+    e: ')',
+  };
+}
+
+/** 添加首尾限制 */
 export function exact(obj: RegObject): RegObject {
-  return { b: raw`^`, obj, e: raw`$` };
+  return { b: '^', exact: obj, e: '$' };
 }
 
-/**
- * 为对象形式的正则表达式添加首部限制
- * @param {Object} obj 对象形式的正则表达式
- * @return {Object} obj 首部限制的对象形式正则表达式
- */
+/** 添加首部限制 */
 export function startsWith(obj: RegObject): RegObject {
-  return { b: raw`^`, obj };
+  return { b: '^', startsWith: obj };
 }
 
-/**
- * 为对象形式的正则表达式添加尾部限制
- * @param {Object} obj 对象形式的正则表达式
- * @return {Object} obj 尾部限制的对象形式正则表达式
- */
+/** 添加尾部限制 */
 export function endsWith(obj: RegObject): RegObject {
-  return { obj, e: raw`$` };
+  return { endsWith: obj, e: '$' };
 }

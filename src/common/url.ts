@@ -1,64 +1,72 @@
 /**
  * @module url
  */
-import { objectToRegExp, exact } from './regexp';
+import {
+  objectToRegExp, exact, optional, group,
+} from './regexp';
 import * as qs from './querystring';
 
 const { raw } = String;
 
 const safeChar = 'a-zA-Z0-9-_.~';
+const safeChars = `[${safeChar}]+`;
 
 const urlReg = {
-  oProtocol: {
-    b: raw`(?:`,
-    scheme: `([${safeChar}]+)`, // $1 协议，例: 'http'
-    e: raw`://)?`,
-  },
-  oAuth: {
-    // $2 用户信息，例: 'username:password'
-    b: raw`(?:(`,
-    username: `([${safeChar}]+)`, // $3 用户名，例: 'username'
-    oPassword: {
-      b: raw`(?::`,
-      password: `([${safeChar}]+)`, // $4 密码，例: 'password'
-      e: raw`)?`,
-    },
-    e: raw`)@)?`,
-  },
-  wHost: {
-    b: raw`(`, // $5 域，例: 'example.com:123'
-    hostname: `([${safeChar}]+)`, // $6 域名，例: 'example.com'
-    oPort: {
-      b: raw`(?::`,
-      port: raw`(\d+)`, // $7 端口，例: '123'
-      e: raw`)?`,
-    },
-    e: raw`)`,
-  },
-  oPath: {
-    b: raw`(`, // $8 路径，例: '/path/data?foo=bar'
-    oPathname: `([${safeChar}/]+)`, // $9 路径名，例: '/path/data'
-    oSearch: {
-      b: raw`(\?`, // $10 查询字符串，例: '?key=value&key2=value2'
-      query: `([${safeChar}&=]+)?`, // $11 查询字符串，例: 'key=value&key2=value2'
-      e: raw`)?`,
-    },
-    e: raw`)?`,
-  },
-  oHash: {
-    b: raw`(?:#`,
-    hash: raw`(.*)`, // $12 片段 id，例: 'fragid1'
-    e: raw`)?`,
-  },
+  wProtocol: optional({
+    protocal: group(safeChars), // $1 协议
+    e: '://',
+  }),
+  // $2 用户信息
+  wAuth: optional({
+    auth: group({
+      username: group(safeChars), // $3 用户名
+      wPassword: optional({
+        b: ':',
+        password: group(safeChars), // $4 密码
+      }),
+    }),
+    e: '@',
+  }),
+  // $5 域
+  wHost: group({
+    hostname: group(safeChars), // $6 域名
+    wPort: optional({
+      b: ':',
+      port: group(raw`\d+`), // $7 端口
+    }),
+  }),
+  // $8 路径
+  wPath: optional(
+    group({
+      pathname: group(`[${safeChar}/]+`), // $9 路径名
+      // $10 查询字符串（带问号）
+      wSearch: optional(
+        group({
+          b: raw`\?`,
+          query: optional(group(`[${safeChar}&=]+`)), // $11 查询字符串
+        }),
+      ),
+    }),
+  ),
+  wHash: optional({
+    b: raw`#`,
+    hash: group(raw`.*`),
+  }),
 };
 
 const urlRegExp = objectToRegExp(exact(urlReg));
 const authRegExp = objectToRegExp(
-  exact([urlReg.oAuth.username, urlReg.oAuth.oPassword]),
+  exact({
+    username: group(safeChars), // $1 用户名
+    wPassword: optional({
+      b: ':',
+      password: group(safeChars), // $2 密码
+    }),
+  }),
 );
 const hostRegExp = objectToRegExp(exact(urlReg.wHost));
-const pathRegExp = objectToRegExp(exact(urlReg.oPath));
-const originRegExp = objectToRegExp(exact([urlReg.oProtocol, urlReg.wHost]));
+const pathRegExp = objectToRegExp(exact(urlReg.wPath));
+const originRegExp = objectToRegExp(exact([urlReg.wProtocol, urlReg.wHost]));
 
 /**
  * url 对象
