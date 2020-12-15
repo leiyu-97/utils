@@ -3,6 +3,7 @@
  */
 
 /* eslint-env browser */
+/* eslint-disable no-use-before-define */
 if (!document) throw new Error('该文件只能在浏览器环境中使用');
 
 const DOCUMENT_POSITION_CONTAINS = 8;
@@ -88,18 +89,17 @@ export function getOffsetTop(
   a: HTMLElement,
   b: HTMLElement = document.body,
 ): number {
-  if (isChildOf(a, b)) {
-    if (a.offsetParent === b) return a.offsetTop;
-    if (a.offsetParent === b.offsetParent) return a.offsetTop - b.offsetTop;
-    return a.offsetTop + getOffsetTop(a.offsetParent as HTMLElement, b);
-  }
-  if (isChildOf(b, a)) {
-    if (b.offsetParent === a) return b.offsetTop;
-    if (b.offsetParent === a.offsetParent) return b.offsetTop - a.offsetTop;
-    return b.offsetTop + getOffsetTop(b.offsetParent as HTMLElement, a);
-  }
+  if (isChildOf(a, b)) return getOffsetTopOfParent(a, b);
+  if (isChildOf(b, a)) return getOffsetTopOfParent(b, a);
   const parent = getCommonParent(a, b);
-  return getOffsetTop(a, parent) - getOffsetTop(b, parent);
+  return getOffsetTopOfParent(a, parent) - getOffsetTopOfParent(b, parent);
+}
+
+/** 获取元素相对一父元素的 offsetTop */
+function getOffsetTopOfParent(ele: HTMLElement, parent: HTMLElement) {
+  if (ele.offsetParent === parent) return ele.offsetTop;
+  if (ele.offsetParent === parent.offsetParent) return ele.offsetTop - parent.offsetTop;
+  return ele.offsetTop + getOffsetTop(ele.offsetParent as HTMLElement, parent);
 }
 
 /**
@@ -112,18 +112,17 @@ export function getOffsetLeft(
   a: HTMLElement,
   b: HTMLElement = document.body,
 ): number {
-  if (isChildOf(a, b)) {
-    if (a.offsetParent === b) return a.offsetLeft;
-    if (a.offsetParent === b.offsetParent) return a.offsetLeft - b.offsetLeft;
-    return a.offsetLeft + getOffsetLeft(a.offsetParent as HTMLElement, b);
-  }
-  if (isChildOf(b, a)) {
-    if (b.offsetParent === a) return b.offsetLeft;
-    if (b.offsetParent === a.offsetParent) return b.offsetLeft - a.offsetLeft;
-    return b.offsetLeft + getOffsetLeft(b.offsetParent as HTMLElement, a);
-  }
+  if (isChildOf(a, b)) return getOffsetLeftOfParent(a, b);
+  if (isChildOf(b, a)) return getOffsetLeftOfParent(b, a);
   const parent = getCommonParent(a, b);
-  return getOffsetLeft(a, parent) - getOffsetLeft(b, parent);
+  return getOffsetLeftOfParent(a, parent) - getOffsetLeftOfParent(b, parent);
+}
+
+/** 获取元素相对一父元素的 offsetLeft */
+function getOffsetLeftOfParent(ele: HTMLElement, parent: HTMLElement) {
+  if (ele.offsetParent === parent) return ele.offsetLeft;
+  if (ele.offsetParent === parent.offsetParent) return ele.offsetLeft - parent.offsetLeft;
+  return ele.offsetLeft + getOffsetLeft(ele.offsetParent as HTMLElement, parent);
 }
 
 /**
