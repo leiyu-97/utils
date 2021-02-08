@@ -117,19 +117,22 @@ export enum PromiseActions {
 }
 
 /**
- * 禁止函数并行执行
+ * promise 函数去重
  * @param {Function} func 函数
  * @param {String} action 并行下的行为，可填 'resolve', 'reject', 'pending'
  * @return {Any} 函数返回结果
  */
-export function noParallel<T extends AnyFunc>(
+export function deduplicate<T extends AnyFunc>(
   func: T,
   action: PromiseActions = PromiseActions.pending,
+  getKey: (args: Parameters<typeof func>) => any = JSON.stringify,
 ): (...args: Parameters<typeof func>) => ReturnType<typeof func> | Promise<void> {
-  let pending = false;
-  let result = null;
-  return function (...params: Parameters<typeof func>): ReturnType<typeof func> | Promise<void> {
-    if (pending) {
+  const pendingMap = new Map<ReturnType<typeof getKey>, true>();
+  const resultMap = new Map<ReturnType<typeof getKey>, ReturnType<typeof func>>();
+
+  return function deduplicatedFunction(...params: Parameters<typeof func>): ReturnType<typeof func> | Promise<void> {
+    const key = getKey(params);
+    if (pendingMap.get(key)) {
       switch (action) {
         case PromiseActions.resolve:
           return Promise.resolve();
@@ -138,22 +141,23 @@ export function noParallel<T extends AnyFunc>(
         case PromiseActions.pending:
           return new Promise(() => undefined);
         case PromiseActions.wait:
-          return result;
+          return resultMap.get(key);
         default:
           return undefined;
       }
     }
-    pending = true;
-    result = func.apply(this, params);
+
+    const result = func.apply(this, params);
+    resultMap.set(key, result);
 
     if (result instanceof Promise) {
+      pendingMap.set(key, true);
       result.then(() => {
-        pending = false;
+        pendingMap.delete(key);
+        resultMap.delete(key);
       });
-      return result;
     }
 
-    pending = false;
-    return result;
+    return result as ReturnType<typeof func>;
   };
 }
