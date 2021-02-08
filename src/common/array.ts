@@ -2,6 +2,8 @@
  * @module array
  */
 
+import { EleType } from '../typescript/utilityTypes';
+
 /**
  * 分页
  * @param {Array} array 待排序数组
@@ -26,15 +28,18 @@ export function sort<T>(
   identity: string,
 ): T[] {
   const coefficient = order === 'desc' ? -1 : 1;
-  array = [...array];
-
-  return array.sort((a, b) => {
+  return [...array].sort((a, b) => {
+    let valueA;
+    let valueB;
     if (identity) {
-      a = a[identity];
-      b = b[identity];
+      valueA = a[identity];
+      valueB = b[identity];
+    } else {
+      valueA = a;
+      valueB = b;
     }
 
-    return (a > b ? 1 : -1) * coefficient;
+    return (valueA > valueB ? 1 : -1) * coefficient;
   });
 }
 
@@ -127,4 +132,22 @@ export function deepFlatten<T>(array: MultiArray<T>): T[] {
  */
 export function unite<T>(array: T[], other: T[]): T[] {
   return array.filter((v) => other.includes(v));
+}
+
+/**
+ * 取倒数第 lastIndex 个元素
+ * @param array 数组
+ * @param lastIndex 从后向前计的 index
+ */
+export function lastItem<T extends any[]>(array: T, lastIndex = 0): EleType<T> {
+  return array?.[array.length - 1 - lastIndex];
+}
+
+/**
+ * 取随机一个元素
+ * @param array 数组
+ */
+export function randomItem<T extends any[]>(array: T): EleType<T> {
+  const index = Math.floor(Math.random() * array.length);
+  return array[index];
 }
