@@ -5,7 +5,7 @@ import {
   timeout,
   retry,
   dynamicAll,
-  noParallel,
+  deduplicate,
 } from '../../../src/common/promise';
 
 describe('promise', () => {
@@ -133,12 +133,12 @@ describe('promise', () => {
     });
   });
 
-  describe('noParallel', () => {
+  describe('deduplicate', () => {
     it('正常执行', (done) => {
       let index = 0;
       const func = () => wait(100).then(() => index++);
-      const noParallelFunc = noParallel(func);
-      noParallelFunc();
+      const deduplicateFunc = deduplicate(func);
+      deduplicateFunc();
       wait(150).then(() => {
         assert(index === 1);
         done();
@@ -148,9 +148,9 @@ describe('promise', () => {
     it('没有并行执行', (done) => {
       let index = 0;
       const func = () => wait(100).then(() => index++);
-      const noParallelFunc = noParallel(func);
-      noParallelFunc();
-      noParallelFunc();
+      const deduplicateFunc = deduplicate(func);
+      deduplicateFunc();
+      deduplicateFunc();
       wait(150).then(() => {
         assert(index === 1);
         done();
@@ -160,9 +160,9 @@ describe('promise', () => {
     it('执行完成后仍然可以执行', (done) => {
       let index = 0;
       const func = () => wait(100).then(() => { index++; });
-      const noParallelFunc = noParallel(func);
-      noParallelFunc();
-      wait(150).then(noParallelFunc);
+      const deduplicateFunc = deduplicate(func);
+      deduplicateFunc();
+      wait(150).then(deduplicateFunc);
       wait(300).then(() => {
         assert(index === 2);
         done();

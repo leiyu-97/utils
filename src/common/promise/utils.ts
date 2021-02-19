@@ -113,24 +113,25 @@ export enum PromiseActions {
   resolve = 'resolve',
   reject = 'reject',
   pending = 'pending',
-  wait = 'wait', /* eslint-disable-line no-shadow */
+  wait = 'wait' /* eslint-disable-line no-shadow */,
 }
 
 /**
  * promise 函数去重
  * @param {Function} func 函数
  * @param {String} action 并行下的行为，可填 'resolve', 'reject', 'pending'
- * @return {Any} 函数返回结果
+ * @param {Function} getKey 计算去重依据的 key 的函数
+ * @return {Function} 有去重功能的 promise 函数
  */
 export function deduplicate<T extends AnyFunc>(
   func: T,
   action: PromiseActions = PromiseActions.pending,
-  getKey: (args: Parameters<typeof func>) => any = JSON.stringify,
-): (...args: Parameters<typeof func>) => ReturnType<typeof func> | Promise<void> {
+  getKey: (args: Parameters<T>) => any = JSON.stringify,
+): (...args: Parameters<T>) => ReturnType<T> | Promise<void> {
   const pendingMap = new Map<ReturnType<typeof getKey>, true>();
-  const resultMap = new Map<ReturnType<typeof getKey>, ReturnType<typeof func>>();
+  const resultMap = new Map<ReturnType<typeof getKey>, ReturnType<T>>();
 
-  return function deduplicatedFunction(...params: Parameters<typeof func>): ReturnType<typeof func> | Promise<void> {
+  return function deduplicatedFunction(...params: Parameters<T>): ReturnType<T> | Promise<void> {
     const key = getKey(params);
     if (pendingMap.get(key)) {
       switch (action) {
@@ -158,6 +159,26 @@ export function deduplicate<T extends AnyFunc>(
       });
     }
 
-    return result as ReturnType<typeof func>;
+    return result as ReturnType<T>;
+  };
+}
+
+/**
+ * 函数仅返回最新结果
+ * @param {Function} func 函数
+ * @return {Function} 只有最新结果会返回的函数
+ */
+export function keepUpToDate<T extends AnyFunc>(
+  func: T,
+): (...args: Parameters<T>) => Promise<AwaitReturnType<T>> {
+  let newest: null | number = null;
+  return async function upToDateFunction(...params: Parameters<T>): Promise<AwaitReturnType<T>> {
+    newest = Date.now();
+    const current = newest;
+    const result = await func.apply(this, params) as AwaitReturnType<T>;
+    // 如果已经不是最新则丢弃结果
+    if (current !== newest) return new Promise(() => null);
+    newest = null;
+    return result;
   };
 }

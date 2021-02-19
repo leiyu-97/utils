@@ -1,14 +1,14 @@
 /**
  * @module os
  */
-import os from 'os';
+import { networkInterfaces } from 'os';
 
 /**
  * 获取本机 IP
  * @return {String} 本机 IP
  */
 export function getIPAddress(): string | undefined {
-  const interfaces = os.networkInterfaces();
+  const interfaces = networkInterfaces();
 
   for (const devName in interfaces) {
     const iface = interfaces[devName];

@@ -68,6 +68,7 @@ export default function recurToIter<Param extends any[], Result, Context>(
       }
 
       // 内部函数进行了一次没有意义的 yield，继续 next
+      // eslint-disable-next-line no-param-reassign
       preResult = result.value as Result;
     }
   };
