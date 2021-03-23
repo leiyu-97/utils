@@ -2,75 +2,73 @@
  * @module url
  */
 import {
-  objectToRegExp, exact, optional, group,
+  objectToRegExp, exact, optional, group, oneOf,
 } from './regexp';
 import * as qs from './querystring';
 
 const { raw } = String;
 
-const safeChar = 'a-zA-Z0-9-_.~';
+/** 非保留字符 */
+const unreversed = raw`\w\-.~`;
+const pctEncoded = '%';
+/** url 组件内分隔字符 */
+const subDelims = '!$&\'()*+,;=';
+/** url 组件内安全字符 */
+const safeChar = `${unreversed}${pctEncoded}${subDelims}`;
 const safeChars = `[${safeChar}]+`;
+const pChar = `${safeChar}:@`;
+
+const ipv6 = {
+  b: raw`\[`,
+  content: '[A-Fa-f0-9:]+',
+  e: raw`\]`,
+};
 
 const urlReg = {
-  wProtocol: optional({
-    protocal: group(safeChars), // $1 协议
-    e: '://',
-  }),
-  // $2 用户信息
-  wAuth: optional({
-    auth: group({
-      username: group(safeChars), // $3 用户名
+  wProtocol: {
+    protocol: group(safeChars, 'protocol'),
+    e: ':',
+  },
+  wAuth: {
+    b: '//',
+    wUserInfo: optional({
+      username: group(safeChars, 'username'),
       wPassword: optional({
         b: ':',
-        password: group(safeChars), // $4 密码
+        password: group(safeChars, 'password'),
       }),
+      e: '@',
     }),
-    e: '@',
+    wHost: {
+      hostname: group(oneOf(safeChars, ipv6), 'hostname'),
+      wPort: optional({
+        b: ':',
+        port: group(raw`\d+`, 'port'),
+      }),
+    },
+  },
+  wPath: optional({
+    pathname: group(`[${pChar}/]+`, 'pathname'),
+    wSearch: optional({
+      b: raw`\?`,
+      query: optional(group(`[${pChar}/]*`, 'query')),
+    }),
   }),
-  // $5 域
-  wHost: group({
-    hostname: group(safeChars), // $6 域名
-    wPort: optional({
-      b: ':',
-      port: group(raw`\d+`), // $7 端口
-    }),
-  }),
-  // $8 路径
-  wPath: optional(
-    group({
-      pathname: group(`[${safeChar}/]+`), // $9 路径名
-      // $10 查询字符串（带问号）
-      wSearch: optional(
-        group({
-          b: raw`\?`,
-          query: optional(group(`[${safeChar}&=]+`)), // $11 查询字符串
-        }),
-      ),
-    }),
-  ),
   wHash: optional({
-    b: raw`#`,
-    hash: group(raw`.*`),
+    b: '#',
+    hash: group(`[${pChar}/?]*`, 'hash'),
   }),
 };
 
 const urlRegExp = objectToRegExp(exact(urlReg));
-const authRegExp = objectToRegExp(
-  exact({
-    username: group(safeChars), // $1 用户名
-    wPassword: optional({
-      b: ':',
-      password: group(safeChars), // $2 密码
-    }),
-  }),
-);
-const hostRegExp = objectToRegExp(exact(urlReg.wHost));
+const authRegExp = objectToRegExp(exact({ ...urlReg.wAuth, b: '' }));
+const hostRegExp = objectToRegExp(exact(urlReg.wAuth.wHost));
 const pathRegExp = objectToRegExp(exact(urlReg.wPath));
-const originRegExp = objectToRegExp(exact([urlReg.wProtocol, urlReg.wHost]));
+const originRegExp = objectToRegExp(exact([urlReg.wProtocol, '//', urlReg.wAuth.wHost]));
 
 /**
  * url 对象
- * @prop {String} protocal 协议
+ * @prop {String} protocol 协议
  * @prop {String} auth 凭证
  * @prop {String} username 用户名
  * @prop {String} password 密码
@@ -109,21 +107,9 @@ export default class Url {
       throw new Error(`"${str}" is not a valid url`);
     }
     /* eslint-disable no-unused-vars */
-    const [
-      href,
-      protocol,
-      auth,
-      username,
-      password,
-      host,
-      hostname,
-      port,
-      path,
-      pathname,
-      search,
-      query,
-      hash,
-    ] = matchResult;
+    const {
+      protocol, username, password, hostname, port, pathname, query, hash,
+    } = matchResult.groups;
     /* eslint-enable no-unused-vars */
     Object.assign(this, {
       protocol,
@@ -163,9 +149,13 @@ export default class Url {
     if (!matchResult) {
       throw new Error(`"${str}" is not a valid auth`);
     }
-    const [, username, password] = matchResult;
+    const {
+      username, password, hostname, port,
+    } = matchResult.groups;
     this.username = username;
     this.password = password;
+    this.hostname = hostname;
+    this.port = port;
   }
 
   get host(): string {
@@ -178,7 +168,7 @@ export default class Url {
     if (!matchResult) {
       throw new Error(`"${str}" is not a valid host`);
     }
-    const [, , hostname, port] = matchResult;
+    const { hostname, port } = matchResult.groups;
     this.hostname = hostname;
     this.port = port;
   }
@@ -199,7 +189,7 @@ export default class Url {
     if (!matchResult) {
       throw new Error(`"${str}" is not a valid path`);
     }
-    const [, , pathname, , query] = matchResult;
+    const { pathname, query } = matchResult.groups;
     this.pathname = pathname;
     this.query = query;
   }
@@ -214,7 +204,7 @@ export default class Url {
     if (!matchResult) {
       throw new Error(`"${str}" is not a valid origin`);
     }
-    const [, protocol, , hostname, port] = matchResult;
+    const { protocol, hostname, port } = matchResult.groups;
     this.protocol = protocol;
     this.hostname = hostname;
     this.port = port;

@@ -7,7 +7,6 @@ describe('path', () => {
       assert.throws(() => new Url('https://www.google.com/ ?foo=bar'));
     });
     it('协议解析正确', () => {
-      assert((new Url('127.0.0.1')).protocol === undefined);
       assert((new Url('http://127.0.0.1')).protocol === 'http');
       assert((new Url('https://www.google.com/')).protocol === 'https');
     });
@@ -23,7 +22,7 @@ describe('path', () => {
     });
     it('凭证设置正确', () => {
       const url = new Url('https://www.google.com/');
-      url.auth = 'user:pass';
+      url.auth = 'user:pass@google.com';
       assert.throws(() => { url.auth = 'user:pass:pass'; });
       assert(url.toString() === 'https://user:pass@www.google.com/');
     });
@@ -51,6 +50,7 @@ describe('path', () => {
       assert((new Url('http://127.0.0.1')).host === '127.0.0.1');
       assert((new Url('https://user@www.google.com/')).host === 'www.google.com');
       assert((new Url('http://127.0.0.1:8080')).host === '127.0.0.1:8080');
+      assert((new Url('http://[1080::8:800:200C:417A]:8080/foo')).host === '[1080::8:800:200C:417A]');
     });
     it('域设置正确', () => {
       const url = new Url('https://user@www.google.com:8080/');
@@ -61,6 +61,7 @@ describe('path', () => {
     it('域名解析正确', () => {
       assert((new Url('http://127.0.0.1')).hostname === '127.0.0.1');
       assert((new Url('https://user@www.google.com/')).hostname === 'www.google.com');
+      assert((new Url('http://127.0.0.1:8080')).hostname === '127.0.0.1');
       assert((new Url('http://127.0.0.1:8080')).hostname === '127.0.0.1');
     });
     it('域名设置正确', () => {

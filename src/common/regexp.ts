@@ -33,10 +33,22 @@ export function optional(obj: RegObject): RegObject {
 }
 
 /** 分组 */
-export function group(obj: RegObject, capture = true): RegObject {
+export function group(obj: RegObject, capture: boolean | string = true): RegObject {
+  let captureStr: string;
+  if (typeof capture === 'string') {
+    // 命名捕获
+    captureStr = `?<${capture}>`;
+  } else if (capture) {
+    // 匿名捕获
+    captureStr = '';
+  } else {
+    // 不捕获
+    captureStr = '?:';
+  }
+
   return {
     b: '(',
-    capture: capture ? '' : '?:',
+    capture: captureStr,
     group: obj,
     e: ')',
   };
