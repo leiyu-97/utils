@@ -29,6 +29,9 @@ export function memorize<T extends AnyFunc>(
     if (value === undefined) {
       value = func.apply(this, param);
       cache.set(key, value);
+      if (value?.then?.call) {
+        value.catch(() => cache.remove(key));
+      }
     }
     return value;
   };

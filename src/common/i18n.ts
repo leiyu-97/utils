@@ -36,6 +36,7 @@ function matchLang(target: string, langs: string[] = []): string | null {
   // xx-Xx-Xx => [xx-xx-xx, xx-xx, xx]
   for (let i = 1; i <= parts.length; i++) {
     const curTarget = parts.slice(0, i).join('-');
+    if (langs.includes(curTarget)) return curTarget;
     const result = langs.find((lang) => lang.toLowerCase().startsWith(curTarget));
     if (result) return result;
   }

@@ -20,22 +20,9 @@ export default function useControllable<T>({
   defaultValue: T;
   onChange: (value: T) => void;
 }): [T, (value: T) => void] {
-  // 组件是否是受控组件
-  const controllableState = useState<boolean>(undefined);
-  let [controllable] = controllableState;
-  const [, setControllable] = controllableState;
-
   // 初始化组件的受控状态
   // 受控状态初始化完成后不会再变化
-  if (controllable === undefined) {
-    if (value === undefined) {
-      setControllable(false);
-      controllable = false;
-    } else {
-      setControllable(true);
-      controllable = true;
-    }
-  }
+  const [controllable] = useState<boolean>(value !== undefined);
 
   // 组件内部保存的 value
   const [innerValue, setInnerValue] = useState<T>(

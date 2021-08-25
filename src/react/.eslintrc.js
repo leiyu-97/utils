@@ -1,18 +1,14 @@
 const base = require('../.eslintrc.js');
 const baseExtends = base.extends || [];
-const ruls = base.rules || {};
+const baseRules = base.rules || {};
+const basePlugins = base.plugins || [];
 
 module.exports = {
   ...base,
-  parser: "babel-eslint",
-  "plugins": [ "react" ],
+  "plugins": [ "react" ...basePlugins],
   extends: [...base.extends, 'plugin:react/recommended'],
-  env: {
-    mocha: true,
-    node: true
-  },
   rules: {
-    ...base.rules,
+    ...baseRules,
     'react/prop-types': 0
   }
 }

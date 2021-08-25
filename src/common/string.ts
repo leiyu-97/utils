@@ -20,10 +20,21 @@ function match(str: string, pattern: string | RegExp): MatchResult {
 }
 
 export function replaceWith<T>(
-  str: string,
+  str: string | (string | T)[],
   pattern: string | RegExp,
   replacer: (...args: string[]) => T,
 ): (string | T)[] {
+  if (str instanceof Array) {
+    const result = [];
+    str.forEach((item) => {
+      if (typeof item === 'string') {
+        result.push(...replaceWith(item, pattern, replacer));
+        return;
+      }
+      result.push(item);
+    });
+    return result;
+  }
   let restStr = str;
   const result = [];
 
