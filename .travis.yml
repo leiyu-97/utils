@@ -2,6 +2,7 @@ language: node_js
 cache:
   directories:
     - node_modules
+  yarn: true
 node_js: lts/*
 sudo: false
 notification:
