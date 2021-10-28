@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "module": "esnext",
-    "strict": false,
+    "strict": true,
     "jsx": "react",
     "importHelpers": false,
     "experimentalDecorators": true,

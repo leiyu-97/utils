@@ -3,7 +3,7 @@
  */
 
 import {
-  AnyAsyncFunc, AnyFunc, AwaitReturnType, AwaitType, EleType,
+  AnyAsyncFunc, AnyFunc, AwaitReturnType, AwaitType,
 } from '../../typescript/utilityTypes';
 
 /**
@@ -27,7 +27,7 @@ export function retry<T extends AnyFunc>(
   times = 1,
   time = 0,
 ): (...args: Parameters<T>) => Promise<AwaitReturnType<T>> {
-  return async function (...args: Parameters<T>): Promise<AwaitReturnType<T>> {
+  return async function retryFunction<This = any>(this: This, ...args: Parameters<T>): Promise<AwaitReturnType<T>> {
     let syncResult: ReturnType<T> | Promise<AwaitReturnType<T>>;
     let asyncResult: AwaitReturnType<T>;
 
@@ -82,7 +82,7 @@ export function timeout<T extends AnyAsyncFunc>(
   time = 0,
   onTimeout = () => Promise.reject(new TimeoutError()),
 ) {
-  return function (...args: Parameters<T>): ReturnType<T> {
+  return function timeoutFunction<This = any>(this: This, ...args: Parameters<T>): ReturnType<T> {
     const tasks = [func.apply(this, args)];
     if (time > 0) {
       tasks.push(wait(time).then(onTimeout));
@@ -96,9 +96,9 @@ export function timeout<T extends AnyAsyncFunc>(
  * @param array Promise 数组
  * @return 当 array 中所有 Promise 状态都转化为 resolved 后 resolve
  */
-export async function dynamicAll(array: Promise<any>[]): Promise<EleType<typeof array>> {
+export async function dynamicAll<T = any>(array: Promise<T>[]): Promise<T[]> {
   let { length } = array;
-  let result: AwaitType<EleType<typeof array>>;
+  let result: AwaitType<T[]>;
   while (true) {
     result = await Promise.all(array); // eslint-disable-line no-await-in-loop
     if (array.length === length) {
@@ -116,6 +116,17 @@ export enum PromiseActions {
   wait = 'wait' /* eslint-disable-line no-shadow */,
 }
 
+type DeduplicatedFunction<T extends AnyFunc, A extends PromiseActions, This = any> = (
+  this: This,
+  ...args: Parameters<T>
+) => A extends PromiseActions.resolve
+  ? ReturnType<T> | Promise<void>
+  : A extends PromiseActions.reject
+  ? ReturnType<T>
+  : A extends PromiseActions.wait
+  ? ReturnType<T>
+  : ReturnType<T> | Promise<never>;
+
 /**
  * promise 函数去重
  * @param {Function} func 函数
@@ -127,11 +138,11 @@ export function deduplicate<T extends AnyFunc>(
   func: T,
   action: PromiseActions = PromiseActions.pending,
   getKey: (args: Parameters<T>) => any = JSON.stringify,
-): (...args: Parameters<T>) => ReturnType<T> | Promise<void> {
+): DeduplicatedFunction<T, typeof action> {
   const pendingMap = new Map<ReturnType<typeof getKey>, true>();
   const resultMap = new Map<ReturnType<typeof getKey>, ReturnType<T>>();
 
-  return function deduplicatedFunction(...params: Parameters<T>): ReturnType<T> | Promise<void> {
+  return function deduplicatedFunction(...params) {
     const key = getKey(params);
     if (pendingMap.get(key)) {
       switch (action) {
@@ -139,12 +150,11 @@ export function deduplicate<T extends AnyFunc>(
           return Promise.resolve();
         case PromiseActions.reject:
           return Promise.reject();
-        case PromiseActions.pending:
-          return new Promise(() => undefined);
         case PromiseActions.wait:
           return resultMap.get(key);
+        case PromiseActions.pending:
         default:
-          return undefined;
+          return new Promise(() => undefined);
       }
     }
 
@@ -153,14 +163,19 @@ export function deduplicate<T extends AnyFunc>(
 
     if (result instanceof Promise) {
       pendingMap.set(key, true);
-      result.then(() => {
-        pendingMap.delete(key);
-        resultMap.delete(key);
-      });
+      result
+        .then(() => {
+          pendingMap.delete(key);
+          resultMap.delete(key);
+        })
+        .catch(() => {
+          pendingMap.delete(key);
+          resultMap.delete(key);
+        });
     }
 
     return result as ReturnType<T>;
-  };
+  } as DeduplicatedFunction<T, typeof action>;
 }
 
 /**
@@ -168,14 +183,15 @@ export function deduplicate<T extends AnyFunc>(
  * @param {Function} func 函数
  * @return {Function} 只有最新结果会返回的函数
  */
-export function keepUpToDate<T extends AnyFunc>(
-  func: T,
-): (...args: Parameters<T>) => Promise<AwaitReturnType<T>> {
+export function keepUpToDate<T extends AnyFunc>(func: T): (...args: Parameters<T>) => Promise<AwaitReturnType<T>> {
   let newest: null | number = null;
-  return async function upToDateFunction(...params: Parameters<T>): Promise<AwaitReturnType<T>> {
+  return async function upToDateFunction<This = any>(
+    this: This,
+    ...params: Parameters<T>
+  ): Promise<AwaitReturnType<T>> {
     newest = Date.now();
     const current = newest;
-    const result = await func.apply(this, params) as AwaitReturnType<T>;
+    const result = (await func.apply(this, params)) as AwaitReturnType<T>;
     // 如果已经不是最新则丢弃结果
     if (current !== newest) return new Promise(() => null);
     newest = null;
